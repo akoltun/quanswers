@@ -6,4 +6,6 @@ RSpec.describe Question, "model", :type => :model do
 
   it { is_expected.to ensure_length_of(:title).is_at_most(250) }
   it { is_expected.to ensure_length_of(:question).is_at_most(2000) }
+
+  it { is_expected.to have_many(:answers) }
 end
