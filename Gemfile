@@ -27,6 +27,8 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 gem 'spring',        group: :development
 gem "spring-commands-rspec", group: :development
 
+gem "slim-rails"
+
 group :test, :development do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
