@@ -1,0 +1,12 @@
+= form.submit 'Save Question', class: "btn btn-success"
+| &nbsp;&nbsp;&nbsp;
+a class="btn btn-danger" data-toggle="modal" data-target="#askAreYouSure" Cancel
+
+div class="modal fade" id="askAreYouSure" aria-labelledby="askAreYouSureLabel" aria-hidden="true"
+  div class="modal-dialog modal-sm"
+    div class="modal-content"
+      div class="modal-header"
+        h3 class="modal-title center-block" id="askAreYouSureLabel" Are you sure?</h4>
+      div class="modal-footer"
+        = link_to "Yes", questions_path, class: "btn btn-danger"
+        button type="button" class="btn btn-primary" data-dismiss="modal" No

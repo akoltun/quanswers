@@ -1,0 +1,8 @@
+- flash_message[:messages] = [flash_message[:messages]] if flash_message[:messages].is_a? String
+- flash_message[:messages].each do |message|
+  div class="alert alert-#{flash_message[:type]} alert-dismissible" role="alert"
+    button type="button" class="close" data-dismiss="alert"
+      span aria-hidden="true" &times;
+      span class="sr-only" Close
+    strong #{flash_message[:exclamation] || flash_message[:type].humanize}!&nbsp;
+    = message

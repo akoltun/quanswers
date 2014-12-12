@@ -5,8 +5,10 @@ source 'https://rubygems.org'
 gem 'rails', '4.1.8'
 # Use postgresql as the database for Active Record
 gem 'pg'
+gem 'bootstrap-sass', '~> 3.3.1'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
+gem 'autoprefixer-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
@@ -28,10 +30,13 @@ gem 'spring',        group: :development
 gem "spring-commands-rspec", group: :development
 
 gem "slim-rails"
+gem 'bootstrap-wysihtml5-rails'
+gem 'truncate_html'
 
 group :test, :development do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
+  gem 'faker'
 end
 
 group :test do

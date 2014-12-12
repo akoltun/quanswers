@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Question, :type => :model do
+RSpec.describe Question, "model", :type => :model do
   it { is_expected.to validate_presence_of(:title)}
   it { is_expected.not_to validate_presence_of(:question)}
 

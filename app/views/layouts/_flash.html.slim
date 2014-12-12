@@ -1,0 +1,8 @@
+- if notice
+  = render partial: 'layouts/flash_message', object: { type: "success", messages: notice }
+
+- if alert
+  = render partial: 'layouts/flash_message', object: {type: "danger", messages: alert, exclamation: "Error"}
+
+- if flash && flash[:messages]
+  = render partial: 'layouts/flash_message', object: flash
