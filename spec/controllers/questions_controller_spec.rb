@@ -70,24 +70,38 @@ RSpec.describe QuestionsController, :type => :controller do
 
   describe "POST #create" do
     context "with valid attributes" do
+      let(:post_request) { post :create, question: attributes_for(:question) }
+
       it "redirects to show view" do
-        post :create, question: attributes_for(:question)
-        expect(response).to redirect_to question_path(assigns(:question))
+        post_request
+        expect(response).to redirect_to questions_path
       end
 
       it "creates new question in db" do
-        expect { post :create, question: attributes_for(:question) }.to change(Question, :count).by(1)
+        expect { post_request }.to change(Question, :count).by(1)
+      end
+
+      it "assigns a success message to flash[:notice]" do
+        post_request
+        expect(flash[:notice]).to eql "You have created a new question"
       end
     end
 
     context "with invalid attributes" do
+      let(:post_request) { post :create, question: attributes_for(:invalid_question) }
+
       it "re-renders new view" do
-        post :create, question: attributes_for(:invalid_question)
+        post_request
         expect(response).to render_template :new
       end
 
       it "does not create new question in db" do
-        expect { post :create, question: attributes_for(:invalid_question) }.not_to change(Question, :count)
+        expect { post_request }.not_to change(Question, :count)
+      end
+
+      it "assigns an error message to flash[:alert]" do
+        post_request
+        expect(flash[:alert]).to eql ["Title can't be blank"]
       end
     end
   end
@@ -111,6 +125,10 @@ RSpec.describe QuestionsController, :type => :controller do
       it "assigns requested question to @question" do
         expect(assigns(:question)).to eq question
       end
+
+      it "assigns a success message to flash[:notice]" do
+        expect(flash[:notice]).to eql "You have updated the question"
+      end
     end
 
     context "with invalid attributes" do
@@ -126,19 +144,29 @@ RSpec.describe QuestionsController, :type => :controller do
         expect(question.title).to eq question_hash[:title]
         expect(question.question).to eq question_hash[:question]
       end
+
+      it "assigns an error message to flash[:alert]" do
+        expect(flash[:alert]).to eql ["Title can't be blank"]
+      end
     end
   end
 
   describe "DELETE #destroy" do
     before { question }
+    let(:delete_request) { delete :destroy, id: question }
 
     it "redirects to index view" do
-      delete :destroy, id: question
-      expect(response).to redirect_to question_path
+      delete_request
+      expect(response).to redirect_to questions_path
     end
 
     it "deletes question" do
-      expect { delete :destroy, id: question }.to change(Question, :count).by(-1)
+      expect { delete_request }.to change(Question, :count).by(-1)
+    end
+
+    it "assigns a success message to flash[:notice]" do
+      delete_request
+      expect(flash[:notice]).to eql "You have deleted the question"
     end
   end
 

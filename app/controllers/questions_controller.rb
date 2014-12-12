@@ -2,7 +2,7 @@ class QuestionsController < ApplicationController
   before_action :load_question, only: [:show, :edit, :update, :destroy]
 
   def index
-    @questions = Question.all
+    @questions = Question.order(created_at: :desc)
   end
 
   def show
@@ -18,8 +18,9 @@ class QuestionsController < ApplicationController
   def create
     @question = Question.new(question_params)
     if @question.save
-      redirect_to @question
+      redirect_to questions_path, notice: "You have created a new question"
     else
+      show_errors
       render :new
     end
   end
@@ -27,18 +28,23 @@ class QuestionsController < ApplicationController
   def update
     @question.update(question_params)
     if @question.save
-      redirect_to @question
+      redirect_to @question, notice: "You have updated the question"
     else
+      show_errors
       render :edit
     end
   end
 
   def destroy
     @question.destroy
-    redirect_to question_path
+    redirect_to questions_path, notice: "You have deleted the question"
   end
 
   private
+
+  def show_errors
+    flash[:alert] = @question.errors.full_messages
+  end
 
   def question_params
     params.require(:question).permit(:title, :question)
