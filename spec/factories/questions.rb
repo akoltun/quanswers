@@ -12,8 +12,4 @@ FactoryGirl.define do
       question "Another Question"
     end
   end
-
-
-
-
 end

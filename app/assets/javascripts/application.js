@@ -20,5 +20,11 @@
 
 $(document).on('page:load', function(){
     window['rangy'].initialized = false;
-    $('.wysihtml5').wysihtml5();
+    initWysihtml5();
 });
+$(document).ready(function(){
+    initWysihtml5();
+});
+function initWysihtml5() {
+    $('.wysihtml5').wysihtml5();
+}
