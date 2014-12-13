@@ -19,5 +19,6 @@
 //= require_tree .
 
 $(document).on('page:load', function(){
-    window['rangy'].initialized = false
+    window['rangy'].initialized = false;
+    $('.wysihtml5').wysihtml5();
 });

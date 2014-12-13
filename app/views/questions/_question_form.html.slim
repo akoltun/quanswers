@@ -13,8 +13,3 @@
     = f.text_area :question, class: "form-control wysihtml5", size: "100x15"
 
   = render partial: 'questions/form_save_cancel_buttons', locals: { form: f }
-
-  javascript:
-    $('.wysihtml5').each(function (i, elem) {
-      $(elem).wysihtml5();
-    });
