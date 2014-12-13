@@ -43,7 +43,7 @@ class QuestionsController < ApplicationController
   private
 
   def show_errors
-    flash[:alert] = @question.errors.full_messages
+    flash.now[:alert] = @question.errors.full_messages
   end
 
   def question_params
