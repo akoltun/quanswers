@@ -2,10 +2,11 @@ class QuestionsController < ApplicationController
   before_action :load_question, only: [:show, :edit, :update, :destroy]
 
   def index
-    @questions = Question.order(created_at: :desc)
+    @questions = Question.ordered_by_creation_date
   end
 
   def show
+    @answers = @question.answers.ordered_by_creation_date
     @answer = @question.answers.build
   end
 

@@ -20,6 +20,10 @@ div class="row"
 
     hr
 
+    h3 Answers
+
+    = render partial: 'questions/answer', collection: @answers
+
     = form_for [@question, @answer], html: {role: 'form'} do |f|
       = f.submit 'Save Answer', class: "btn btn-success"
       br
