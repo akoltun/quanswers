@@ -8,7 +8,7 @@ class QuestionsController < ApplicationController
   def show
     @answers = @question.answers.ordered_by_creation_date
     @answer = @question.answers.build
-    @deletable = @answers.empty?
+    @editable = @answers.empty?
   end
 
   def new
@@ -29,12 +29,16 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    @question.update(question_params)
-    if @question.save
-      redirect_to @question, notice: "You have updated the question"
+    if @question.answers.empty?
+      @question.update(question_params)
+      if @question.save
+        redirect_to @question, notice: "You have updated the question"
+      else
+        show_errors
+        render :edit
+      end
     else
-      show_errors
-      render :edit
+      redirect_to @question, alert: "Can't edit question which already has answers"
     end
   end
 

@@ -35,15 +35,15 @@ RSpec.describe QuestionsController, :type => :controller do
       expect(assigns(:answer)).to be_a_new(Answer)
     end
 
-    it "assigns false to @deletable" do
-      expect(assigns(:deletable)).to be_falsey
+    it "assigns false to @editable" do
+      expect(assigns(:editable)).to be_falsey
     end
 
     context "for question without answers" do
       let(:question) { create(:question) }
 
-      it "assigns true to @deletable" do
-        expect(assigns(:deletable)).to be_truthy
+      it "assigns true to @editable" do
+        expect(assigns(:editable)).to be_truthy
       end
     end
   end
@@ -121,7 +121,8 @@ RSpec.describe QuestionsController, :type => :controller do
   describe "PATCH #update" do
     before { patch :update, id: question, question: update_hash }
 
-    context "with valid attributes" do
+    context "question without answers with valid attributes" do
+      let(:question) { create(:question) }
       let(:update_hash) { attributes_for(:another_question) }
 
       it "redirects to show view" do
@@ -143,7 +144,8 @@ RSpec.describe QuestionsController, :type => :controller do
       end
     end
 
-    context "with invalid attributes" do
+    context "question without answers with invalid attributes" do
+      let(:question) { create(:question) }
       let(:update_hash) { attributes_for(:invalid_question) }
       let(:question_hash) { attributes_for(:question) }
 
@@ -159,6 +161,25 @@ RSpec.describe QuestionsController, :type => :controller do
 
       it "assigns an error message to flash[:alert]" do
         expect(flash[:alert]).to eql ["Title can't be blank"]
+      end
+    end
+
+    context "question with answers" do
+      let(:update_hash) { attributes_for(:another_question) }
+      let(:question_hash) { attributes_for(:question) }
+
+      it "redirects to show view" do
+        expect(response).to redirect_to question_path(question)
+      end
+
+      it "does not change question in db" do
+        question.reload
+        expect(question.title).to eq question_hash[:title]
+        expect(question.question).to eq question_hash[:question]
+      end
+
+      it "assigns an error message to flash[:alert]" do
+        expect(flash[:alert]).to eql "Can't edit question which already has answers"
       end
     end
   end

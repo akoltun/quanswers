@@ -7,6 +7,7 @@ feature 'User edits question', %q{
 } do
   given(:existing_question_hash) { attributes_for(:question) }
   given(:existing_question) { create(:question, existing_question_hash) }
+  given(:question_with_answers) { create(:question_with_answers) }
   background { existing_question }
   background { Capybara.match = :first }
 
@@ -33,5 +34,10 @@ feature 'User edits question', %q{
     expect(current_path).to eq question_path(existing_question)
     expect(page).to have_content 'Error!'
     expect(page).to have_css '.field_with_errors'
+  end
+
+  scenario 'User can''t edit question with answers' do
+    visit question_path(question_with_answers)
+    expect(page).not_to have_content 'Edit Question'
   end
 end
