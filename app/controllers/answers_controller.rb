@@ -1,6 +1,6 @@
 class AnswersController < ApplicationController
-  before_action :load_question, only: [:edit, :create, :update]
-  before_action :load_answer, only: [:edit, :update]
+  before_action :load_question, only: [:edit, :create, :update, :destroy]
+  before_action :load_answer, only: [:edit, :update, :destroy]
   before_action :load_answers, only: [:edit]
 
   def edit
@@ -15,6 +15,11 @@ class AnswersController < ApplicationController
   def update
     @answer.update(answer_params)
     save_answer "You have updated the answer"
+  end
+
+  def destroy
+    @answer.destroy
+    redirect_to question_path(@question), notice: "You have deleted the answer"
   end
 
   private

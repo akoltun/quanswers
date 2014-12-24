@@ -1,12 +1,4 @@
-div class="modal fade" id="deleteQuestionDialog" aria-labelledby="deleteQuestionDialogLabel" aria-hidden="true"
-  div class="modal-dialog modal-sm"
-    div class="modal-content"
-      div class="modal-header"
-        h3 class="modal-title center-block" id="deleteQuestionDialogLabel" Are you sure?</h4>
-      div class="modal-footer"
-        = form_tag(question_path(@question), method: "DELETE")
-          = submit_tag "Yes", class: "btn btn-danger"
-          button type="button" class="btn btn-primary" data-dismiss="modal" No
+= render partial: 'questions/delete_dialog', locals: { id: 'deleteQuestionDialog', dialog_text: 'Are you sure?', dialog_yes_path: question_path(@question) }
 
 div class="row"
   div class="col-xs-12"

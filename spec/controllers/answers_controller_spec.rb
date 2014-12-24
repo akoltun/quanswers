@@ -131,5 +131,22 @@ RSpec.describe AnswersController, :type => :controller do
     end
   end
 
+  describe "DELETE #destroy" do
+    before { answer }
+    let(:delete_request) { delete :destroy, question_id: question, id: answer }
 
+    it "redirects to question show view" do
+      delete_request
+      expect(response).to redirect_to question_path(question)
+    end
+
+    it "deletes answer" do
+      expect { delete_request }.to change(Answer, :count).by(-1)
+    end
+
+    it "assigns a success message to flash[:notice]" do
+      delete_request
+      expect(flash[:notice]).to eql "You have deleted the answer"
+    end
+  end
 end

@@ -1,0 +1,9 @@
+div class="modal fade" id="#{id}" aria-labelledby="#{id}Label" aria-hidden="true"
+  div class="modal-dialog modal-sm"
+    div class="modal-content"
+      div class="modal-header"
+        h3 class="modal-title center-block" id="#{id}Label" = dialog_text
+      div class="modal-footer"
+        = form_tag(dialog_yes_path, method: "DELETE")
+          = submit_tag "Yes", class: "btn btn-danger"
+          button type="button" class="btn btn-primary" data-dismiss="modal" No
