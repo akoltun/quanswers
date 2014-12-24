@@ -1,39 +1,20 @@
 class AnswersController < ApplicationController
+  before_action :load_question, only: [:edit, :create, :update]
+  before_action :load_answer, only: [:edit, :update]
+  before_action :load_answers, only: [:edit]
 
   def edit
-    @question = Question.find(params[:question_id])
-    @answers = @question.answers.ordered_by_creation_date
-    @answer = @question.answers.find(params[:id])
-
     render 'questions/show'
   end
 
   def create
-    @question = Question.find(params[:question_id])
-    @answer = @question.answers.build(params.require(:answer).permit(:answer))
-    if @answer.save
-      flash[:notice] = 'You have created a new answer'
-      redirect_to @question
-    else
-      flash[:alert] = @answer.errors.full_messages
-      render 'questions/show'
-    end
+    @answer = @question.answers.build(answer_params)
+    save_answer 'You have created a new answer'
   end
 
   def update
-    @question = Question.find(params[:question_id])
-    @answer = Answer.find(params[:id])
     @answer.update(answer_params)
-    if @answer.save
-      redirect_to @question, notice: "You have updated the answer"
-    else
-      show_errors
-      @answers = @question.answers.ordered_by_creation_date
-      render 'questions/show'
-    end
-  end
-
-  def delete
+    save_answer "You have updated the answer"
   end
 
   private
@@ -46,4 +27,25 @@ class AnswersController < ApplicationController
     params.require(:answer).permit(:answer)
   end
 
+  def load_question
+    @question = Question.find(params[:question_id])
+  end
+
+  def load_answers
+    @answers = @question.answers.ordered_by_creation_date
+  end
+
+  def load_answer
+    @answer = @question.answers.find(params[:id])
+  end
+
+  def save_answer(success_message)
+    if @answer.save
+      redirect_to @question, notice: success_message
+    else
+      show_errors
+      load_answers
+      render 'questions/show'
+    end
+  end
 end

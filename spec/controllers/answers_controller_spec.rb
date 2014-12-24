@@ -26,6 +26,7 @@ RSpec.describe AnswersController, :type => :controller do
 
   describe "POST #create" do
     let(:post_request) { post :create, question_id: answer_hash[:question_id], answer: answer_hash }
+    let(:question) { Question.find(answer_hash[:question_id]) }
 
     context "with valid attributes" do
       let(:answer_hash) { build(:answer).attributes.symbolize_keys }
@@ -51,6 +52,16 @@ RSpec.describe AnswersController, :type => :controller do
       it "re-renders question show view" do
         post_request
         expect(response).to render_template "questions/show"
+      end
+
+      it "populates the question to @question" do
+        post_request
+        expect(assigns(:question)).to eq question
+      end
+
+      it "populates all answers for this question to @answers" do
+        post_request
+        expect(assigns(:answers)).to match_array(question.answers)
       end
 
       it "does not create new answer in db" do
@@ -80,7 +91,7 @@ RSpec.describe AnswersController, :type => :controller do
         expect(answer.answer).to eq update_hash[:answer]
       end
 
-      it "assigns requested question to @question" do
+      it "assigns the question to @question" do
         expect(assigns(:question)).to eq question
       end
 
@@ -104,6 +115,14 @@ RSpec.describe AnswersController, :type => :controller do
       it "does not change answer in db" do
         answer.reload
         expect(answer.answer).to eq answer_hash[:answer]
+      end
+
+      it "populates the question to @question" do
+        expect(assigns(:question)).to eq question
+      end
+
+      it "populates all answers for this question to @answers" do
+        expect(assigns(:answers)).to match_array(question.answers)
       end
 
       it "assigns an error message to flash[:alert]" do
