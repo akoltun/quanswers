@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe QuestionsController, :type => :controller do
-  let(:question_with_answers) { create(:question_with_answers) }
-  let(:question) { create(:question) }
+  let(:question) { create(:question_with_answers) }
 
   describe "GET #index" do
     let(:questions) { create_list(:question_with_answers, 2) }
@@ -18,22 +17,34 @@ RSpec.describe QuestionsController, :type => :controller do
   end
 
   describe "GET #show" do
-    before { get :show, id: question_with_answers }
+    before { get :show, id: question }
 
     it "renders show view" do
       expect(response).to render_template :show
     end
 
     it "populates requested question" do
-      expect(assigns(:question)).to eq question_with_answers
+      expect(assigns(:question)).to eq question
     end
 
     it "populates an array of all answers for this question" do
-      expect(assigns(:answers)).to match_array(question_with_answers.answers)
+      expect(assigns(:answers)).to match_array(question.answers)
     end
 
     it "populates a new answer" do
       expect(assigns(:answer)).to be_a_new(Answer)
+    end
+
+    it "assigns false to @deletable" do
+      expect(assigns(:deletable)).to be_falsey
+    end
+
+    context "for question without answers" do
+      let(:question) { create(:question) }
+
+      it "assigns true to @deletable" do
+        expect(assigns(:deletable)).to be_truthy
+      end
     end
   end
 
@@ -54,7 +65,7 @@ RSpec.describe QuestionsController, :type => :controller do
   end
 
   describe "GET #edit" do
-    before { get :edit, id: question_with_answers}
+    before { get :edit, id: question}
 
     it "returns http success" do
       expect(response).to have_http_status(:success)
@@ -65,7 +76,7 @@ RSpec.describe QuestionsController, :type => :controller do
     end
 
     it "populates requested question" do
-      expect(assigns(:question)).to eql question_with_answers
+      expect(assigns(:question)).to eql question
     end
   end
 
@@ -156,18 +167,38 @@ RSpec.describe QuestionsController, :type => :controller do
     before { question }
     let(:delete_request) { delete :destroy, id: question }
 
-    it "redirects to index view" do
-      delete_request
-      expect(response).to redirect_to questions_path
+    context "question without answers" do
+      let(:question) { create(:question) }
+
+      it "redirects to index view" do
+        delete_request
+        expect(response).to redirect_to questions_path
+      end
+
+      it "deletes question" do
+        expect { delete_request }.to change(Question, :count).by(-1)
+      end
+
+      it "assigns a success message to flash[:notice]" do
+        delete_request
+        expect(flash[:notice]).to eql "You have deleted the question"
+      end
     end
 
-    it "deletes question" do
-      expect { delete_request }.to change(Question, :count).by(-1)
-    end
+    context "question with answers" do
+      it "redirects to show view" do
+        delete_request
+        expect(response).to redirect_to question_path(question)
+      end
 
-    it "assigns a success message to flash[:notice]" do
-      delete_request
-      expect(flash[:notice]).to eql "You have deleted the question"
+      it "does not delete question from db" do
+        expect { delete_request }.not_to change(Question, :count)
+      end
+
+      it "assigns an error message to flash[:alert]" do
+        delete_request
+        expect(flash[:alert]).to eql "Can't delete question which already has answers"
+      end
     end
   end
 

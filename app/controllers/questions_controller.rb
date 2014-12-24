@@ -8,6 +8,7 @@ class QuestionsController < ApplicationController
   def show
     @answers = @question.answers.ordered_by_creation_date
     @answer = @question.answers.build
+    @deletable = @answers.empty?
   end
 
   def new
@@ -38,8 +39,12 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    @question.destroy
-    redirect_to questions_path, notice: "You have deleted the question"
+    if @question.answers.empty?
+      @question.destroy
+      redirect_to questions_path, notice: "You have deleted the question"
+    else
+      redirect_to @question, alert: "Can't delete question which already has answers"
+    end
   end
 
   private
