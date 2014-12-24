@@ -1,8 +1,8 @@
-div class="modal fade" id="askAreYouSure" aria-labelledby="askAreYouSureLabel" aria-hidden="true"
+div class="modal fade" id="deleteQuestionDialog" aria-labelledby="deleteQuestionDialogLabel" aria-hidden="true"
   div class="modal-dialog modal-sm"
     div class="modal-content"
       div class="modal-header"
-        h3 class="modal-title center-block" id="askAreYouSureLabel" Are you sure?</h4>
+        h3 class="modal-title center-block" id="deleteQuestionDialogLabel" Are you sure?</h4>
       div class="modal-footer"
         = form_tag(question_path(@question), method: "DELETE")
           = submit_tag "Yes", class: "btn btn-danger"
@@ -10,11 +10,12 @@ div class="modal fade" id="askAreYouSure" aria-labelledby="askAreYouSureLabel" a
 
 div class="row"
   div class="col-xs-12"
-    = link_to "Edit Question", edit_question_path(@question), class: "btn btn-primary"
-    | &nbsp;&nbsp;&nbsp;
-    button class="btn btn-danger" data-toggle="modal" data-target="#askAreYouSure" Delete Question
-    | &nbsp;&nbsp;&nbsp;
-    = link_to "Back to Questions List", questions_path, class: "btn btn-info"
+    - unless @answer.id
+      = link_to "Edit Question", edit_question_path(@question), class: "btn btn-primary"
+      | &nbsp;&nbsp;&nbsp;
+      button class="btn btn-danger" data-toggle="modal" data-target="#deleteQuestionDialog" Delete Question
+      | &nbsp;&nbsp;&nbsp;
+      = link_to "Back to Questions List", questions_path, class: "btn btn-info"
     h3 =@question.title
     p =raw @question.question
 
@@ -24,13 +25,14 @@ div class="row"
 
     = render partial: 'questions/answer', collection: @answers
 
-    = form_for [@question, @answer], html: {role: 'form'} do |f|
-      = f.submit 'Save Answer', class: "btn btn-success"
-      br
-      br
+    - if @answer.id.nil?
+      = form_for [@question, @answer], html: {role: 'form'} do |f|
+        = f.submit 'Save Answer', class: "btn btn-success"
+        br
+        br
 
-      div class="form-group"
-        = f.label :answer, class: "control-label"
-        = f.text_area :answer, class: "form-control wysihtml5", size: "100x15"
+        div class="form-group"
+          = f.label :answer, class: "control-label"
+          = f.text_area :answer, class: "form-control wysihtml5", size: "100x15"
 
-      = f.submit 'Save Answer', class: "btn btn-success"
+        = f.submit 'Save Answer', class: "btn btn-success"

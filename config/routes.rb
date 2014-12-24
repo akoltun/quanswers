@@ -1,14 +1,8 @@
 Rails.application.routes.draw do
-  get 'answers/create'
-
-  get 'answers/udate'
-
-  get 'answers/delete'
-
   root 'questions#index'
 
   resources :questions do
-    resources :answers, only: [:create, :update, :delete]
+    resources :answers, only: [:edit, :create, :update, :delete]
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

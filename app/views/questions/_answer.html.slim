@@ -1,2 +1,11 @@
-p = answer.answer
+- if @answer == answer
+  = render partial: 'questions/answer_form', object: { title: "Edit Question" }
+
+- else
+  - unless @answer.id
+    = link_to "Edit Answer", edit_question_answer_path(@question, answer), class: "btn btn-primary"
+    | &nbsp;&nbsp;&nbsp;
+    button class="btn btn-danger" data-toggle="modal" data-target="#askAreYouSure" Delete Answer
+  p = answer.answer
+
 hr

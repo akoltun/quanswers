@@ -1,15 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe QuestionsController, :type => :controller do
+  let(:question_with_answers) { create(:question_with_answers) }
   let(:question) { create(:question) }
 
   describe "GET #index" do
-    let(:questions) { create_list(:question, 2) }
+    let(:questions) { create_list(:question_with_answers, 2) }
     before { get :index }
-
-    it "returns http success" do
-      expect(response).to have_http_status(:success)
-    end
 
     it "renders index view" do
       expect(response).to render_template :index
@@ -21,22 +18,18 @@ RSpec.describe QuestionsController, :type => :controller do
   end
 
   describe "GET #show" do
-    before { get :show, id: question }
-
-    it "returns http success" do
-      expect(response).to have_http_status(:success)
-    end
+    before { get :show, id: question_with_answers }
 
     it "renders show view" do
       expect(response).to render_template :show
     end
 
     it "populates requested question" do
-      expect(assigns(:question)).to eq question
+      expect(assigns(:question)).to eq question_with_answers
     end
 
     it "populates an array of all answers for this question" do
-      expect(assigns(:answers)).to match_array(question.answers)
+      expect(assigns(:answers)).to match_array(question_with_answers.answers)
     end
 
     it "populates a new answer" do
@@ -61,7 +54,7 @@ RSpec.describe QuestionsController, :type => :controller do
   end
 
   describe "GET #edit" do
-    before { get :edit, id: question}
+    before { get :edit, id: question_with_answers}
 
     it "returns http success" do
       expect(response).to have_http_status(:success)
@@ -72,7 +65,7 @@ RSpec.describe QuestionsController, :type => :controller do
     end
 
     it "populates requested question" do
-      expect(assigns(:question)).to eql question
+      expect(assigns(:question)).to eql question_with_answers
     end
   end
 

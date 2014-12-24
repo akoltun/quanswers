@@ -6,6 +6,10 @@ FactoryGirl.define do
     factory :invalid_answer do
       answer nil
     end
+
+    factory :another_answer do
+      answer   "Another Answer"
+    end
   end
 
 end

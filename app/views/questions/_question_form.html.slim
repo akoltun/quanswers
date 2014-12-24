@@ -1,5 +1,5 @@
 = form_for @question, html: { role: 'form' } do |f|
-  = render partial: 'questions/form_save_cancel_buttons', locals: { form: f }
+  = render partial: 'questions/form_save_cancel_buttons', locals: { dialog_id: 'cancelQuestionEditDialog', form: f, subject: 'Question' }
 
   h1 = question_form[:title]
 
@@ -12,4 +12,6 @@
     = f.label :question, class: "control-label"
     = f.text_area :question, class: "form-control wysihtml5", size: "100x15"
 
-  = render partial: 'questions/form_save_cancel_buttons', locals: { form: f }
+  = render partial: 'questions/form_save_cancel_buttons', locals: { dialog_id: 'cancelQuestionEditDialog', form: f, subject: 'Question' }
+
+  = render partial: 'questions/are_you_sure_dialog', locals: { id: 'cancelQuestionEditDialog', dialog_text: 'Are you sure?', dialog_yes_path: @question.id ? question_path(@question) : questions_path }
