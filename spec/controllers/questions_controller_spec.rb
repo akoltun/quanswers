@@ -49,6 +49,7 @@ RSpec.describe QuestionsController, :type => :controller do
   end
 
   describe "GET #new" do
+    sign_in_user
     before { get :new }
 
     it "returns http success" do
@@ -65,6 +66,7 @@ RSpec.describe QuestionsController, :type => :controller do
   end
 
   describe "GET #edit" do
+    sign_in_user
     before { get :edit, id: question}
 
     it "returns http success" do
@@ -81,6 +83,8 @@ RSpec.describe QuestionsController, :type => :controller do
   end
 
   describe "POST #create" do
+    sign_in_user
+
     context "with valid attributes" do
       let(:post_request) { post :create, question: attributes_for(:question) }
 
@@ -119,6 +123,7 @@ RSpec.describe QuestionsController, :type => :controller do
   end
 
   describe "PATCH #update" do
+    sign_in_user
     before { patch :update, id: question, question: update_hash }
 
     context "question without answers with valid attributes" do
@@ -185,6 +190,7 @@ RSpec.describe QuestionsController, :type => :controller do
   end
 
   describe "DELETE #destroy" do
+    sign_in_user
     before { question }
     let(:delete_request) { delete :destroy, id: question }
 
