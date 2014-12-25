@@ -1,6 +1,7 @@
 namespace :db do
   desc "Fill database with sample data"
   task populate: :environment do
+    make_user
     make_questions
   end
 end
@@ -13,5 +14,9 @@ def make_questions
       question.answers.create!(answer: Faker::Lorem.paragraph(10))
     end
   end
-end 
+end
+
+def make_user
+  User.create!(email: 'test@test.com', password: '12345678')
+end
 

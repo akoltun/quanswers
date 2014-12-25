@@ -32,6 +32,7 @@ gem "spring-commands-rspec", group: :development
 gem "slim-rails"
 gem 'bootstrap-wysihtml5-rails'
 gem 'truncate_html'
+gem 'devise'
 
 group :test, :development do
   gem 'rspec-rails'
