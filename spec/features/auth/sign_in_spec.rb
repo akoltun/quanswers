@@ -5,7 +5,6 @@ feature 'User sign in', %q{
   As an user
   I want to be able to sign in
 } do
-
   given(:user) { create(:user) }
 
   scenario 'Registered user signs in' do
@@ -29,7 +28,7 @@ feature 'User sign in', %q{
     expect(page).to have_link('Sign in')
   end
 
-  scenario 'Non-registered user goes to sign in page' do
+  scenario 'Non-registered user click "Sign in" button on home page' do
     visit questions_path
     click_on 'Sign in'
 
