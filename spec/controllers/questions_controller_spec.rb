@@ -69,16 +69,29 @@ RSpec.describe QuestionsController, :type => :controller do
     sign_in_user
     before { get :edit, id: question}
 
-    it "returns http success" do
-      expect(response).to have_http_status(:success)
+    context "question without answers" do
+      let(:question) { create(:question) }
+      it "returns http success" do
+        expect(response).to have_http_status(:success)
+      end
+
+      it "renders edit view" do
+        expect(response).to render_template :edit
+      end
+
+      it "populates requested question" do
+        expect(assigns(:question)).to eql question
+      end
     end
 
-    it "renders edit view" do
-      expect(response).to render_template :edit
-    end
+    context "question with answers" do
+      it "redirects to show view" do
+        expect(response).to redirect_to question_path(question)
+      end
 
-    it "populates requested question" do
-      expect(assigns(:question)).to eql question
+      it "assigns an error message to flash[:alert]" do
+        expect(flash[:alert]).to eql "Can't edit question which already has answers"
+      end
     end
   end
 

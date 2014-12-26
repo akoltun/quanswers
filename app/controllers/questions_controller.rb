@@ -1,6 +1,8 @@
 class QuestionsController < ApplicationController
-  before_action :load_question, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!, only: [:new, :create]
+  before_action :load_question, only: [:show, :edit, :update, :destroy]
+  before_action :cannot_edit_non_empty_question, only: [:edit, :update]
+  before_action :cannot_delete_non_empty_question, only: [:destroy]
 
   def index
     @questions = Question.ordered_by_creation_date
@@ -30,26 +32,18 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    if @question.answers.empty?
-      @question.update(question_params)
-      if @question.save
-        redirect_to @question, notice: "You have updated the question"
-      else
-        show_errors
-        render :edit
-      end
+    @question.update(question_params)
+    if @question.save
+      redirect_to @question, notice: "You have updated the question"
     else
-      redirect_to @question, alert: "Can't edit question which already has answers"
+      show_errors
+      render :edit
     end
   end
 
   def destroy
-    if @question.answers.empty?
-      @question.destroy
-      redirect_to questions_path, notice: "You have deleted the question"
-    else
-      redirect_to @question, alert: "Can't delete question which already has answers"
-    end
+    @question.destroy
+    redirect_to questions_path, notice: "You have deleted the question"
   end
 
   private
@@ -64,5 +58,17 @@ class QuestionsController < ApplicationController
 
   def load_question
     @question = Question.find(params[:id])
+  end
+
+  def cannot_edit_non_empty_question
+    unless @question.answers.empty?
+      redirect_to @question, alert: "Can't edit question which already has answers"
+    end
+  end
+
+  def cannot_delete_non_empty_question
+    unless @question.answers.empty?
+      redirect_to @question, alert: "Can't delete question which already has answers"
+    end
   end
 end
