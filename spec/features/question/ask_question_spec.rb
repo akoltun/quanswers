@@ -5,50 +5,51 @@ feature 'User asks question', %q{
   As an user
   I want to be able to ask question
 } do
-  given(:title) { 'Question title' }
-  given(:question) { 'Question body' }
+  background { Capybara.match = :first }
+
   given(:user) { create(:user) }
+
+  given(:question_title) { 'Question title' }
+  given(:question_body) { 'Question body' }
 
   scenario 'Non-authenticated user tries to ask valid question' do
     visit new_question_path
 
-    expect(page).to have_content 'You need to sign in or sign up before continuing'
+    expect(current_path).to eq new_user_session_path
   end
 
-  scenario 'Authenticated user asks valid question' do
-    sign_in(user)
+  context "Authenticated user" do
+    background { sign_in user }
 
-    visit new_question_path
-    fill_in 'Title', with: :title
-    fill_in 'Question', with: :question
-    Capybara.match = :first
-    click_on 'Save Question'
+    context "asks" do
+      background { visit new_question_path }
 
-    expect(current_path).to eq questions_path
-    expect(page).to have_content 'You have created a new question'
-    expect(page).to have_content :title
-    expect(page).to have_content :question
+      scenario 'valid question' do
+        fill_in 'Title', with: :question_title
+        fill_in 'Question', with: :question_body
+        click_on 'Save Question'
+
+        expect(current_path).to eq questions_path
+        expect(page).to have_content 'You have created a new question'
+        expect(page).to have_content :question_title
+        expect(page).to have_content :question_body
+      end
+
+      scenario 'invalid question' do
+        visit new_question_path
+        click_on 'Save Question'
+
+        expect(current_path).to eq questions_path
+        expect(page).to have_content 'Error!'
+        expect(page).to have_css '.field_with_errors'
+      end
+    end
+
+    scenario 'click "Ask New Question" button' do
+      visit questions_path
+      click_on "Ask New Question"
+
+      expect(current_path).to eq new_question_path
+    end
   end
-
-  scenario 'Authenticated user asks invalid question' do
-    sign_in(user)
-
-    visit new_question_path
-    Capybara.match = :first
-    click_on 'Save Question'
-
-    expect(current_path).to eq questions_path
-    expect(page).to have_content 'Error!'
-    expect(page).to have_css '.field_with_errors'
-  end
-
-  scenario 'Authenticated user click "Ask New Question" button' do
-    sign_in(user)
-
-    visit questions_path
-    click_on "Ask New Question"
-
-    expect(current_path).to eq new_question_path
-  end
-
 end
