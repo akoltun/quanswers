@@ -13,6 +13,8 @@ feature 'User sign in', %q{
 
     expect(page).to have_content('Signed in successfully')
     expect(current_path).to eq root_path
+    expect(page).to have_button('Sign out')
+    expect(page).not_to have_content('Sign in')
   end
 
   scenario 'Non-registered user tries to sign in' do
@@ -23,6 +25,8 @@ feature 'User sign in', %q{
 
     expect(page).to have_content('Invalid email or password')
     expect(current_path).to eq new_user_session_path
+    expect(page).not_to have_content('Sign out')
+    expect(page).to have_link('Sign in')
   end
 
 end

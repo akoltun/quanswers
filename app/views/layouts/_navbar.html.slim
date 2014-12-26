@@ -4,3 +4,8 @@ nav class="navbar navbar-inverse"
   div class="collapse navbar-collapse"
     ul class="nav navbar-nav"
       li = link_to "Questions list", questions_path
+    - if user_signed_in?
+      = form_tag(destroy_user_session_path, method: "DELETE", class: "navbar-form navbar-right" )
+        = submit_tag "Sign out", class: "btn btn-default"
+    - elsif !current_page?(new_user_session_path)
+      = link_to "Sign in", new_user_session_path, class: "btn btn-default navbar-btn navbar-right", role: "button", style: "margin-right: 0"
