@@ -29,4 +29,10 @@ feature 'User sign in', %q{
     expect(page).to have_link('Sign in')
   end
 
+  scenario 'Non-registered user goes to sign in page' do
+    visit questions_path
+    click_on 'Sign in'
+
+    expect(current_path).to eq new_user_session_path
+  end
 end

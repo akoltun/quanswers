@@ -7,5 +7,9 @@ nav class="navbar navbar-inverse"
     - if user_signed_in?
       = form_tag(destroy_user_session_path, method: "DELETE", class: "navbar-form navbar-right" )
         = submit_tag "Sign out", class: "btn btn-default"
-    - elsif !current_page?(new_user_session_path)
-      = link_to "Sign in", new_user_session_path, class: "btn btn-default navbar-btn navbar-right", role: "button", style: "margin-right: 0"
+    - else
+      ul class="nav navbar-nav navbar-right"
+        - unless current_page?(new_user_session_path)
+          li = link_to "Sign in", new_user_session_path
+        - unless current_page?(new_user_registration_path)
+          li = link_to "Sign up", new_user_registration_path
