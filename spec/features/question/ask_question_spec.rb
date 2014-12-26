@@ -8,7 +8,6 @@ feature 'User asks question', %q{
   given(:title) { 'Question title' }
   given(:question) { 'Question body' }
   given(:user) { create(:user) }
-  before { user }
 
   scenario 'Non-authenticated user tries to ask valid question' do
     visit new_question_path
@@ -17,10 +16,7 @@ feature 'User asks question', %q{
   end
 
   scenario 'Authenticated user asks valid question' do
-    visit new_user_session_path
-    fill_in 'Email', with: user.email
-    fill_in 'Password', with: '12345678'
-    click_on 'Sign in'
+    sign_in(user)
 
     visit new_question_path
     fill_in 'Title', with: :title
@@ -35,10 +31,7 @@ feature 'User asks question', %q{
   end
 
   scenario 'Authenticated user asks invalid question' do
-    visit new_user_session_path
-    fill_in 'Email', with: user.email
-    fill_in 'Password', with: '12345678'
-    click_on 'Sign in'
+    sign_in(user)
 
     visit new_question_path
     Capybara.match = :first
@@ -50,10 +43,7 @@ feature 'User asks question', %q{
   end
 
   scenario 'Authenticated user click "Ask New Question" button' do
-    visit new_user_session_path
-    fill_in 'Email', with: user.email
-    fill_in 'Password', with: '12345678'
-    click_on 'Sign in'
+    sign_in(user)
 
     visit questions_path
     click_on "Ask New Question"
