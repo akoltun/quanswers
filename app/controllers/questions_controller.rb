@@ -1,8 +1,7 @@
 class QuestionsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create]
+  before_action :authenticate_user!, except: [:index, :show]
   before_action :load_question, only: [:show, :edit, :update, :destroy]
-  before_action :cannot_edit_non_empty_question, only: [:edit, :update]
-  before_action :cannot_delete_non_empty_question, only: [:destroy]
+  before_action :redirect_non_editable_question, only: [:edit, :update, :destroy]
 
   def index
     @questions = Question.ordered_by_creation_date
@@ -10,8 +9,8 @@ class QuestionsController < ApplicationController
 
   def show
     @answers = @question.answers.ordered_by_creation_date
+    @editable = editable?
     @answer = @question.answers.build
-    @editable = @answers.empty?
   end
 
   def new
@@ -22,7 +21,7 @@ class QuestionsController < ApplicationController
   end
 
   def create
-    @question = Question.new(question_params)
+    @question = Question.new(question_params.merge({ user: current_user }))
     if @question.save
       redirect_to questions_path, notice: "You have created a new question"
     else
@@ -60,15 +59,22 @@ class QuestionsController < ApplicationController
     @question = Question.find(params[:id])
   end
 
-  def cannot_edit_non_empty_question
-    unless @question.answers.empty?
-      redirect_to @question, alert: "Can't edit question which already has answers"
+  def redirect_non_editable_question
+    unless editable?
+      redirect_to @question, alert: non_editable_error_message
     end
   end
 
-  def cannot_delete_non_empty_question
-    unless @question.answers.empty?
-      redirect_to @question, alert: "Can't delete question which already has answers"
+  def editable?
+    user_signed_in? && @question.answers.empty? && (@question.user.id == current_user.id)
+  end
+
+  def non_editable_error_message
+    "Can't #{request.delete? ? 'delete' : 'edit'} " +
+    if user_signed_in? && @question.user.id == current_user.id
+      "question which already has answers"
+    else
+      "other user's question"
     end
   end
 end

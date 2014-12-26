@@ -5,22 +5,36 @@ feature 'User deletes question', %q{
   As an user
   I want to be able to delete question
 } do
-  given(:question) { create(:question) }
-  given(:question_with_answers) { create(:question_with_answers) }
+  given(:user) { create(:user) }
+  given(:current_user_question) { create(:question, user: user) }
+  given(:another_user_question) { create(:question) }
+  given(:question_with_answers) { create(:question_with_answers, user: user) }
 
-  scenario 'User deletes question' do
-    visit question_path(question)
-    click_on 'Delete Question'
-    expect(current_path).to eq question_path(question)
-    expect { within("#deleteQuestionDialog") { click_on "Yes" } }.to change(Question, :count).by(-1)
+  scenario 'Non-authenticated user doesn''t see "Delete Question" button' do
+    visit question_path(another_user_question)
 
-    expect(current_path).to eq questions_path
-    expect(page).to have_content 'You have deleted the question'
+    expect(page).not_to have_content 'Delete Question'
   end
 
-  scenario 'User can''t delete question with answers' do
-    visit question_path(question_with_answers)
-    expect(page).not_to have_content 'Delete Question'
+  context "Authenticated user" do
+    background { sign_in user }
+
+    scenario 'deletes his own question' do
+      visit question_path(current_user_question)
+      click_on 'Delete Question'
+
+      expect(current_path).to eq question_path(current_user_question)
+      expect { within("#deleteQuestionDialog") { click_on "Yes" } }.to change(Question, :count).by(-1)
+
+      expect(current_path).to eq questions_path
+      expect(page).to have_content 'You have deleted the question'
+    end
+
+    scenario 'doesn''t see "Delete Question" button for question with answers' do
+      visit question_path(question_with_answers)
+
+      expect(page).not_to have_content 'Delete Question'
+    end
   end
 
   # scenario 'User try to delete question but then changes his mind' do

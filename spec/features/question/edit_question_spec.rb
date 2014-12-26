@@ -5,47 +5,74 @@ feature 'User edits question', %q{
   As an user
   I want to be able to edit question
 } do
-  given(:existing_question_hash) { attributes_for(:question) }
-  given(:existing_question) { create(:question, existing_question_hash) }
-  given(:question_with_answers) { create(:question_with_answers) }
-  background { existing_question }
   background { Capybara.match = :first }
 
-  given(:title) { 'Edited question title' }
-  given(:question) { 'Edited question body' }
+  given(:user) { create(:user) }
+  given(:question_hash) { attributes_for(:question) }
+  given(:current_user_question) { create(:question, question_hash.merge(user: user)) }
+  given(:another_user_question) { create(:question, question_hash) }
+  given(:question_with_answers) { create(:question_with_answers, user: user) }
 
-  scenario 'User edits question and then saves changes' do
-    visit edit_question_path(existing_question)
-    fill_in 'Title', with: :title
-    fill_in 'Question', with: :question
-    click_on 'Save Question'
+  given(:new_title) { 'Edited question title' }
+  given(:new_question) { 'Edited question body' }
 
-    expect(current_path).to eq question_path(existing_question)
-    expect(page).to have_content 'You have updated the question'
-    expect(page).to have_content :title
-    expect(page).to have_content :question
+  scenario "Non-authenticated user tries to open edit page" do
+    visit edit_question_path(another_user_question)
+
+    expect(current_path).to eq new_user_session_path
   end
 
-  scenario 'User edits question and then saves it with invalid attributes' do
-    visit edit_question_path(existing_question)
-    fill_in 'Title', with: nil
-    click_on 'Save Question'
+  context "Authenticated user" do
+    before { sign_in user }
 
-    expect(current_path).to eq question_path(existing_question)
-    expect(page).to have_content 'Error!'
-    expect(page).to have_css '.field_with_errors'
+    scenario 'edits his own question and then saves changes' do
+      visit edit_question_path(current_user_question)
+      fill_in 'Title', with: :new_title
+      fill_in 'Question', with: :new_question
+      click_on 'Save Question'
+
+      expect(current_path).to eq question_path(current_user_question)
+      expect(page).to have_content 'You have updated the question'
+      expect(page).to have_content :new_title
+      expect(page).to have_content :new_question
+    end
+
+    scenario 'edits his own question and then saves it with invalid attributes' do
+      visit edit_question_path(current_user_question)
+      fill_in 'Title', with: nil
+      click_on 'Save Question'
+
+      expect(current_path).to eq question_path(current_user_question)
+      expect(page).to have_content 'Error!'
+      expect(page).to have_css '.field_with_errors'
+    end
+
+    scenario "tries open edit question page for another user's question" do
+      visit edit_question_path(another_user_question)
+
+      expect(current_path).to eq question_path(another_user_question)
+      expect(page).to have_content "Can't edit other user's question"
+      expect(page).not_to have_content 'Edit Question'
+    end
+
+    scenario "doesn't see 'Edit Question' button for other users' questions" do
+      visit question_path(another_user_question)
+
+      expect(page).not_to have_content 'Edit Question'
+    end
+
+    scenario 'tries open edit question page for his own question which already has answers' do
+      visit edit_question_path(question_with_answers)
+
+      expect(current_path).to eq question_path(question_with_answers)
+      expect(page).to have_content "Can't edit question which already has answers"
+      expect(page).not_to have_content 'Edit Question'
+    end
+
+    scenario "doesn't see 'Edit Question' button for his own questions which already has answers" do
+      visit question_path(question_with_answers)
+
+      expect(page).not_to have_content 'Edit Question'
+    end
   end
-
-  scenario 'User can''t edit question with answers' do
-    visit question_path(question_with_answers)
-    expect(page).not_to have_content 'Edit Question'
-  end
-
-  scenario 'User can''t open edit question page if question has answers' do
-    visit edit_question_path(question_with_answers)
-    expect(current_path).to eq question_path(question_with_answers)
-    expect(page).to have_content "Can't edit question which already has answers"
-    expect(page).not_to have_content 'Edit Question'
-  end
-
 end

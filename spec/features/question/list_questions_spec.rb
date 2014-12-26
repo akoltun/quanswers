@@ -11,6 +11,7 @@ feature 'User lists questions', %q{
   scenario 'User lists all questions' do
     visit questions_path
 
+    expect(page).to have_link "Ask New Question"
     expect(page).to have_content questions[0][:title]
     expect(page).to have_content questions[0][:question]
     expect(page).to have_content questions[1][:title]

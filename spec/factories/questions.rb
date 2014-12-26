@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :question do
+    user
     title    "MyText"
     question "MyText"
 
