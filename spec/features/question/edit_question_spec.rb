@@ -40,4 +40,12 @@ feature 'User edits question', %q{
     visit question_path(question_with_answers)
     expect(page).not_to have_content 'Edit Question'
   end
+
+  scenario 'User can''t open edit question page if question has answers' do
+    visit edit_question_path(question_with_answers)
+    expect(current_path).to eq question_path(question_with_answers)
+    expect(page).to have_content "Can't edit question which already has answers"
+    expect(page).not_to have_content 'Edit Question'
+  end
+
 end
