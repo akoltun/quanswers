@@ -15,7 +15,7 @@
 //= require bootstrap-sprockets
 //= require bootstrap-wysihtml5
 //= require bootstrap-wysihtml5/locales
-//= require turbolinks
+// require turbolinks
 //= require_tree .
 
 $(document).on('page:load', function(){
