@@ -1,11 +1,11 @@
 - if @answer == answer
-  = render partial: 'questions/answer_form', object: { title: "Edit Question" }
+  = render partial: 'questions/answer_form'
 
 - else
   - unless @answer.id
     = link_to "Edit Answer", edit_question_answer_path(@question, answer), class: "btn btn-primary"
     | &nbsp;&nbsp;&nbsp;
-    button class="btn btn-danger" data-toggle="modal" data-target="#deleteAnswerDialog#{answer.id}" Delete Answer
+    button.btn.btn-danger data-toggle="modal" data-target="#deleteAnswerDialog#{answer.id}" Delete Answer
     = render partial: 'questions/delete_dialog', locals: {id: "deleteAnswerDialog#{answer.id}", dialog_text: 'Are you sure?', dialog_yes_path: question_answer_path(@question, answer)}
   p = answer.answer
 

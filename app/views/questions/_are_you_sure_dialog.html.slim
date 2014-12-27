@@ -1,8 +1,8 @@
-div class="modal fade" id="#{id}" aria-labelledby="#{id}Label" aria-hidden="true"
-  div class="modal-dialog modal-sm"
-    div class="modal-content"
-      div class="modal-header"
-        h3 class="modal-title center-block" id="#{id}Label" = dialog_text
-      div class="modal-footer"
+.modal.fade id="#{id}" aria-labelledby="#{id}Label" aria-hidden="true"
+  .modal-dialog.modal-sm
+    .modal-content
+      .modal-header
+        h3.modal-title.center-block id="#{id}Label" = dialog_text
+      .modal-footer
         = link_to "Yes", dialog_yes_path, class: "btn btn-danger"
-        button type="button" class="btn btn-primary" data-dismiss="modal" No
+        button.btn.btn-primary type="button" data-dismiss="modal" No
