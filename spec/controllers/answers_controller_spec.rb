@@ -37,7 +37,7 @@ RSpec.describe AnswersController, :type => :controller do
       end
 
       it "creates new answer in db" do
-        expect { post_request }.to change(Answer, :count).by(1)
+        expect { post_request }.to change(question.answers, :count).by(1)
       end
 
       it "assigns a success message to flash[:notice]" do
