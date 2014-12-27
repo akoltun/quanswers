@@ -11,12 +11,14 @@ feature 'User answers question', %q{
 
   scenario 'User answers question' do
     visit question_path(question)
-    fill_in 'Answer', with: :answer
+    fill_in 'Answer', with: answer
     click_on 'Save Answer'
 
     expect(current_path).to eq question_path(question)
     expect(page).to have_content 'You have created a new answer'
-    expect(page).to have_content :question
+    within('.answers') do
+      expect(page).to have_content answer
+    end
   end
 
   scenario 'User saves invalid answer' do

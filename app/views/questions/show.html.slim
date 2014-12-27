@@ -1,6 +1,6 @@
 = render partial: 'questions/delete_dialog', locals: { id: 'deleteQuestionDialog', dialog_text: 'Are you sure?', dialog_yes_path: question_path(@question) }
 
-div class="row"
+div class="row question"
   div class="col-xs-12"
     - unless @answer.id
       - if @editable
@@ -12,13 +12,17 @@ div class="row"
     h3 =@question.title
     p =raw @question.question
 
-    hr
 
+div class="row answers"
+  div class="col-xs-12"
+    hr
     h3 Answers
 
     = render partial: 'questions/answer', collection: @answers
 
-    - if @answer.id.nil?
+- if @answer.id.nil?
+  div class="row new-answer"
+    div class="col-xs-12"
       = form_for [@question, @answer], html: {role: 'form'} do |f|
         = f.submit 'Save Answer', class: "btn btn-success"
         br
