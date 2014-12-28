@@ -16,8 +16,12 @@ def make_questions(user, count)
   count.times do |n|
     question = Question.create!(user: user, title: Faker::Lorem.sentence, question: Faker::Lorem.paragraph(10))
 
-    rand(10).times do |i|
-      question.answers.create!(answer: Faker::Lorem.paragraph(10))
+    rand(6).times do |i|
+      question.answers.create!(answer: Faker::Lorem.paragraph(10), user: FactoryGirl.create(:user))
+    end
+
+    rand(4).times do |i|
+      question.answers.create!(answer: Faker::Lorem.paragraph(10), user: user)
     end
   end
 end
