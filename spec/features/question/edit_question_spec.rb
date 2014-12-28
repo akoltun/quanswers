@@ -45,7 +45,8 @@ feature 'User edits question', %q{
         expect(current_path).to eq question_path(current_user_question)
 
         fill_in 'Title', with: new_question[:title]
-        fill_in 'Question', with: new_question[:question]
+        # fill_in 'Question', with: new_question[:question]
+        page.execute_script %Q{ $('#question_question').data("wysihtml5").editor.setValue('#{new_question[:question]}') }
         click_on 'Save Question'
 
         expect(current_path).to eq question_path(current_user_question)
@@ -69,7 +70,8 @@ feature 'User edits question', %q{
         expect(current_path).to eq question_path(current_user_question)
 
         fill_in 'Title', with: new_question[:title]
-        fill_in 'Question', with: new_question[:question]
+        # fill_in 'Question', with: new_question[:question]
+        page.execute_script %Q{ $('#question_question').data("wysihtml5").editor.setValue('#{new_question[:question]}') }
         find('a', text: 'Cancel').click
 
         within('#cancelEditQuestionDialog') { click_on "Yes" }

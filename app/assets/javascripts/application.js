@@ -18,13 +18,9 @@
 // require turbolinks
 //= require_tree .
 
-$(document).on('page:load', function(){
-    window['rangy'].initialized = false;
-    initWysihtml5();
-});
 $(document).ready(function(){
     initWysihtml5();
 });
 function initWysihtml5() {
-    $('.wysihtml5').wysihtml5();
+    $('.wysihtml5').removeClass('wysihtml5').wysihtml5();
 }

@@ -10,8 +10,8 @@
 
   .form-group
     = f.label :question, class: "control-label"
-    = f.text_area :question, class: "form-control", size: "100x15"
-    /= f.text_area :question, class: "form-control wysihtml5", size: "100x15"
+    /= f.text_area :question, class: "form-control", size: "100x15"
+    = f.text_area :question, class: "form-control wysihtml5", size: "100x15"
 
   = render partial: 'questions/form_save_cancel_buttons', locals: { dialog_id: 'cancelEditQuestionDialog', form: f, subject: 'Question' }
 

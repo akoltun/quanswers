@@ -2,5 +2,6 @@ $('#question').html('<%= j render 'full_question' %>');
 $('#answers').html('<%= j render 'answers' %>');
 $('#flash').html('<%= j render 'layouts/flash' %>');
 $('#new-answer').show();
+initWysihtml5();
 $('#editQuestionButton').click(editQuestionClicked);
 $('#cancelEditQuestionDialog .yes-button').click(cancelEditQuestionDialogYesClicked);
