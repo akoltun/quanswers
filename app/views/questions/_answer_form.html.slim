@@ -9,4 +9,4 @@
 
   = render partial: 'questions/form_save_cancel_buttons', locals: { dialog_id: 'cancelAnswerEditDialog', form: f, subject: 'Answer' }
 
-  = render partial: 'questions/are_you_sure_dialog', locals: { id: 'cancelAnswerEditDialog', dialog_text: 'Are you sure?', dialog_yes_path: question_path(@question) }
+  = render partial: 'questions/are_you_sure_dialog', locals: { id: 'cancelAnswerEditDialog', dialog_text: 'Are you sure?', dialog_yes_path: question_path(@question), remote: false }

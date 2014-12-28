@@ -1,23 +1,19 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
-  before_action :load_question, only: [:show, :edit, :update, :destroy]
-  before_action :redirect_non_editable_question, only: [:edit, :update, :destroy]
+  before_action :load_question, only: [:show, :update, :destroy]
+  before_action :load_answers, only: [:show, :update]
+  before_action :editable?, only: [:show, :update, :destroy]
 
   def index
     @questions = Question.ordered_by_creation_date
   end
 
   def show
-    @answers = @question.answers.ordered_by_creation_date
-    @editable = editable?
-    @answer = @question.answers.build
+    create_answer
   end
 
   def new
     @question = Question.new
-  end
-
-  def edit
   end
 
   def create
@@ -31,18 +27,26 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    @question.update(question_params)
-    if @question.save
-      redirect_to @question, notice: "You have updated the question"
+    if @editable
+      if @question.update(question_params)
+        flash.now[:notice] = "You have updated the question"
+      else
+        show_errors
+      end
     else
-      show_errors
-      render :edit
+      flash.now[:alert] = "Can't edit #{non_editable_reason}"
     end
+    create_answer
+    render :show
   end
 
   def destroy
-    @question.destroy
-    redirect_to questions_path, notice: "You have deleted the question"
+    if @editable
+      @question.destroy
+      redirect_to questions_path, notice: "You have deleted the question"
+    else
+      redirect_to @question, alert: "Can't delete #{non_editable_reason}"
+    end
   end
 
   private
@@ -59,22 +63,23 @@ class QuestionsController < ApplicationController
     @question = Question.find(params[:id])
   end
 
-  def redirect_non_editable_question
-    unless editable?
-      redirect_to @question, alert: non_editable_error_message
-    end
+  def load_answers
+    @answers = @question.answers.ordered_by_creation_date
+  end
+
+  def create_answer
+    @answer = @question.answers.build
   end
 
   def editable?
-    user_signed_in? && @question.answers.empty? && (@question.user.id == current_user.id)
+    @editable = user_signed_in? && @question.answers.empty? && (@question.user.id == current_user.id)
   end
 
-  def non_editable_error_message
-    "Can't #{request.delete? ? 'delete' : 'edit'} " +
+  def non_editable_reason
     if user_signed_in? && @question.user.id == current_user.id
       "question which already has answers"
     else
-      "other user's question"
+      "another user's question"
     end
   end
 end

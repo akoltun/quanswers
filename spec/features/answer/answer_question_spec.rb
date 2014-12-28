@@ -16,7 +16,7 @@ feature 'User answers question', %q{
 
     expect(current_path).to eq question_path(question)
     expect(page).to have_content 'You have created a new answer'
-    within('.answers') do
+    within('#answers') do
       expect(page).to have_content answer
     end
   end

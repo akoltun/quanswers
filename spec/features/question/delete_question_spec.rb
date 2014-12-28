@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'features/feature_helper'
 
 feature 'User deletes question', %q{
   In order to be able to remove mistaken question
@@ -10,7 +10,7 @@ feature 'User deletes question', %q{
   given(:another_user_question) { create(:question) }
   given(:question_with_answers) { create(:question_with_answers, user: user) }
 
-  scenario 'Non-authenticated user doesn''t see "Delete Question" button' do
+  scenario 'Non-authenticated user doesn\'t see "Delete Question" button' do
     visit question_path(another_user_question)
 
     expect(page).not_to have_content 'Delete Question'
@@ -18,6 +18,18 @@ feature 'User deletes question', %q{
 
   context "Authenticated user" do
     background { sign_in user }
+
+    scenario 'doesn\'t see "Delete Question" button for question with answers' do
+      visit question_path(question_with_answers)
+
+      expect(page).not_to have_content 'Delete Question'
+    end
+
+    scenario 'doesn\'t see "Delete Question" button for another user\'s question' do
+      visit question_path(another_user_question)
+
+      expect(page).not_to have_content 'Delete Question'
+    end
 
     scenario 'deletes his own question' do
       visit question_path(current_user_question)
@@ -30,21 +42,15 @@ feature 'User deletes question', %q{
       expect(page).to have_content 'You have deleted the question'
     end
 
-    scenario 'doesn''t see "Delete Question" button for question with answers' do
-      visit question_path(question_with_answers)
+    scenario 'starts to delete his own question but then changes his mind', js: true do
+      visit question_path(current_user_question)
+      click_on 'Delete Question'
 
-      expect(page).not_to have_content 'Delete Question'
+      expect(current_path).to eq question_path(current_user_question)
+      expect { within("#deleteQuestionDialog") { click_on "No" } }.not_to change(Question, :count)
+
+      expect(current_path).to eq question_path(current_user_question)
+      expect(page).not_to have_content 'You have deleted the question'
     end
   end
-
-  # scenario 'User try to delete question but then changes his mind' do
-  #   visit question_path(existing_question)
-  #   click_on 'Delete Question'
-  #   expect(current_path).to eq question_path(existing_question)
-  #
-  #   expect { within("#deleteQuestionDialog") { click_on "No" } }.not_to change(Question, :count)
-  #
-  #   expect(current_path).to eq question_path(existing_question)
-  #   expect(page).not_to have_content 'You have deleted the question'
-  # end
 end

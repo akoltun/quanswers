@@ -4,5 +4,5 @@
       .modal-header
         h3.modal-title.center-block id="#{id}Label" = dialog_text
       .modal-footer
-        = link_to "Yes", dialog_yes_path, class: "btn btn-danger"
+        = link_to "Yes", dialog_yes_path, class: "btn btn-danger yes-button", "data-ajax" => remote
         button.btn.btn-primary type="button" data-dismiss="modal" No

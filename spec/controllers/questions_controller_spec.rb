@@ -93,47 +93,6 @@ RSpec.describe QuestionsController, :type => :controller do
     end
   end
 
-  describe "GET #edit" do
-    sign_in_user
-    before { get :edit, id: question }
-
-    context "for this user's question without answers" do
-      let(:question) { create(:question, user: @user) }
-
-      it "renders edit view" do
-        expect(response).to render_template :edit
-      end
-
-      it "populates requested question" do
-        expect(assigns(:question)).to eql question
-      end
-    end
-
-    context "for question with answers" do
-      let(:question) { create(:question_with_answers, user: @user) }
-
-      it "redirects to show view" do
-        expect(response).to redirect_to question_path(question)
-      end
-
-      it "assigns an error message to flash[:alert]" do
-        expect(flash[:alert]).to eql "Can't edit question which already has answers"
-      end
-    end
-
-    context "for another user's question" do
-      let(:question) { create(:question) }
-
-      it "redirects to show view" do
-        expect(response).to redirect_to question_path(question)
-      end
-
-      it "assigns an error message to flash[:alert]" do
-        expect(flash[:alert]).to eql "Can't edit other user's question"
-      end
-    end
-  end
-
   describe "POST #create" do
     let(:post_request) { post :create, question: attributes_for(:question) }
 
@@ -199,8 +158,8 @@ RSpec.describe QuestionsController, :type => :controller do
         let(:question) { create(:question, user: @user) }
         let(:update_hash) { attributes_for(:another_question) }
 
-        it "redirects to show view" do
-          expect(response).to redirect_to question
+        it "renders show view" do
+          expect(response).to render_template :show
         end
 
         it "updates question in db" do
@@ -213,6 +172,14 @@ RSpec.describe QuestionsController, :type => :controller do
           expect(assigns(:question)).to eq question
         end
 
+        it "assigns an array of all answers for this question" do
+          expect(assigns(:answers)).to match_array(question.answers)
+        end
+
+        it "assigns a new answer to @answer" do
+          expect(assigns(:answer)).to be_a_new(Answer)
+        end
+
         it "assigns a success message to flash[:notice]" do
           expect(flash[:notice]).to eql "You have updated the question"
         end
@@ -223,14 +190,18 @@ RSpec.describe QuestionsController, :type => :controller do
         let(:update_hash) { attributes_for(:invalid_question) }
         let(:question_hash) { attributes_for(:question) }
 
-        it 're-renders edit view' do
-          expect(response).to render_template :edit
+        it "renders show view" do
+          expect(response).to render_template :show
         end
 
         it "does not change question in db" do
           question.reload
           expect(question.title).to eq question_hash[:title]
           expect(question.question).to eq question_hash[:question]
+        end
+
+        it "assigns an array of all answers for this question" do
+          expect(assigns(:answers)).to match_array(question.answers)
         end
 
         it "assigns an error message to flash[:alert]" do
@@ -243,14 +214,18 @@ RSpec.describe QuestionsController, :type => :controller do
         let(:update_hash) { attributes_for(:another_question) }
         let(:question_hash) { attributes_for(:question) }
 
-        it "redirects to show view" do
-          expect(response).to redirect_to question_path(question)
+        it "renders show view" do
+          expect(response).to render_template :show
         end
 
         it "does not change question in db" do
           question.reload
           expect(question.title).to eq question_hash[:title]
           expect(question.question).to eq question_hash[:question]
+        end
+
+        it "assigns an array of all answers for this question" do
+          expect(assigns(:answers)).to match_array(question.answers)
         end
 
         it "assigns an error message to flash[:alert]" do
@@ -263,8 +238,8 @@ RSpec.describe QuestionsController, :type => :controller do
         let(:update_hash) { attributes_for(:another_question) }
         let(:question_hash) { attributes_for(:question) }
 
-        it "redirects to show view" do
-          expect(response).to redirect_to question_path(question)
+        it "renders show view" do
+          expect(response).to render_template :show
         end
 
         it "does not change question in db" do
@@ -273,8 +248,12 @@ RSpec.describe QuestionsController, :type => :controller do
           expect(question.question).to eq question_hash[:question]
         end
 
+        it "assigns an array of all answers for this question" do
+          expect(assigns(:answers)).to match_array(question.answers)
+        end
+
         it "assigns an error message to flash[:alert]" do
-          expect(flash[:alert]).to eql "Can't edit other user's question"
+          expect(flash[:alert]).to eql "Can't edit another user's question"
         end
       end
     end
@@ -351,7 +330,7 @@ RSpec.describe QuestionsController, :type => :controller do
 
         it "assigns an error message to flash[:alert]" do
           delete_request
-          expect(flash[:alert]).to eql "Can't delete other user's question"
+          expect(flash[:alert]).to eql "Can't delete another user's question"
         end
       end
     end

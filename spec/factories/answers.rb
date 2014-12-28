@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :answer do
-    association :question
-    answer      "MyText"
+    question
+    answer    "MyText"
 
     factory :invalid_answer do
       answer nil
@@ -9,6 +9,10 @@ FactoryGirl.define do
 
     factory :another_answer do
       answer   "Another Answer"
+    end
+
+    factory :unique_answer do
+      sequence(:answer) { |n| "My Answer #{n}" }
     end
   end
 

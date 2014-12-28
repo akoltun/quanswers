@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'features/feature_helper'
 
 feature 'User sign out', %q{
   In order for security reason
