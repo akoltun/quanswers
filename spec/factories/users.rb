@@ -1,10 +1,8 @@
 FactoryGirl.define do
-  sequence :email do |n|
-    "user#{n}@example.com"
-  end
-
   factory :user do
-    email
+    transient { email_base "example.com" }
+
+    sequence(:email)      { |n| "user#{n}@#{email_base}" }
     password              '12345678'
     password_confirmation '12345678'
   end

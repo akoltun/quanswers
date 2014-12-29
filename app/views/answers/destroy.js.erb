@@ -1,3 +1,6 @@
-$('#answer-<%= @answer.id %>').remove();
+<% if @question.answers.empty? %>
+    $('#question').html('<%= j render 'questions/full_question' %>');
+<% end %>
+$('#answer-<%= @id %>').remove();
 $('#flash').html('<%= j render 'layouts/flash' %>');
 $(document.body).removeClass('modal-open');

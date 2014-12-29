@@ -1,8 +1,8 @@
 $('#flash').html('<%= j render 'layouts/flash' %>');
 <% if @errors.present? %>
-    $('#answer-<%= @answer.id %> .answer-form').html('<%= j render partial: 'questions/answer_form', locals: { answer: @answer, id: @answer.id } %>');
+    $('#answer-<%= @answer.id %> .answer-form').html('<%= j render partial: 'answers/answer_form', locals: { answer: @answer, id: @answer.id } %>');
 <% else %>
-    $('#answers').html('<%= j render 'questions/answers' %>');
+    $('#answers').html('<%= j render 'answers/answers' %>');
     $('#new-answer').show();
 <% end %>
 initWidgets();

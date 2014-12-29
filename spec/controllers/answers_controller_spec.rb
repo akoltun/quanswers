@@ -73,6 +73,10 @@ RSpec.describe AnswersController, :type => :controller do
           post_request
           expect(assigns(:answer)).to be_a_new(Answer)
         end
+
+        it "assigns false to @editable" do
+          expect(assigns(:editable)).to be_falsey
+        end
       end
 
       context "with invalid attributes" do
@@ -215,6 +219,16 @@ RSpec.describe AnswersController, :type => :controller do
         it "assigns deleted answer's id to @id" do
           delete_request
           expect(assigns(:id)).to eq answer.id
+        end
+
+        it "assigns true to @editable" do
+          delete_request
+          expect(assigns(:editable)).to be_truthy
+        end
+
+        it "assigns nil to @answer.id" do
+          delete_request
+          expect(assigns(:answer).id).to be_nil
         end
 
         it "assigns a success message to flash[:notice]" do

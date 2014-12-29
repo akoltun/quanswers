@@ -22,6 +22,7 @@ class AnswersController < ApplicationController
       flash.now[:notice] = 'You have created a new answer'
       @answers = @question.answers.ordered_by_creation_date
       @answer = Answer.new
+      @editable = false
     else
       @errors = @answer.errors.full_messages
     end
@@ -45,11 +46,13 @@ class AnswersController < ApplicationController
   def destroy
     authenticate_user!
     @question = Question.find(params[:question_id])
-    @answer = @question.answers.find(params[:id])
-    if @answer.user == current_user
-      @id = @answer.id
-      @answer.destroy
+    answer = @question.answers.find(params[:id])
+    if answer.user == current_user
+      answer.destroy
       flash.now[:notice] = "You have deleted the answer"
+      @editable = @question.answers.empty?
+      @id = answer.id
+      @answer = Answer.new
     else
       head :forbidden
     end

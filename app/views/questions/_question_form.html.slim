@@ -1,5 +1,5 @@
 = form_for @question, remote: question_form[:remote], html: { role: 'form' } do |f|
-  = render partial: 'questions/form_save_cancel_buttons', locals: { dialog_id: 'cancelEditQuestionDialog', form: f, subject: 'Question' }
+  = render partial: 'support/form_save_cancel_buttons', locals: { dialog_id: 'cancelEditQuestionDialog', form: f, subject: 'Question' }
 
   h1 = question_form[:title]
 
@@ -10,9 +10,8 @@
 
   .form-group
     = f.label :question, class: "control-label"
-    /= f.text_area :question, class: "form-control", size: "100x15"
     = f.text_area :question, class: "form-control wysihtml5", size: "100x15"
 
-  = render partial: 'questions/form_save_cancel_buttons', locals: { dialog_id: 'cancelEditQuestionDialog', form: f, subject: 'Question' }
+  = render partial: 'support/form_save_cancel_buttons', locals: { dialog_id: 'cancelEditQuestionDialog', form: f, subject: 'Question' }
 
-  = render partial: 'questions/are_you_sure_dialog', locals: { id: 'cancelEditQuestionDialog', dialog_text: 'Are you sure?', dialog_yes_path: @question.id ? @question : questions_path, remote: question_form[:remote] }
+  = render partial: 'support/are_you_sure_dialog', locals: { id: 'cancelEditQuestionDialog', dialog_text: 'Are you sure?', dialog_yes_path: @question.id ? @question : questions_path, remote: question_form[:remote] }

@@ -1,7 +1,7 @@
 #question-itself style="#{@question.errors.present? ? 'display: none;' : ''}"
   - unless @answer.id
     - if @editable
-      = render partial: 'questions/delete_dialog', locals: { id: 'deleteQuestionDialog', dialog_text: 'Are you sure?', dialog_yes_path: question_path(@question), remote: false }
+      = render partial: 'support/delete_dialog', locals: { id: 'deleteQuestionDialog', dialog_text: 'Are you sure?', dialog_yes_path: question_path(@question), remote: false }
       = link_to "Edit Question", '', class: "btn btn-primary", id: 'editQuestionButton'
       | &nbsp;&nbsp;&nbsp;
       button.btn.btn-danger data-toggle="modal" data-target="#deleteQuestionDialog" Delete Question
@@ -11,4 +11,4 @@
   p =raw @question.question
 - if @editable
   #question-form style="#{@question.errors.present? ? '' : 'display: none;'}"
-    = render 'edit_question_form'
+    = render 'questions/edit_question_form'
