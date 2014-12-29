@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :answer do
     user
     question
-    answer    "MyText"
+    answer    "My Answer"
 
     factory :invalid_answer do
       answer nil
@@ -13,7 +13,7 @@ FactoryGirl.define do
     end
 
     factory :unique_answer do
-      sequence(:answer) { |n| "My Answer #{n}" }
+      sequence(:answer) { |n| "My #{n} Answer" }
     end
   end
 

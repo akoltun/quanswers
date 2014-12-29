@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe QuestionsController, :type => :controller do
   before { @request.env["devise.mapping"] = Devise.mappings[:user] }
 
+  let(:question) { create(:question) }
+
   describe "GET #index" do
     let(:questions) { create_list(:question_with_answers, 2) }
     before { get :index }
@@ -53,7 +55,6 @@ RSpec.describe QuestionsController, :type => :controller do
       end
 
       context "for another user's question" do
-        let(:question) { create(:question) }
 
         it "assigns false to @editable" do
           expect(assigns(:editable)).to be_falsey
@@ -70,7 +71,6 @@ RSpec.describe QuestionsController, :type => :controller do
     end
 
     context "(non-authenticated user)" do
-      let(:question) { create(:question) }
       before { show_request }
 
       it "assigns false to @editable" do
@@ -148,6 +148,8 @@ RSpec.describe QuestionsController, :type => :controller do
   end
 
   describe "PATCH #update" do
+    let(:update_hash) { attributes_for(:another_question) }
+    let(:question_hash) { attributes_for(:question) }
     let(:patch_request) { patch :update, id: question, question: update_hash }
 
     context "(authenticated user)" do
@@ -156,7 +158,6 @@ RSpec.describe QuestionsController, :type => :controller do
 
       context "this user's question without answers with valid attributes" do
         let(:question) { create(:question, user: @user) }
-        let(:update_hash) { attributes_for(:another_question) }
 
         it "renders show view" do
           expect(response).to render_template :show
@@ -188,7 +189,6 @@ RSpec.describe QuestionsController, :type => :controller do
       context "this user's question without answers with invalid attributes" do
         let(:question) { create(:question, user: @user) }
         let(:update_hash) { attributes_for(:invalid_question) }
-        let(:question_hash) { attributes_for(:question) }
 
         it "renders show view" do
           expect(response).to render_template :show
@@ -211,8 +211,6 @@ RSpec.describe QuestionsController, :type => :controller do
 
       context "question with answers" do
         let(:question) { create(:question_with_answers, user: @user) }
-        let(:update_hash) { attributes_for(:another_question) }
-        let(:question_hash) { attributes_for(:question) }
 
         it "renders show view" do
           expect(response).to render_template :show
@@ -234,10 +232,6 @@ RSpec.describe QuestionsController, :type => :controller do
       end
 
       context "another user's question" do
-        let(:question) { create(:question) }
-        let(:update_hash) { attributes_for(:another_question) }
-        let(:question_hash) { attributes_for(:question) }
-
         it "renders show view" do
           expect(response).to render_template :show
         end
@@ -259,8 +253,6 @@ RSpec.describe QuestionsController, :type => :controller do
     end
 
     context "(non-authenticated user)" do
-      let(:question) { create(:question) }
-      let(:update_hash) { attributes_for(:another_question) }
       before { patch_request }
 
       it "redirects to sign in page" do
@@ -317,8 +309,6 @@ RSpec.describe QuestionsController, :type => :controller do
       end
 
       context "another user's question" do
-        let(:question) { create(:question) }
-
         it "redirects to show view" do
           delete_request
           expect(response).to redirect_to question_path(question)
@@ -336,7 +326,6 @@ RSpec.describe QuestionsController, :type => :controller do
     end
 
     context "(non-authenticated user)" do
-      let(:question) { create(:question) }
       before { delete_request }
 
       it "redirects to sign in page" do

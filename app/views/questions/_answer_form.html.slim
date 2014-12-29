@@ -1,12 +1,14 @@
-= form_for [@question, @answer], html: {role: 'form'} do |f|
-  = render partial: 'questions/form_save_cancel_buttons', locals: { dialog_id: 'cancelAnswerEditDialog', form: f, subject: 'Answer' }
+= form_for [@question, answer], remote: true, html: {role: 'form'} do |f|
+  = render partial: 'questions/form_save_cancel_buttons', locals: { dialog_id: "cancelAnswer#{id}EditDialog", form: f, subject: 'Answer' }
   br
   br
+
+  = render partial: 'questions/answer_error_messages', locals: { messages: @errors || [] }
 
   .form-group
     = f.label :answer, class: "control-label"
     = f.text_area :answer, class: "form-control wysihtml5", size: "100x15"
 
-  = render partial: 'questions/form_save_cancel_buttons', locals: { dialog_id: 'cancelAnswerEditDialog', form: f, subject: 'Answer' }
+  = render partial: 'questions/form_save_cancel_buttons', locals: { dialog_id: "cancelAnswer#{id}EditDialog", form: f, subject: 'Answer' }
 
-  = render partial: 'questions/are_you_sure_dialog', locals: { id: 'cancelAnswerEditDialog', dialog_text: 'Are you sure?', dialog_yes_path: question_path(@question), remote: false }
+  = render partial: 'questions/are_you_sure_dialog', locals: { id: "cancelAnswer#{id}EditDialog", dialog_text: 'Are you sure?', dialog_yes_path: answer.id ? question_answer_path(@question, answer) : new_question_answer_path(@question), remote: true }

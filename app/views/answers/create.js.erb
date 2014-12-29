@@ -1,0 +1,6 @@
+$('#flash').html('<%= j render 'layouts/flash' %>');
+<% unless @errors.present? %>
+    $('#answers').html('<%= j render 'questions/answers' %>');
+<% end %>
+$('#new-answer').html('<%= j render 'questions/new_answer' %>');
+initWidgets();

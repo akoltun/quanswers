@@ -1,0 +1,4 @@
+$('#flash').html('');
+$('#answer-<%= @answer.id %>').html('<%= j render partial: 'questions/answer', locals: { answer: @answer } %>');
+initWidgets();
+$('#new-answer').show();

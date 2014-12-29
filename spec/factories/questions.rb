@@ -1,8 +1,8 @@
 FactoryGirl.define do
   factory :question do
     user
-    title     "MyText"
-    question  "MyText"
+    title     "My Question Title"
+    question  "My Question Body"
 
     factory :invalid_question do
       title nil

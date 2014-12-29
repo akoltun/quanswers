@@ -1,0 +1,2 @@
+- if user_signed_in? && @answer.id.nil?
+  = render partial: 'questions/answer_form', locals: { answer: @answer, id: '' }

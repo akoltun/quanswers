@@ -1,152 +1,227 @@
 require 'rails_helper'
 
 RSpec.describe AnswersController, :type => :controller do
-  let(:question) { create(:question_with_answers) }
-  let(:answer)   { question.answers[0] }
+  before { @request.env["devise.mapping"] = Devise.mappings[:user] }
 
-  describe "GET #edit" do
-    before { get :edit, question_id: question.id, id: answer.id}
+  let(:question) { create(:question) }
+  let(:answer) { create(:answer) }
+  let(:old_answer) { attributes_for(:answer) }
+  let(:new_answer) { attributes_for(:unique_answer) }
 
-    it "renders show view" do
-      expect(response).to render_template :show
-    end
+  describe "GET #new" do
+    # before { get :new, question_id: question, format: :js }
+    #
+    # it "renders new template" do
+    #   expect(response).to render_template :new
+    # end
+    #
+    # it "populates requested question" do
+    #   expect(assigns(:question)).to eq question
+    # end
+    #
+    # it "assigns a new answer to @answer" do
+    #   expect(assigns(:answer)).to be_a_new(Answer)
+    # end
+  end
 
-    it "populates requested question" do
-      expect(assigns(:question)).to eq question
-    end
-
-    it "populates all answers for this question" do
-      expect(assigns(:answers)).to match_array(question.answers)
-    end
-
-    it "populates requested answer" do
-      expect(assigns(:answer)).to eql answer
-    end
+  describe "GET #show" do
+    # before { get :show, question_id: answer.question, id: answer, format: :js }
+    #
+    # it "renders show template" do
+    #   expect(response).to render_template :edit
+    # end
+    #
+    # it "populates requested question" do
+    #   expect(assigns(:question)).to eq question
+    # end
+    #
+    # it "assigns a new answer to @answer" do
+    #   expect(assigns(:answer)).to eq answer
+    # end
   end
 
   describe "POST #create" do
-    let(:post_request) { post :create, question_id: answer_hash[:question_id], answer: answer_hash }
-    let(:question) { Question.find(answer_hash[:question_id]) }
+    let(:post_request) { post :create, question_id: question, answer: new_answer, format: :js }
 
-    context "with valid attributes" do
-      let(:answer_hash) { build(:answer).attributes.symbolize_keys }
+    context "(non-authenticated user)" do
+      before { post_request }
 
-      it "redirects to show view" do
-        post_request
-        expect(response).to redirect_to question_path(answer_hash[:question_id])
-      end
-
-      it "creates new answer in db" do
-        expect { post_request }.to change(question.answers, :count).by(1)
-      end
-
-      it "assigns a success message to flash[:notice]" do
-        post_request
-        expect(flash[:notice]).to eql "You have created a new answer"
+      it "returns Unauthorized status code" do
+        expect(response).to have_http_status :unauthorized
       end
     end
 
-    context "with invalid attributes" do
-      let(:answer_hash) { build(:invalid_answer).attributes.symbolize_keys }
+    context "(authenticated user)" do
+      sign_in_user
 
-      it "re-renders question show view" do
-        post_request
-        expect(response).to render_template "questions/show"
+      context "with valid attributes" do
+        it "renders create template" do
+          post_request
+          expect(response).to render_template :create
+        end
+
+        it "creates new answer in db" do
+          expect { post_request }.to change(question.answers, :count).by(1)
+        end
+
+        it "assigns all answers for this question to @answers" do
+          post_request
+          expect(assigns(:answers)).to match_array(question.answers)
+        end
+
+        it "assigns a new answer to @answer" do
+          post_request
+          expect(assigns(:answer)).to be_a_new(Answer)
+        end
       end
 
-      it "populates the question to @question" do
-        post_request
-        expect(assigns(:question)).to eq question
-      end
+      context "with invalid attributes" do
+        let(:new_answer) { attributes_for(:invalid_answer) }
 
-      it "populates all answers for this question to @answers" do
-        post_request
-        expect(assigns(:answers)).to match_array(question.answers)
-      end
+        it "renders create template" do
+          post_request
+          expect(response).to render_template :create
+        end
 
-      it "does not create new answer in db" do
-        expect { post_request }.not_to change(Answer, :count)
-      end
+        it "does not create new answer in db" do
+          expect { post_request }.not_to change(Answer, :count)
+        end
 
-      it "assigns an error message to flash[:alert]" do
-        post_request
-        expect(flash[:alert]).to eql ["Answer can't be blank"]
+        it "assigns an error message to @errors" do
+          post_request
+          expect(assigns(:errors)).to eq ["Answer can't be blank"]
+        end
       end
     end
+
   end
 
   describe "PATCH #update" do
-    # let(:patch_request) { patch :update, question_id: question.id, answer: answer_hash }
-    before { patch :update, question_id: question, id: answer, answer: update_hash }
+    let(:patch_request) { patch :update, question_id: answer.question, id: answer, answer: new_answer, format: :js }
 
-    context "with valid attributes" do
-      let(:update_hash) { attributes_for(:another_answer) }
-
-      it "redirects to show view" do
-        expect(response).to redirect_to question
-      end
-
-      it "updates answer in db" do
-        answer.reload
-        expect(answer.answer).to eq update_hash[:answer]
-      end
-
-      it "assigns the question to @question" do
-        expect(assigns(:question)).to eq question
-      end
-
-      it "assigns requested answer to @answer" do
-        expect(assigns(:answer)).to eq answer
-      end
-
-      it "assigns a success message to flash[:notice]" do
-        expect(flash[:notice]).to eql "You have updated the answer"
-      end
-    end
-
-    context "with invalid attributes" do
-      let(:update_hash) { attributes_for(:invalid_answer) }
-      let(:answer_hash) { attributes_for(:answer) }
-
-      it 're-renders show view' do
-        expect(response).to render_template 'questions/show'
-      end
+    context "(non-authenticated user)" do
+      before { patch_request }
 
       it "does not change answer in db" do
         answer.reload
-        expect(answer.answer).to eq answer_hash[:answer]
+        expect(answer.answer).to eq old_answer[:answer]
       end
 
-      it "populates the question to @question" do
-        expect(assigns(:question)).to eq question
+      it "returns Unauthorized status code" do
+        expect(response).to have_http_status :unauthorized
+      end
+    end
+
+    context "(authenticated user)" do
+      sign_in_user
+      before { patch_request }
+
+      context "another user's answer" do
+        it "does not change answer in db" do
+          answer.reload
+          expect(answer.answer).to eq old_answer[:answer]
+        end
+
+        it "returns Forbidden status code" do
+          expect(response).to have_http_status :forbidden
+        end
       end
 
-      it "populates all answers for this question to @answers" do
-        expect(assigns(:answers)).to match_array(question.answers)
-      end
+      context "current user's answer" do
+        let(:answer) { create(:answer, user: @user) }
 
-      it "assigns an error message to flash[:alert]" do
-        expect(flash[:alert]).to eql ["Answer can't be blank"]
+        it 'renders update view' do
+          expect(response).to render_template :update
+        end
+
+        context "with valid attributes" do
+          it "updates answer in db" do
+            answer.reload
+            expect(answer.answer).to eq new_answer[:answer]
+          end
+
+          it "assigns the question to @question" do
+            expect(assigns(:question)).to eq answer.question
+          end
+
+          it "assigns all answers for this question to @answers" do
+            expect(assigns(:answers)).to match_array(answer.question.answers)
+          end
+
+          it "assigns a success message to flash[:notice]" do
+            expect(flash[:notice]).to eql "You have updated the answer"
+          end
+        end
+
+        context "with invalid attributes" do
+          let(:new_answer) { attributes_for(:invalid_answer) }
+
+          it "does not change answer in db" do
+            answer.reload
+            expect(answer.answer).to eq old_answer[:answer]
+          end
+
+          it "assigns an error message to @errors" do
+            expect(assigns(:errors)).to eq ["Answer can't be blank"]
+          end
+        end
       end
     end
   end
 
   describe "DELETE #destroy" do
-    before { answer }
-    let(:delete_request) { delete :destroy, question_id: question, id: answer }
+    let(:delete_request) { delete :destroy, question_id: answer.question, id: answer, format: :js }
 
-    it "redirects to question show view" do
-      delete_request
-      expect(response).to redirect_to question_path(question)
+    context "(non-authenticated user)" do
+      it "doesn't delete answer" do
+        answer
+        expect { delete_request }.not_to change(Answer, :count)
+      end
+
+      it "returns Unauthorized status code" do
+        delete_request
+        expect(response).to have_http_status :unauthorized
+      end
     end
 
-    it "deletes answer" do
-      expect { delete_request }.to change(Answer, :count).by(-1)
-    end
+    context "(authenticated user)" do
+      sign_in_user
 
-    it "assigns a success message to flash[:notice]" do
-      delete_request
-      expect(flash[:notice]).to eql "You have deleted the answer"
+      context "another user's answer" do
+        it "doesn't delete answer" do
+          answer
+          expect { delete_request }.not_to change(Answer, :count)
+        end
+
+        it "returns Forbidden status code" do
+          delete_request
+          expect(response).to have_http_status :forbidden
+        end
+      end
+
+      context "current user's answer" do
+        let(:answer) { create(:answer, user: @user) }
+
+        it 'renders delete view' do
+          delete_request
+          expect(response).to render_template :destroy
+        end
+
+        it "deletes answer" do
+          answer
+          expect { delete_request }.to change(Answer, :count).by(-1)
+        end
+
+        it "assigns deleted answer's id to @id" do
+          delete_request
+          expect(assigns(:id)).to eq answer.id
+        end
+
+        it "assigns a success message to flash[:notice]" do
+          delete_request
+          expect(flash[:notice]).to eql "You have deleted the answer"
+        end
+      end
     end
   end
 end

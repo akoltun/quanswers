@@ -1,24 +1,43 @@
-require 'rails_helper'
+require 'features/feature_helper'
 
 feature 'User deletes answer', %q{
   In order to be able to remove mistaken answer
   As an user
   I want to be able to delete answer
 } do
-  given(:question_with_answers) { create(:question_with_answers) }
-  given(:answer) { question_with_answers.answers[0] }
   background { Capybara.match = :first }
 
-  background { question_with_answers }
+  given(:user) { create(:user) }
+  given(:answer) { create(:answer, user: user) }
 
-  scenario 'User deletes answer' do
-    visit question_path(question_with_answers)
-    click_on 'Delete Answer'
-    expect(current_path).to eq question_path(question_with_answers)
-    expect { within("#deleteAnswerDialog#{answer.id}") { click_on "Yes" } }.to change(Answer, :count).by(-1)
+  scenario 'Non-authenticated user doesn\'t see "Delete Answer" button' do
+    visit question_path(answer.question)
 
-    expect(current_path).to eq question_path(question_with_answers)
-    expect(page).to have_content 'You have deleted the answer'
+    expect(page).not_to have_content "Delete Answer"
   end
 
+  context "Authenticated user" do
+    background do
+      sign_in user
+      visit question_path(answer.question)
+    end
+
+    scenario 'deletes answer', js: true do
+      within("#answer-#{answer.id}") { click_on 'Delete Answer' }
+      within("#deleteAnswerDialog#{answer.id}") { click_on 'Yes' }
+
+      expect(current_path).to eq question_path(answer.question)
+      expect(page).to have_content 'You have deleted the answer'
+      expect(page).not_to have_css "#answer-#{answer.id}"
+      expect(page).not_to have_content answer.answer
+    end
+
+    context "for another user's answer" do
+      given(:answer) { create(:answer) }
+
+      scenario 'doesn\'t see "Delete Answer" button' do
+        within("#answer-#{answer.id}") { expect(page).not_to have_content "Delete Answer" }
+      end
+    end
+  end
 end

@@ -1,3 +1,6 @@
 hr
 h3 Answers
-= render partial: 'questions/answer', collection: @answers
+- @answers.each do |answer|
+  div id="answer-#{answer.id}"
+    = render partial: 'questions/answer', locals: { answer: answer }
+  hr

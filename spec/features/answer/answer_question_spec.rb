@@ -1,32 +1,49 @@
-require 'rails_helper'
+require 'features/feature_helper'
 
 feature 'User answers question', %q{
   In order to help others
   As an user
   I want to be able to answer question
 } do
-  given(:question) { create(:question) }
-  given(:answer) { 'Answer body' }
   background { Capybara.match = :first }
 
-  scenario 'User answers question' do
-    visit question_path(question)
-    fill_in 'Answer', with: answer
-    click_on 'Save Answer'
+  given(:user) { create(:user) }
+  given(:question) { create(:question) }
+  given(:new_answer) { attributes_for(:unique_answer) }
 
-    expect(current_path).to eq question_path(question)
-    expect(page).to have_content 'You have created a new answer'
-    within('#answers') do
-      expect(page).to have_content answer
-    end
+  scenario 'Non-authenticated user does not see neither "Save Answer" button nor textarea' do
+    visit question_path(question)
+
+    expect(page).not_to have_content "Save Answer"
+    expect(page).not_to have_selector "iframe"
   end
 
-  scenario 'User saves invalid answer' do
-    visit question_path(question)
-    click_on 'Save Answer'
+  context 'Authenticated user' do
+    background { sign_in user }
 
-    expect(current_path).to eq question_answers_path(question)
-    expect(page).to have_content 'Error!'
-    expect(page).to have_css '.field_with_errors'
+    scenario 'gives answer with valid attributes', js: true do
+      visit question_path(question)
+      # fill_in 'Answer', with: new_answer[:answer]
+      page.execute_script %Q{ $('#answer_answer').data("wysihtml5").editor.setValue('#{new_answer[:answer]}') }
+      click_on 'Save Answer'
+
+      expect(current_path).to eq question_path(question)
+      expect(page).to have_content 'You have created a new answer'
+      expect(question.answers.count).to eq 1
+      within("#answers #answer-#{question.answers[0].id}") do
+        expect(page).to have_content new_answer[:answer]
+      end
+      within('#new-answer') do
+        expect(page).not_to have_content new_answer[:answer]
+      end
+    end
+
+    scenario 'gives answer with invalid attributes', js: true do
+      visit question_path(question)
+      click_on 'Save Answer'
+
+      expect(current_path).to eq question_path(question)
+      expect(page).to have_content "Error! Answer can't be blank"
+    end
   end
 end

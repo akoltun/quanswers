@@ -6,7 +6,6 @@
   .col-xs-12#answers
     = render 'questions/answers'
 
-- if @answer.id.nil?
-  .row
-    .col-xs-12#new-answer
-      = render partial: 'questions/answer_form'
+.row
+  .col-xs-12#new-answer
+    = render 'questions/new_answer'
