@@ -3,41 +3,41 @@ require 'rails_helper'
 RSpec.describe AnswersController, :type => :controller do
   before { @request.env["devise.mapping"] = Devise.mappings[:user] }
 
-  let(:question) { create(:question) }
   let(:answer) { create(:answer) }
+  let(:question) { answer.question }
   let(:old_answer) { attributes_for(:answer) }
   let(:new_answer) { attributes_for(:unique_answer) }
 
   describe "GET #new" do
-    # before { get :new, question_id: question, format: :js }
-    #
-    # it "renders new template" do
-    #   expect(response).to render_template :new
-    # end
-    #
-    # it "populates requested question" do
-    #   expect(assigns(:question)).to eq question
-    # end
-    #
-    # it "assigns a new answer to @answer" do
-    #   expect(assigns(:answer)).to be_a_new(Answer)
-    # end
+    before { xhr :get, :new, question_id: question, format: :js }
+
+    it "renders new template" do
+      expect(response).to render_template :new
+    end
+
+    it "populates requested question" do
+      expect(assigns(:question)).to eq question
+    end
+
+    it "assigns a new answer to @answer" do
+      expect(assigns(:answer)).to be_a_new(Answer)
+    end
   end
 
   describe "GET #show" do
-    # before { get :show, question_id: answer.question, id: answer, format: :js }
-    #
-    # it "renders show template" do
-    #   expect(response).to render_template :edit
-    # end
-    #
-    # it "populates requested question" do
-    #   expect(assigns(:question)).to eq question
-    # end
-    #
-    # it "assigns a new answer to @answer" do
-    #   expect(assigns(:answer)).to eq answer
-    # end
+    before { xhr :get, :show, question_id: question, id: answer, format: :js }
+
+    it "renders show template" do
+      expect(response).to render_template :show
+    end
+
+    it "populates requested question" do
+      expect(assigns(:question)).to eq question
+    end
+
+    it "assigns a new answer to @answer" do
+      expect(assigns(:answer)).to eq answer
+    end
   end
 
   describe "POST #create" do
@@ -88,6 +88,7 @@ RSpec.describe AnswersController, :type => :controller do
         end
 
         it "does not create new answer in db" do
+          question
           expect { post_request }.not_to change(Answer, :count)
         end
 
@@ -101,7 +102,7 @@ RSpec.describe AnswersController, :type => :controller do
   end
 
   describe "PATCH #update" do
-    let(:patch_request) { patch :update, question_id: answer.question, id: answer, answer: new_answer, format: :js }
+    let(:patch_request) { patch :update, question_id: question, id: answer, answer: new_answer, format: :js }
 
     context "(non-authenticated user)" do
       before { patch_request }
@@ -145,11 +146,11 @@ RSpec.describe AnswersController, :type => :controller do
           end
 
           it "assigns the question to @question" do
-            expect(assigns(:question)).to eq answer.question
+            expect(assigns(:question)).to eq question
           end
 
           it "assigns all answers for this question to @answers" do
-            expect(assigns(:answers)).to match_array(answer.question.answers)
+            expect(assigns(:answers)).to match_array(question.answers)
           end
 
           it "assigns a success message to flash[:notice]" do
@@ -174,7 +175,7 @@ RSpec.describe AnswersController, :type => :controller do
   end
 
   describe "DELETE #destroy" do
-    let(:delete_request) { delete :destroy, question_id: answer.question, id: answer, format: :js }
+    let(:delete_request) { delete :destroy, question_id: question, id: answer, format: :js }
 
     context "(non-authenticated user)" do
       it "doesn't delete answer" do
