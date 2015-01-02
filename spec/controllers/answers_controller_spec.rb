@@ -46,9 +46,7 @@ RSpec.describe AnswersController, :type => :controller do
     context "(non-authenticated user)" do
       before { post_request }
 
-      it "returns Unauthorized status code" do
-        expect(response).to have_http_status :unauthorized
-      end
+      it { is_expected.to respond_with :unauthorized }
     end
 
     context "(authenticated user)" do
@@ -112,9 +110,7 @@ RSpec.describe AnswersController, :type => :controller do
         expect(answer.answer).to eq old_answer[:answer]
       end
 
-      it "returns Unauthorized status code" do
-        expect(response).to have_http_status :unauthorized
-      end
+      it { is_expected.to respond_with :unauthorized }
     end
 
     context "(authenticated user)" do
@@ -127,9 +123,7 @@ RSpec.describe AnswersController, :type => :controller do
           expect(answer.answer).to eq old_answer[:answer]
         end
 
-        it "returns Forbidden status code" do
-          expect(response).to have_http_status :forbidden
-        end
+        it { is_expected.to respond_with :forbidden }
       end
 
       context "current user's answer" do
@@ -153,9 +147,7 @@ RSpec.describe AnswersController, :type => :controller do
             expect(assigns(:answers)).to match_array(question.answers)
           end
 
-          it "assigns a success message to flash[:notice]" do
-            expect(flash[:notice]).to eql "You have updated the answer"
-          end
+          it { is_expected.to set_the_flash[:notice].to("You have updated the answer").now }
         end
 
         context "with invalid attributes" do

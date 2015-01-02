@@ -203,9 +203,7 @@ RSpec.describe QuestionsController, :type => :controller do
         expect(response).to redirect_to new_user_session_path
       end
 
-      it "assigns an error message to flash[:alert]" do
-        expect(flash[:alert]).to eq "You need to sign in or sign up before continuing."
-      end
+      it { is_expected.to set_the_flash[:alert].to("You need to sign in or sign up before continuing.") }
     end
   end
 
@@ -243,9 +241,7 @@ RSpec.describe QuestionsController, :type => :controller do
           expect(assigns(:answer)).to be_a_new(Answer)
         end
 
-        it "assigns a success message to flash[:notice]" do
-          expect(flash[:notice]).to eql "You have updated the question"
-        end
+        it { is_expected.to set_the_flash[:notice].to("You have updated the question").now }
       end
 
       context "this user's question without answers with invalid attributes" do
@@ -288,9 +284,7 @@ RSpec.describe QuestionsController, :type => :controller do
           expect(assigns(:answers)).to match_array(question.answers)
         end
 
-        it "assigns an error message to flash[:alert]" do
-          expect(flash[:alert]).to eql "Can't edit question which already has answers"
-        end
+        it { is_expected.to set_the_flash[:alert].to("Can't edit question which already has answers").now }
       end
 
       context "another user's question" do
@@ -308,9 +302,7 @@ RSpec.describe QuestionsController, :type => :controller do
           expect(assigns(:answers)).to match_array(question.answers)
         end
 
-        it "assigns an error message to flash[:alert]" do
-          expect(flash[:alert]).to eql "Can't edit another user's question"
-        end
+        it { is_expected.to set_the_flash[:alert].to("Can't edit another user's question").now }
       end
     end
 
@@ -321,9 +313,7 @@ RSpec.describe QuestionsController, :type => :controller do
         expect(response).to redirect_to new_user_session_path
       end
 
-      it "assigns an error message to flash[:alert]" do
-        expect(flash[:alert]).to eq "You need to sign in or sign up before continuing."
-      end
+      it { is_expected.to set_the_flash[:alert].to("You need to sign in or sign up before continuing.") }
     end
   end
 
@@ -394,9 +384,7 @@ RSpec.describe QuestionsController, :type => :controller do
         expect(response).to redirect_to new_user_session_path
       end
 
-      it "assigns an error message to flash[:alert]" do
-        expect(flash[:alert]).to eq "You need to sign in or sign up before continuing."
-      end
+      it { is_expected.to set_the_flash[:alert].to("You need to sign in or sign up before continuing.") }
     end
   end
 
