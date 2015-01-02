@@ -2,7 +2,7 @@ class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
   before_action :load_question, only: [:show, :update, :destroy]
   before_action :load_answers, only: [:show, :update]
-  before_action :editable?, only: [:show, :update, :destroy]
+  before_action :assign_editable, only: [:show, :update, :destroy]
 
   def index
     @questions = Question.ordered_by_creation_date
@@ -71,7 +71,7 @@ class QuestionsController < ApplicationController
     @answer = @question.answers.build
   end
 
-  def editable?
+  def assign_editable
     @editable = user_signed_in? && @question.answers.empty? && (@question.user.id == current_user.id)
   end
 

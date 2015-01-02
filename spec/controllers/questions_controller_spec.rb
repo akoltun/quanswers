@@ -80,6 +80,68 @@ RSpec.describe QuestionsController, :type => :controller do
 
   end
 
+  describe "GET #show via AJAX" do
+    let(:show_request) { xhr :get, :show, id: question, format: :js }
+
+    context "(both authenticated and non-authenticated users)" do
+      let(:question) { create(:question_with_answers) }
+      before { show_request }
+
+      it "renders show view" do
+        expect(response).to render_template :show
+      end
+
+      it "populates requested question" do
+        expect(assigns(:question)).to eq question
+      end
+
+      it "populates an array of all answers for this question" do
+        expect(assigns(:answers)).to match_array(question.answers)
+      end
+
+      it "populates a new answer" do
+        expect(assigns(:answer)).to be_a_new(Answer)
+      end
+    end
+
+    context "(authenticated user)" do
+      sign_in_user
+      before { show_request }
+
+      context "for question with answers" do
+        let(:question) { create(:question_with_answers, user: @user) }
+
+        it "assigns false to @editable" do
+          expect(assigns(:editable)).to be_falsey
+        end
+      end
+
+      context "for another user's question" do
+
+        it "assigns false to @editable" do
+          expect(assigns(:editable)).to be_falsey
+        end
+      end
+
+      context "for this user's question without answers" do
+        let(:question) { create(:question, user: @user) }
+
+        it "assigns true to @editable" do
+          expect(assigns(:editable)).to be_truthy
+        end
+      end
+    end
+
+    context "(non-authenticated user)" do
+      before { show_request }
+
+      it "assigns false to @editable" do
+        expect(assigns(:editable)).to be_falsey
+      end
+    end
+
+  end
+
   describe "GET #new" do
     sign_in_user
     before { get :new }
