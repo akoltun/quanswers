@@ -34,6 +34,7 @@ gem 'bootstrap-wysihtml5-rails'
 gem 'truncate_html'
 gem 'devise'
 gem 'bootstrap_form', git: 'https://github.com/bootstrap-ruby/rails-bootstrap-forms.git'
+gem 'carrierwave'
 
 group :test, :development do
   gem 'rspec-rails'
