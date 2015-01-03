@@ -18,19 +18,3 @@
 // require turbolinks
 //= require_tree .
 
-$(document).ready(function(){
-    initWidgets();
-});
-
-function initWidgets() {
-    $('.wysihtml5').removeClass('wysihtml5').wysihtml5();
-    $('.yes-button[data-ajax=true]').click(cancelDialogYesClicked);
-    $('#editQuestionButton').click(editQuestionClicked);
-    $('.edit-answer-button').click(editAnswerClicked);
-}
-
-function cancelDialogYesClicked(event) {
-    event.preventDefault();
-    $(document.body).removeClass('modal-open');
-    $.getScript($(this).attr("href"));
-}

@@ -21,7 +21,6 @@ class QuestionsController < ApplicationController
     if @question.save
       redirect_to questions_path, notice: "You have created a new question"
     else
-      show_errors
       render :new
     end
   end
@@ -30,8 +29,6 @@ class QuestionsController < ApplicationController
     if @editable
       if @question.update(question_params)
         flash.now[:notice] = "You have updated the question"
-      else
-        show_errors
       end
     else
       flash.now[:alert] = "Can't edit #{non_editable_reason}"
@@ -50,10 +47,6 @@ class QuestionsController < ApplicationController
   end
 
   private
-
-  def show_errors
-    flash.now[:alert] = @question.errors.full_messages
-  end
 
   def question_params
     params.require(:question).permit(:title, :question)

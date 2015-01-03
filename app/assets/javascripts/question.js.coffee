@@ -8,4 +8,5 @@ this.editQuestionClicked = (event) ->
   $('#flash').html('')
   $('#question-itself').hide()
   $('#question-form').show()
+  $('#answers').hide()
   $('#new-answer').hide()

@@ -1,6 +1,6 @@
 $('#flash').html('<%= j render 'layouts/flash' %>');
 <% unless @errors.present? %>
-    $('#question').html('<%= j render 'questions/full_question' %>');
+    $('#question').html('<%= j render 'questions/question' %>');
     $('#answers').html('<%= j render 'answers/answers' %>');
 <% end %>
 $('#new-answer').html('<%= j render 'answers/new_answer' %>');

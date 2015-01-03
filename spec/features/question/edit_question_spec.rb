@@ -62,8 +62,8 @@ feature 'User edits question', %q{
         click_on 'Save Question'
 
         expect(current_path).to eq question_path(current_user_question)
-        expect(page).to have_content "Error! Title can't be blank"
-        expect(page).to have_css '.field_with_errors'
+        expect(page).to have_content "There is one error"
+        expect(page).to have_css '.has-error'
       end
 
       scenario "and then changes his mind", js: true do
@@ -74,7 +74,7 @@ feature 'User edits question', %q{
         page.execute_script %Q{ $('#question_question').data("wysihtml5").editor.setValue('#{new_question[:question]}') }
         find('a', text: 'Cancel').click
 
-        within('#cancelEditQuestionDialog') { click_on "Yes" }
+        within('#confirmation-dialog') { click_on "Yes" }
         expect(page).not_to have_content 'You have updated the question'
         expect(page).not_to have_content new_question[:title]
         expect(page).not_to have_content new_question[:question]

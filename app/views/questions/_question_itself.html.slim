@@ -1,0 +1,8 @@
+- unless @answer.id
+  - if @editable
+    = link_to "Edit Question", '', class: "btn btn-primary", id: 'edit-question-button'
+    = link_to "Delete Question", @question, data: { method: "DELETE", confirm: true  }, class: "btn btn-danger"
+  = link_to "Back to Questions List", questions_path, class: "btn btn-info"
+
+h3 =@question.title
+p =raw @question.question

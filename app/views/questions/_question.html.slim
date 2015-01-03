@@ -1,3 +1,6 @@
-hr
-  h4 =link_to question.title, question
-  p = truncate_html(question.question)
+#question-itself style="#{@question.errors.present? ? 'display: none;' : ''}"
+  = render 'questions/question_itself'
+
+- if @editable
+  #question-form style="#{@question.errors.present? ? '' : 'display: none;'}"
+    = render partial: 'questions/question_form', locals: { title: "Edit Question" }

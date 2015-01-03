@@ -1,17 +1,12 @@
-= form_for @question, remote: question_form[:remote], html: { role: 'form' } do |f|
-  = render partial: 'support/form_save_cancel_buttons', locals: { dialog_id: 'cancelEditQuestionDialog', form: f, subject: 'Question' }
+= bootstrap_form_for @question, label_errors: true, remote: !@question.new_record? do |f|
+  = f.alert_message "There " + "is".pluralize(@question.errors.count) + " " + @question.errors.count.humanize + " " + "error".pluralize(@question.errors.count), error_summary: false
 
-  h1 = question_form[:title]
+  = f.submit "Save Question", class: "btn btn-success"
+  = link_to "Cancel", @question.new_record? ? questions_path : @question, remote: !@question.new_record?, data: { confirm: true }, class: "btn btn-danger"
 
-  .form-group
-    = f.label :title, class: "control-label"
-    = f.text_field :title, class: "form-control"
-    span.help-block If you have short question put it into Title
+  h1 = title
+  = f.text_field :title, help: "If you have short question put it into Title"
+  = f.text_area :question, class: "wysihtml5", size: "100x15"
 
-  .form-group
-    = f.label :question, class: "control-label"
-    = f.text_area :question, class: "form-control wysihtml5", size: "100x15"
-
-  = render partial: 'support/form_save_cancel_buttons', locals: { dialog_id: 'cancelEditQuestionDialog', form: f, subject: 'Question' }
-
-  = render partial: 'support/are_you_sure_dialog', locals: { id: 'cancelEditQuestionDialog', dialog_text: 'Are you sure?', dialog_yes_path: @question.id ? @question : questions_path, remote: question_form[:remote] }
+  = f.submit "Save Question", class: "btn btn-success"
+  = link_to "Cancel", @question.new_record? ? questions_path : @question, remote: !@question.new_record?, data: {confirm: true }, class: "btn btn-danger"

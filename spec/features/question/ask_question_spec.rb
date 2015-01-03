@@ -54,8 +54,8 @@ feature 'User asks question', %q{
         click_on 'Save Question'
 
         expect(current_path).to eq questions_path
-        expect(page).to have_content "Error! Title can't be blank"
-        expect(page).to have_css '.field_with_errors'
+        expect(page).to have_content "There is one error"
+        expect(page).to have_css '.has-error'
       end
     end
   end

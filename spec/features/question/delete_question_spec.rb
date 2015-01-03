@@ -31,26 +31,30 @@ feature 'User deletes question', %q{
       expect(page).not_to have_content 'Delete Question'
     end
 
-    scenario 'deletes his own question' do
+    scenario 'deletes his own question', js: true do
       visit question_path(current_user_question)
       click_on 'Delete Question'
 
+      expect(Question.count).to eq 1
       expect(current_path).to eq question_path(current_user_question)
-      expect { within("#deleteQuestionDialog") { click_on "Yes" } }.to change(Question, :count).by(-1)
+      within("#confirmation-dialog") { click_on "Yes" }
 
       expect(current_path).to eq questions_path
       expect(page).to have_content 'You have deleted the question'
+      expect(Question.count).to eq 0
     end
 
     scenario 'starts to delete his own question but then changes his mind', js: true do
       visit question_path(current_user_question)
       click_on 'Delete Question'
 
+      expect(Question.count).to eq 1
       expect(current_path).to eq question_path(current_user_question)
-      expect { within("#deleteQuestionDialog") { click_on "No" } }.not_to change(Question, :count)
+      within("#confirmation-dialog") { click_on "No" }
 
       expect(current_path).to eq question_path(current_user_question)
       expect(page).not_to have_content 'You have deleted the question'
+      expect(Question.count).to eq 1
     end
   end
 end

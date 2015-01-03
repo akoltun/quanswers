@@ -188,11 +188,6 @@ RSpec.describe QuestionsController, :type => :controller do
         it "does not create new question in db" do
           expect { post_request }.not_to change(Question, :count)
         end
-
-        it "assigns an error message to flash[:alert]" do
-          post_request
-          expect(flash[:alert]).to eq ["Title can't be blank"]
-        end
       end
     end
 
@@ -260,10 +255,6 @@ RSpec.describe QuestionsController, :type => :controller do
 
         it "assigns an array of all answers for this question" do
           expect(assigns(:answers)).to match_array(question.answers)
-        end
-
-        it "assigns an error message to flash[:alert]" do
-          expect(flash[:alert]).to eql ["Title can't be blank"]
         end
       end
 
