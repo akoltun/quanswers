@@ -11,7 +11,7 @@ $ ->
     elemYes = $('#confirmation-dialog-yes-button')
     elemYes.attr
       href: elem.attr('href') || ''
-      'data-method': elem.data('method')
+      'data-method': elem.data('method') || ''
     if elem.data('remote')
       elemYes.attr
         'data-remote': true
