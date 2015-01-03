@@ -35,6 +35,8 @@ gem 'truncate_html'
 gem 'devise'
 gem 'bootstrap_form', git: 'https://github.com/bootstrap-ruby/rails-bootstrap-forms.git'
 gem 'carrierwave'
+gem 'remotipart'
+gem "nested_form"
 
 group :test, :development do
   gem 'rspec-rails'
