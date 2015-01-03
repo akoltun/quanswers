@@ -15,5 +15,8 @@
 /log/*.log
 /tmp
 
+# Ignore all uploaded files
+/public/uploads
+
 /config/database.yml
 .idea
