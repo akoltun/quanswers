@@ -8,4 +8,5 @@ this.editAnswerClicked = (event) ->
   answerSelector = "#answer-#{$(this).data('answer-id')}"
   $("#{answerSelector} .answer-itself").hide()
   $("#{answerSelector} .answer-form").show()
+  $("#answers .answer-buttons .btn").addClass('disabled')
   $('#new-answer').hide()

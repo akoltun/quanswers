@@ -24,7 +24,7 @@ feature 'User deletes answer', %q{
 
     scenario 'deletes answer', js: true do
       within("#answer-#{answer.id}") { click_on 'Delete Answer' }
-      within("#deleteAnswerDialog#{answer.id}") { click_on 'Yes' }
+      within("#confirmation-dialog") { click_on 'Yes' }
 
       expect(current_path).to eq question_path(answer.question)
       expect(page).to have_content 'You have deleted the answer'

@@ -23,11 +23,4 @@ $ ->
 this.initWidgets = () ->
   $('.wysihtml5').removeClass('wysihtml5').wysihtml5();
   $('#edit-question-button').click(editQuestionClicked);
-
-  $('.yes-button[data-ajax=true]').click(cancelDialogYesClicked);
   $('.edit-answer-button').click(editAnswerClicked);
-
-this.cancelDialogYesClicked = (event) ->
-  event.preventDefault();
-  $(document.body).removeClass('modal-open');
-  $.getScript($(this).attr("href"));

@@ -1,9 +1,0 @@
-- if messages.present?
-  .alert.alert-danger.alert-dismissible role="alert"
-    button.close type="button" data-dismiss="alert"
-      span aria-hidden="true" &times;
-      span.sr-only Close
-    - messages.each do |message|
-      strong Error!&nbsp;
-      = message
-      br

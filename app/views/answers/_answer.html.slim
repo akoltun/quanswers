@@ -1,10 +1,12 @@
 .answer-itself style="#{answer.errors.present? ? 'display: none;' : ''}"
   - if answer.user == current_user
-    = link_to "Edit Answer", '', class: "btn btn-primary edit-answer-button", data: { answer_id: answer.id }
-    | &nbsp;&nbsp;&nbsp;
-    button.btn.btn-danger data-toggle="modal" data-target="#deleteAnswerDialog#{answer.id}" Delete Answer
-    = render partial: 'support/delete_dialog', locals: { id: "deleteAnswerDialog#{answer.id}", dialog_text: 'Are you sure?', dialog_yes_path: question_answer_path(@question, answer), remote: true }
+    .answer-buttons
+      = link_to "Edit Answer", '', class: "btn btn-primary edit-answer-button", data: { answer_id: answer.id }
+      = link_to "Delete Answer", [@question, answer], data: {method: "DELETE", confirm: true, remote: true}, class: "btn btn-danger"
+    br
   p = answer.answer
 
 .answer-form style="#{answer.errors.present? ? '' : 'display: none;'}"
-  = render partial: 'answers/answer_form', locals: { answer: answer, id: answer.id }
+  = render partial: 'answers/answer_form', locals: { answer: answer }
+
+hr
