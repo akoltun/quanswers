@@ -8,4 +8,4 @@
   = f.text_area :answer, class: "wysihtml5", size: "100x15"
 
   = f.submit "Save Answer", class: "btn btn-success"
-  = link_to "Cancel", [@question, answer], remote: true, data: {confirm: true}, class: "btn btn-danger"
+  = link_to "Cancel", (answer.new_record? ? new_question_answer_path(@question, answer) : [@question, answer]), remote: true, data: {confirm: true}, class: "btn btn-danger"
