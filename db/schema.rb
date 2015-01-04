@@ -28,13 +28,14 @@ ActiveRecord::Schema.define(version: 20150106103314) do
   add_index "answers", ["user_id"], name: "index_answers_on_user_id", using: :btree
 
   create_table "attachments", force: true do |t|
-    t.integer  "question_id"
+    t.integer  "attachmentable_id"
     t.string   "file"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "attachmentable_type"
   end
 
-  add_index "attachments", ["question_id"], name: "index_attachments_on_question_id", using: :btree
+  add_index "attachments", ["attachmentable_type", "attachmentable_id"], name: "index_attachments_on_attachmentable_type_and_attachmentable_id", using: :btree
 
   create_table "questions", force: true do |t|
     t.text     "question"

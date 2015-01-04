@@ -10,6 +10,8 @@ RSpec.describe Answer, :type => :model do
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:question) }
   it { is_expected.to have_many(:remarks) }
+  it { is_expected.to have_many(:attachments).dependent(:destroy) }
+  it { is_expected.to accept_nested_attributes_for :attachments }
 
   it { is_expected.to have_db_index(:user_id).unique(false) }
   it { is_expected.to have_db_index(:question_id).unique(false) }

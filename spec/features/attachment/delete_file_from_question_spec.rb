@@ -7,11 +7,12 @@ feature 'User deletes file from question', %q{
 } do
   background { Capybara.match = :first }
 
-  given(:attachment) { create(:attachment) }
-  given(:question) { attachment.question }
+  given(:question) { create(:question) }
+  given(:attachment) { create(:attachment, attachmentable: question) }
   given(:user) { question.user }
 
   background do
+    attachment
     sign_in user
     visit question_path(question)
     click_on "Edit Question"

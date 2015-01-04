@@ -2,7 +2,7 @@ class Question < ActiveRecord::Base
   belongs_to :user
   has_many :answers, dependent: :destroy
   has_many :remarks, as: :remarkable, dependent: :destroy
-  has_many :attachments, dependent: :destroy
+  has_many :attachments, as: :attachmentable, dependent: :destroy
 
   validates :user, :title, presence: true
   validates :title, length: { maximum: 250 }
