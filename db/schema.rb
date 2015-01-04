@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141228053309) do
+ActiveRecord::Schema.define(version: 20150104143606) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,16 @@ ActiveRecord::Schema.define(version: 20141228053309) do
   add_index "answers", ["question_id"], name: "index_answers_on_question_id", using: :btree
   add_index "answers", ["user_id"], name: "index_answers_on_user_id", using: :btree
 
+  create_table "attachments", force: true do |t|
+    t.integer  "attachmentable_id"
+    t.string   "file"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "attachmentable_type"
+  end
+
+  add_index "attachments", ["attachmentable_type", "attachmentable_id"], name: "index_attachments_on_attachmentable_type_and_attachmentable_id", using: :btree
+
   create_table "questions", force: true do |t|
     t.text     "question"
     t.datetime "created_at"
@@ -36,6 +46,17 @@ ActiveRecord::Schema.define(version: 20141228053309) do
   end
 
   add_index "questions", ["user_id"], name: "index_questions_on_user_id", using: :btree
+
+  create_table "remarks", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "question_id"
+    t.text     "remark"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "remarks", ["question_id"], name: "index_remarks_on_question_id", using: :btree
+  add_index "remarks", ["user_id"], name: "index_remarks_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
