@@ -28,7 +28,7 @@ feature 'User deletes file from question', %q{
     visit question_path(question)
 
     within('#question') do
-      expect(page).not_to have_link 'file_to_upload.txt', href: '/uploads/attachment/file/1/file_to_upload.txt'
+      expect(page).not_to have_content 'file_to_upload.txt'
     end
   end
 end

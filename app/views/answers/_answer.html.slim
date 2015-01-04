@@ -6,6 +6,9 @@
     br
 
   p = answer.answer
+  ul
+    - answer.attachments.each do |attachment|
+      li =link_to attachment.file.identifier, attachment.file.url
 
   .row
     .answer-remarks.col-xs-offset-1.col-xs-10
