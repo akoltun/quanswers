@@ -1,11 +1,11 @@
-= bootstrap_form_for [@question, answer], label_errors: true, remote: true do |f|
+= bootstrap_form_for (answer.new_record? ? [@question, answer] : answer), label_errors: true, remote: true do |f|
   = f.alert_message "There " + "is".pluralize(answer.errors.count) + " " + answer.errors.count.humanize + " " + "error".pluralize(answer.errors.count), error_summary: false
 
   = f.submit "Save Answer", class: "btn btn-success"
-  = link_to "Cancel", (answer.new_record? ? new_question_answer_path(@question, answer) : [@question, answer]), remote: true, data: {confirm: true}, class: "btn btn-danger"
+  = link_to "Cancel", (answer.new_record? ? new_question_answer_path(@question, answer) : answer), remote: true, data: {confirm: true}, class: "btn btn-danger"
   br
   br
   = f.text_area :answer, class: "wysihtml5", size: "100x15"
 
   = f.submit "Save Answer", class: "btn btn-success"
-  = link_to "Cancel", (answer.new_record? ? new_question_answer_path(@question, answer) : [@question, answer]), remote: true, data: {confirm: true}, class: "btn btn-danger"
+  = link_to "Cancel", (answer.new_record? ? new_question_answer_path(@question, answer) : answer), remote: true, data: {confirm: true}, class: "btn btn-danger"

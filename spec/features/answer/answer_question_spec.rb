@@ -24,7 +24,7 @@ feature 'User answers question', %q{
     scenario 'gives answer with valid attributes', js: true do
       visit question_path(question)
       # fill_in 'Answer', with: new_answer[:answer]
-      page.execute_script %Q{ $('#answer_answer').data("wysihtml5").editor.setValue('#{new_answer[:answer]}') }
+      page.execute_script %Q{ $('#new-answer textarea').data("wysihtml5").editor.setValue('#{new_answer[:answer]}') }
       click_on 'Save Answer'
 
       expect(current_path).to eq question_path(question)

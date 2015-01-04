@@ -2,7 +2,7 @@
   - if answer.user == current_user
     .answer-buttons
       = link_to "Edit Answer", '', class: "btn btn-primary edit-answer-button", data: { answer_id: answer.id }
-      = link_to "Delete Answer", [@question, answer], data: {method: "DELETE", confirm: true, remote: true}, class: "btn btn-danger"
+      = link_to "Delete Answer", answer, data: {method: "DELETE", confirm: true, remote: true}, class: "btn btn-danger"
     br
   p = answer.answer
 
