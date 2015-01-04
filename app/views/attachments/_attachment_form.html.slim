@@ -1,0 +1,8 @@
+div class="form-inline form-group" id="#{attachment_form_id}"
+  = form.fields_for :attachments do |a|
+    = a.link_to_remove "Remove", class: "btn btn-danger"
+    - if a.object.new_record?
+      = a.file_field :file
+    - else
+      = a.object.file.identifier
+= form.link_to_add "Add a file", :attachments, data: {target: "##{attachment_form_id}"}, class: "btn btn-success"

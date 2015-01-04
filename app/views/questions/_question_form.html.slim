@@ -8,14 +8,7 @@
   = f.text_field :title, help: "If you have short question put it into Title"
   = f.text_area :question, class: "wysihtml5", size: "100x15"
 
-  #attachment-form.form-inline.form-group
-    = f.fields_for :attachments do |a|
-      = a.link_to_remove "Remove", class: "btn btn-danger"
-      - if a.object.new_record?
-        = a.file_field :file
-      - else
-        = a.object.file.identifier
-  = f.link_to_add "Add a file", :attachments, data: { target: "#attachment-form" }, class: "btn btn-success"
+  = render partial: 'attachments/attachment_form', locals: { form: f, attachment_form_id: "attachment-form" }
 
   br
   br
