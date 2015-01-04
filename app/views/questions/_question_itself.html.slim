@@ -6,3 +6,10 @@
 
 h3 =@question.title
 p =raw @question.question
+
+.row
+  .col-xs-offset-2.col-xs-9#question-remarks data-action="#{question_remarks_path(@question)}"
+    - @question.remarks.ordered_by_creation_date.each do |remark|
+      .well.well-sm
+        = raw remark.remark
+    = link_to "Add Remark", '', class: "btn add-question-remark" if user_signed_in?

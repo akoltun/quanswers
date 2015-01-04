@@ -16,7 +16,8 @@ $ ->
       elemYes.attr
         'data-remote': true
         'data-dismiss': 'modal'
-
+    event = elem.data('click')
+    elemYes.one('click', elem, window[event]) if event
     $('#confirmation-dialog').modal('show')
     false
 
@@ -24,3 +25,4 @@ this.initWidgets = () ->
   $('.wysihtml5').removeClass('wysihtml5').wysihtml5();
   $('#edit-question-button').click(editQuestionClicked);
   $('.edit-answer-button').click(editAnswerClicked);
+  $('.add-question-remark').click(addRemark);

@@ -2,7 +2,11 @@ Rails.application.routes.draw do
   devise_for :users
   root 'questions#index'
 
-  resources :questions, except: [:edit] do
+  concern :remarkable do
+    resources :remarks, only: [:create, :update, :destroy], shallow: true
+  end
+
+  resources :questions, except: [:edit], concerns: :remarkable do
     resources :answers, only: [:new, :show, :create, :update, :destroy], shallow: true
   end
 

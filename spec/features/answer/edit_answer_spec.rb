@@ -87,7 +87,7 @@ feature 'User edits answer', %q{
           expect(current_path).to eq question_path(answer.question)
           expect(page).to have_content answer.answer
           expect(page).not_to have_selector 'iframe'
-          expect(page).not_to have_content have_selector 'input[value="Save Answer"]'
+          expect(page).not_to have_selector 'input[value="Save Answer"]'
           expect(page).to have_content "Edit Answer"
         end
         expect(page).not_to have_content 'You have updated the answer'
