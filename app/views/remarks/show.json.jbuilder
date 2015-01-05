@@ -1,1 +1,1 @@
-json.(@remark, :remark)
+json.(@remark, :id, :remark)

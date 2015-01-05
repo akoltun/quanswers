@@ -16,7 +16,8 @@ this.cancelRemark = (event) ->
   closeRemark()
 
 remarkCreated = (event, data, status, xhr) ->
-  $('#remark-well').before('<div class="well well-sm"><div class="remark-content">' + xhr.responseJSON.remark + '</div></div>')
+  $('#remark-well').before("<div class=\"well well-sm\"><a class=\"btn btn-default edit-remark\" data-action=\"/remarks/#{xhr.responseJSON.id}\" href=\"\">Edit</a><a class=\"btn btn-default delete-remark\" data-confirm=\"true\" data-error=\"remarkDeleteError\" data-method=\"DELETE\" data-remote=\"true\" data-success=\"remarkDeleteSuccess\" href=\"/remarks/#{xhr.responseJSON.id}\">Delete</a><br><br><div class=\"remark-content\">#{xhr.responseJSON.remark}</div></div>")
+  $('#remark-well').prev().find('.edit-remark').click(editRemark)
   $('#flash').html(flashMessage("You have added a new remark", 'success'))
   closeRemark()
 
