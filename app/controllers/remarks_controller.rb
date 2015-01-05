@@ -31,6 +31,7 @@ class RemarksController < ApplicationController
   private
 
   def remark_params
+    logger.debug params.inspect
     params.require(:remark).permit(:remark)
   end
 

@@ -4,8 +4,11 @@
 this.addRemark = (event) ->
   event.preventDefault()
   $(event.target).hide()
-  $('#remark-well').insertBefore(event.target)
-  initRemark(remarkCreated)
+  initRemark(event.target, $(event.target), 'POST', remarkCreated)
+
+this.editRemark = (event) ->
+  event.preventDefault()
+  initRemark(event.target, $(event.target).parent('.well'), 'PATCH', remarkUpdated)
 
 this.cancelRemark = (event) ->
   event.preventDefault()
@@ -13,26 +16,49 @@ this.cancelRemark = (event) ->
   closeRemark()
 
 remarkCreated = (event, data, status, xhr) ->
-  $('#remark-well').before('<div class="well well-sm">' + xhr.responseJSON.remark + '</div>')
-  $('#flash').html('<div class="alert alert-success"><strong>Success!&nbsp;</strong>You have added a new remark</div>')
+  $('#remark-well').before('<div class="well well-sm"><div class="remark-content">' + xhr.responseJSON.remark + '</div></div>')
+  $('#flash').html(flashMessage("You have added a new remark", 'success'))
   closeRemark()
 
-remarkError = (event, xhr, status, error) ->
-  $('#remark-error').removeClass('hide').html('<ul><li>' + (if xhr.status == 422 then xhr.responseJSON.join('</li><li>') else error) + '</li></ul>')
-  $('#remark-well').one('ajax:error', remarkError)
+remarkUpdated = (event, data, status, xhr) ->
+  $('#remark-well').next().find('.remark-content').html(xhr.responseJSON.remark)
+  $('#flash').html(flashMessage("You have updated the remark", 'success'))
+  closeRemark()
 
-initRemark = (successSaveHandler) ->
+this.remarkError = (event, xhr, status, error) ->
+  $('#remark-error').removeClass('hide').html if xhr.status != 422
+    flashMessage(error.message, 'error')
+  else
+    "<ul><li>#{xhr.responseJSON.join('</li><li>')}</li></ul>"
+
+this.remarkDeleteSuccess = (event, data, status, xhr) ->
+  event.data.parent('.well').remove()
+  $('#flash').html(flashMessage("You have deleted the remark", 'success'))
+
+this.remarkDeleteError = (event, xhr, status, error) ->
+  $('#flash').html(flashMessage(error.message, 'error'))
+  console.log xhr
+
+flashMessage = (message, type) ->
+  switch type
+    when 'success' then "<div class=\"alert alert-success\"><strong>Success!&nbsp;</strong>#{message}</div>"
+    when 'error'   then "<div class=\"alert alert-danger\"><strong>Alert!&nbsp;</strong>#{message}</div>"
+    else message
+
+initRemark = (initiator, elem, method, successSaveHandler) ->
+  $('#remark-well').insertBefore(elem)
+  elem.hide()
   $('#flash').html('')
   $('#new-answer').hide()
   $("#answers .answer-buttons .btn").addClass('disabled')
-  remarkWell = $('#remark-well')
-  remarkWell.removeClass('hide')
-  $('#remark-textarea').val('').wysihtml5().focus()
+  $(".edit-remark,.delete-remark").addClass('disabled')
+  content = elem.find('.remark-content')?.html()
+  $('#remark-textarea').val(content || '').wysihtml5().focus()
   $('#remark-error').addClass('hide')
-  remarkWell.find('form').attr('action', remarkWell.parent().data('action'))
+  $('#remark-well').removeClass('hide').find('form')
+  .attr('action', $(initiator).data('action'))
+  .attr('method', method)
   .one('ajax:success', successSaveHandler)
-  .one('ajax:error', remarkError)
-
 
 closeRemark = () ->
   $('#remark-error').addClass('hide').html('')
@@ -44,4 +70,5 @@ closeRemark = () ->
   elem.next().show()
   elem.addClass('hide').prependTo(document.body)
   $("#answers .answer-buttons .btn").removeClass('disabled')
+  $(".edit-remark,.delete-remark").removeClass('disabled')
   $('#new-answer').show()
