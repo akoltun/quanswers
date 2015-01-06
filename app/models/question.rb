@@ -1,7 +1,7 @@
 class Question < ActiveRecord::Base
   belongs_to :user
   has_many :answers
-  has_many :remarks
+  has_many :remarks, as: :remarkable, dependent: :destroy
 
   validates :user, :title, presence: true
   validates :title, length: { maximum: 250 }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150104143606) do
+ActiveRecord::Schema.define(version: 20150106103314) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,13 +49,14 @@ ActiveRecord::Schema.define(version: 20150104143606) do
 
   create_table "remarks", force: true do |t|
     t.integer  "user_id"
-    t.integer  "question_id"
+    t.integer  "remarkable_id"
     t.text     "remark"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "remarkable_type"
   end
 
-  add_index "remarks", ["question_id"], name: "index_remarks_on_question_id", using: :btree
+  add_index "remarks", ["remarkable_type", "remarkable_id"], name: "index_remarks_on_remarkable_type_and_remarkable_id", using: :btree
   add_index "remarks", ["user_id"], name: "index_remarks_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
