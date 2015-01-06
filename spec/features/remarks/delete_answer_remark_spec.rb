@@ -1,6 +1,6 @@
 require 'features/feature_helper'
 
-feature "User deletes question's remark", %q{
+feature "User deletes answer's remark", %q{
   In order to be able to eliminate incorrect remark
   As remark's author
   I want to be able to delete remark
@@ -8,13 +8,14 @@ feature "User deletes question's remark", %q{
   background { Capybara.match = :first }
 
   given(:user) { create(:user) }
-  given(:remark) { create(:remark, user: user) }
-  given(:question) { remark.question }
+  given(:answer) { create(:answer) }
+  given(:question) { answer.question }
+  given!(:remark) { create(:remark, user: user, remarkable: answer) }
 
   scenario 'Non-authenticated user doesn\'t see "Delete" button' do
     visit question_path(question)
 
-    within("#question-remarks") { expect(page).not_to have_content "Delete" }
+    within("#answers .answer-remarks") { expect(page).not_to have_content "Delete" }
   end
 
   context "Authenticated user" do
@@ -24,7 +25,7 @@ feature "User deletes question's remark", %q{
     end
 
     scenario 'deletes remark', js: true do
-      within("#question-remarks") { click_on 'Delete' }
+      within("#answer-#{answer.id} .answer-remarks") { click_on 'Delete' }
       within("#confirmation-dialog") { click_on 'Yes' }
 
       expect(current_path).to eq question_path(question)
@@ -33,10 +34,10 @@ feature "User deletes question's remark", %q{
     end
 
     context "for another user's remark" do
-      given(:remark) { create(:remark) }
+      given(:remark) { create(:remark, remarkable: answer) }
 
       scenario 'doesn\'t see "Delete" button' do
-        within("#question-remarks") { expect(page).not_to have_content "Delete" }
+        within("#answer-#{answer.id} .answer-remarks") { expect(page).not_to have_content "Delete" }
       end
     end
   end

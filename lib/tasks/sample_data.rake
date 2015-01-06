@@ -1,36 +1,40 @@
 namespace :db do
   desc "Fill database with sample data"
   task populate: :environment do
-    make_users
+    make_user('test3@test.com')
+    make_questions make_user('test2@test.com'), 20
+    make_questions make_user('test1@test.com'), 30
+    make_questions make_user('test@test.com'), 50
   end
 end
 
-def make_users
-  User.create!(email: 'test3@test.com', password: '12345678')
-  make_questions(User.create!(email: 'test2@test.com', password: '12345678'), 50)
-  make_questions(User.create!(email: 'test1@test.com', password: '12345678'), 30)
-  make_questions(User.create!(email: 'test@test.com', password: '12345678'), 20)
+def make_user(email)
+  User.create!(email: email, password: '12345678')
 end
 
 def make_questions(user, count)
   count.times do |n|
     question = Question.create!(user: user, title: Faker::Lorem.sentence, question: Faker::Lorem.paragraph(10))
 
-    rand(6).times do |i|
-      question.answers.create!(answer: Faker::Lorem.paragraph(10), user: FactoryGirl.create(:user, email_base: "sample.com"))
-    end
+    make_answers(question, 6)
+    make_answers(question, 6, user)
 
-    rand(4).times do |i|
-      question.answers.create!(answer: Faker::Lorem.paragraph(10), user: user)
-    end
-
-    rand(3).times do |i|
-      question.remarks.create!(remark: Faker::Lorem.paragraph(4), user: FactoryGirl.create(:user, email_base: "sample.com"))
-    end
-
-    rand(3).times do |i|
-      question.remarks.create!(remark: Faker::Lorem.paragraph(4), user: user)
-    end
+    make_remarks(question, 3)
+    make_remarks(question, 3, user)
   end
 end
 
+def make_answers(question, count, user = nil)
+  rand(count).times do |i|
+    answer = question.answers.create!(answer: Faker::Lorem.paragraph(10), user: user || FactoryGirl.create(:user, email_base: "sample.com"))
+
+    make_remarks(answer, 3)
+    make_remarks(answer, 3, user)
+  end
+end
+
+def make_remarks(remarkable, count, user = nil)
+  rand(count).times do |i|
+    remarkable.remarks.create!(remark: Faker::Lorem.paragraph(4), user: user || FactoryGirl.create(:user, email_base: "sample.com"))
+  end
+end

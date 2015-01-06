@@ -4,8 +4,12 @@ class RemarksController < ApplicationController
   before_action :authorize_user, except: :create
 
   def create
-    @question = Question.find(params[:question_id])
-    @remark = @question.remarks.build(remark_params.merge(user: current_user))
+    if params[:answer_id]
+      remarkable = Answer.find(params[:answer_id])
+    else
+      remarkable = Question.find(params[:question_id])
+    end
+    @remark = remarkable.remarks.build(remark_params.merge(user: current_user))
     if @remark.save
       render :show, status: :created
     else

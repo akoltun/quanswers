@@ -1,7 +1,6 @@
 FactoryGirl.define do
   factory :remark do
     user
-    question
     remark    "MyRemark"
 
     factory :unique_remark do

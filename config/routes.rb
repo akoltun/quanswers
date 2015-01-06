@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   end
 
   resources :questions, except: [:edit], concerns: :remarkable do
-    resources :answers, only: [:new, :show, :create, :update, :destroy], shallow: true
+    resources :answers, only: [:new, :show, :create, :update, :destroy], concerns: :remarkable, shallow: true
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

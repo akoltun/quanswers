@@ -18,4 +18,4 @@ p =raw @question.question
           br
         .remark-content
           = raw remark.remark
-    = link_to "Add Remark", '', data: { action: "#{question_remarks_path(@question)}" }, class: "btn add-question-remark" if user_signed_in?
+    = link_to "Add Remark", '', data: { action: "#{question_remarks_path(@question)}" }, class: "btn add-remark" if user_signed_in?

@@ -64,11 +64,11 @@ initRemark = (initiator, elem, method, successSaveHandler) ->
 closeRemark = () ->
   $('#remark-error').addClass('hide').html('')
   elem = $('#remark-well')
+  elem.next().show()
   elem.find('.wysihtml5-toolbar').remove()
   elem.find('iframe').remove()
   elem.find('input[name="_wysihtml5_mode"]').remove()
   elem.find('textarea').val('').show()
-  elem.next().show()
   elem.addClass('hide').prependTo(document.body)
   $("#answers .answer-buttons .btn").removeClass('disabled')
   $(".edit-remark,.delete-remark").removeClass('disabled')

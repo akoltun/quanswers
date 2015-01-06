@@ -4,7 +4,7 @@ this.initWidgets = () ->
   $('#edit-question-button').click(editQuestionClicked);
   $('#edit-question-button').click(editQuestionClicked);
   $('.edit-answer-button').click(editAnswerClicked);
-  $('.add-question-remark').click(addRemark);
+  $('.add-remark').click(addRemark);
   $('.edit-remark').click(editRemark);
 
 $ ->

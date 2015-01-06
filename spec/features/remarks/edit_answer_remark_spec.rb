@@ -1,6 +1,6 @@
 require 'features/feature_helper'
 
-feature "User edits question's remark", %q{
+feature "User edits answer's remark", %q{
   In order to be able to correct mistakes in the remark
   As remark's author
   I want to be able to edit remark
@@ -8,14 +8,15 @@ feature "User edits question's remark", %q{
   background { Capybara.match = :first }
 
   given(:user) { create(:user) }
-  given(:remark) { create(:remark, user: user) }
-  given(:question) { remark.question }
+  given(:answer) { create(:answer) }
+  given(:question) { answer.question }
+  given!(:remark) { create(:remark, user: user, remarkable: answer) }
   given(:new_remark) { attributes_for(:unique_remark) }
 
   scenario 'Non-authenticated user doesn\'t see "Edit" remark button' do
     visit question_path(question)
 
-    within("#question-remarks") { expect(page).not_to have_content "Edit" }
+    within(".answer-remarks") { expect(page).not_to have_content "Edit" }
   end
 
   context "Authenticated user" do
@@ -25,19 +26,19 @@ feature "User edits question's remark", %q{
     end
 
     context "for another user's remark" do
-      given(:remark) { create(:remark) }
+      given!(:remark) { create(:remark, remarkable: answer) }
 
       scenario 'doesn\'t see "Edit" remark button' do
-        within("#question-remarks") { expect(page).not_to have_content "Edit" }
+        within(".answer-remarks") { expect(page).not_to have_content "Edit" }
       end
     end
 
     context 'edits remark' do
       given(:new_value)  { new_remark[:remark] }
-      background { within("#question-remarks") { click_on 'Edit' } }
+      background { within("#answer-#{answer.id} .answer-remarks") { click_on 'Edit' } }
 
       scenario 'with valid attributes', js: true do
-        within("#question-remarks") do
+        within("#answer-#{answer.id} .answer-remarks") do
           # fill_in 'Remark', with: new_value
           page.execute_script %Q{ $('#remark-textarea').data("wysihtml5").editor.setValue('#{new_value}') }
           click_on 'Save Remark'
@@ -52,7 +53,7 @@ feature "User edits question's remark", %q{
       end
 
       scenario 'with invalid attributes', js: true do
-        within("#question-remarks") do
+        within("#answer-#{answer.id} .answer-remarks") do
           # fill_in 'Remark', with: ''
           page.execute_script %Q{ $('#remark-textarea').data("wysihtml5").editor.setValue('') }
           click_on 'Save Remark'
@@ -69,7 +70,7 @@ feature "User edits question's remark", %q{
       end
 
       scenario 'and then changes his mind', js: true do
-        within("#question-remarks") do
+        within("#answer-#{answer.id} .answer-remarks") do
           # fill_in 'Remark', with: new_value
           page.execute_script %Q{ $('#remark-textarea').data("wysihtml5").editor.setValue('#{new_value}') }
           find('a', text: 'Cancel').click
@@ -78,7 +79,7 @@ feature "User edits question's remark", %q{
         within("#confirmation-dialog") { click_on "Yes" }
 
         expect(current_path).to eq question_path(question)
-        within("#question-remarks") do
+        within("#answer-#{answer.id} .answer-remarks") do
           expect(page).to have_content remark.remark
           expect(page).not_to have_selector "iframe"
           expect(page).not_to have_selector 'input[value="Save Remark"]'

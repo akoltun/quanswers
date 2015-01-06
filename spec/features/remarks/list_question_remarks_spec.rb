@@ -1,12 +1,12 @@
 require 'features/feature_helper'
 
 feature "User lists question's remarks", %q{
-  In order to be clarify undestanding of question
+  In order to clarify undestanding of question
   As a user
   I want to be able to read all question's remarks
 } do
   given(:question) { create(:question) }
-  given!(:remarks) { create_list(:unique_remark, 2, question: question) }
+  given!(:remarks) { create_list(:unique_remark, 2, remarkable: question) }
 
   scenario "User lists all question's remarks" do
     visit question_path(question)
