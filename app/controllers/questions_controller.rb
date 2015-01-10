@@ -65,11 +65,11 @@ class QuestionsController < ApplicationController
   end
 
   def assign_editable
-    @editable = user_signed_in? && @question.answers.empty? && (@question.user.id == current_user.id)
+    @editable = user_signed_in? && @question.answers.empty? && (@question.user == current_user)
   end
 
   def non_editable_reason
-    if user_signed_in? && @question.user.id == current_user.id
+    if user_signed_in? && @question.user == current_user
       "question which already has answers"
     else
       "another user's question"

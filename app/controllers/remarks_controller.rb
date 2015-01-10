@@ -2,14 +2,10 @@ class RemarksController < ApplicationController
   before_action :authenticate_user!
   before_action :load_remark, except: :create
   before_action :authorize_user, except: :create
+  before_action :load_remarkable, only: :create
 
   def create
-    if params[:answer_id]
-      remarkable = Answer.find(params[:answer_id])
-    else
-      remarkable = Question.find(params[:question_id])
-    end
-    @remark = remarkable.remarks.build(remark_params.merge(user: current_user))
+    @remark = @remarkable.remarks.build(remark_params.merge(user: current_user))
     if @remark.save
       render :show, status: :created
     else
@@ -41,6 +37,14 @@ class RemarksController < ApplicationController
 
   def load_remark
     @remark = Remark.find(params[:id])
+  end
+
+  def load_remarkable
+    if params[:answer_id]
+      @remarkable = Answer.find(params[:answer_id])
+    else
+      @remarkable = Question.find(params[:question_id])
+    end
   end
 
   def authorize_user

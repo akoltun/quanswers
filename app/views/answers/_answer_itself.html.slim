@@ -1,0 +1,13 @@
+- if answer.user == current_user
+  .answer-buttons
+    = link_to "Edit Answer", '', class: "btn btn-primary edit-answer-button", data: { answer_id: answer.id }
+    = link_to "Delete Answer", answer, data: {method: "DELETE", confirm: true, remote: true}, class: "btn btn-danger"
+  br
+
+p
+  = answer.answer
+= render partial: 'attachments/attachments', object: answer.attachments
+
+.row
+  .answer-remarks.col-xs-offset-1.col-xs-10
+    = render partial: 'remarks/remark', locals: { remarks: answer.remarks, add_action: answer_remarks_path(answer) }
