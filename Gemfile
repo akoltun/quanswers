@@ -41,7 +41,9 @@ group :test, :development do
   gem 'faker'
   gem 'capybara'
   gem 'launchy'
-  gem 'capybara-webkit'
+  # gem 'capybara-webkit'
+  # gem 'poltergeist'
+  gem 'selenium-webdriver'
   gem 'database_cleaner'
 end
 

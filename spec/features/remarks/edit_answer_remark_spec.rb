@@ -59,9 +59,8 @@ feature "User edits answer's remark", %q{
           click_on 'Save Remark'
 
           expect(current_path).to eq question_path(question)
-          expect(page).to have_content "There is one error"
           expect(page).to have_content "Remark can't be blank"
-          expect(page).to have_css '.has-error'
+          expect(page).to have_css '.alert-danger'
           expect(page).to have_selector 'iframe'
           expect(page).to have_selector 'input[value="Save Remark"]'
           expect(page).not_to have_content "Edit"
