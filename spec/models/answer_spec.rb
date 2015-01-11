@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Answer, :type => :model do
+
   it { is_expected.to validate_presence_of(:user) }
   it { is_expected.to validate_presence_of(:question) }
   it { is_expected.to validate_presence_of(:answer) }
@@ -15,4 +16,21 @@ RSpec.describe Answer, :type => :model do
 
   it { is_expected.to have_db_index(:user_id).unique(false) }
   it { is_expected.to have_db_index(:question_id).unique(false) }
+
+  let(:answer) { create(:answer) }
+  context "when it is not the best answer #best?" do
+    it { expect(answer.best?).to be_falsey }
+  end
+
+  context "when it is the best answer #best?" do
+    before { answer.question.update!(best_answer: answer) }
+    it { expect(answer.best?).to be_truthy }
+  end
+
+  context "#best! method" do
+    before { answer.best! }
+    it "should set it as the best answer" do
+      expect(answer.question.best_answer).to eq answer
+    end
+  end
 end

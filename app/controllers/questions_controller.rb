@@ -2,7 +2,7 @@ class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
   before_action :load_question, only: [:show, :update, :destroy]
   before_action :load_answers, only: [:show, :update]
-  before_action :assign_editable, only: [:show, :update, :destroy]
+  before_action :assigns_author_signed_in, only: [:show, :update, :destroy]
 
   def index
     @questions = Question.ordered_by_creation_date
@@ -26,23 +26,32 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    if @editable
-      if @question.update(question_params)
-        flash.now[:notice] = "You have updated the question"
+    if @author_signed_in
+      if @question.editable?
+        if @question.update(question_params)
+          flash.now[:notice] = "You have updated the question"
+        end
+      else
+        flash.now[:alert] = "Can't update question which already has answers"
       end
     else
-      flash.now[:alert] = "Can't edit #{non_editable_reason}"
+      flash.now[:alert] = "Can't update another user's question"
     end
     create_answer
     render :show
   end
 
   def destroy
-    if @editable
-      @question.destroy
-      redirect_to questions_path, notice: "You have deleted the question"
+    if @author_signed_in
+      if @question.editable?
+        if @question.destroy
+          redirect_to questions_path, notice: "You have deleted the question"
+        end
+      else
+        redirect_to @question, alert: "Can't delete question which already has answers"
+      end
     else
-      redirect_to @question, alert: "Can't delete #{non_editable_reason}"
+      redirect_to @question, alert: "Can't delete another user's question"
     end
   end
 
@@ -64,15 +73,7 @@ class QuestionsController < ApplicationController
     @answer = @question.answers.build
   end
 
-  def assign_editable
-    @editable = user_signed_in? && @question.answers.empty? && (@question.user == current_user)
-  end
-
-  def non_editable_reason
-    if user_signed_in? && @question.user == current_user
-      "question which already has answers"
-    else
-      "another user's question"
-    end
+  def assigns_author_signed_in
+    @author_signed_in = @question.user == current_user
   end
 end

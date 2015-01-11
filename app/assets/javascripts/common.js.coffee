@@ -6,6 +6,7 @@ this.initWidgets = () ->
   $('.edit-answer-button').click(editAnswerClicked);
   $('.add-remark').click(addRemark);
   $('.edit-remark').click(editRemark);
+  $('.best-answer-button').on('ajax:success', setBestAnswerSuccess).on('ajax:error', setBestAnswerError)
 
 $ ->
   initWidgets()

@@ -231,4 +231,48 @@ RSpec.describe AnswersController, :type => :controller do
       end
     end
   end
+
+  describe "PATCH #best" do
+    let(:question) { create(:question) }
+    let(:answer) { create(:answer, question: question) }
+    let(:best_request) { xhr :patch, :best, id: answer }
+
+    context "(authenticated user)" do
+      sign_in_user
+      before { best_request }
+
+      context "this user's question" do
+        let(:question) { create(:question, user: @user) }
+
+        it "sets answer as best" do
+          question.reload
+          expect(question.best_answer).to eq answer
+        end
+
+        it "response with OK status code" do
+          expect(response).to have_http_status :ok
+        end
+      end
+
+      context "another user's question" do
+        it "doesn't set answer as best" do
+          expect(question.best_answer).to be_nil
+        end
+
+        it "response with FORBIDDEN status code" do
+          expect(response).to have_http_status :forbidden
+        end
+      end
+    end
+
+    context "(non-authenticated user)" do
+      before { best_request }
+
+      it "doesn't set answer as best" do
+        expect(question.best_answer).to be_nil
+      end
+
+      it { is_expected.to respond_with :unauthorized }
+    end
+  end
 end

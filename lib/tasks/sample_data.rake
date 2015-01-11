@@ -21,6 +21,8 @@ def make_questions(user, count)
 
     make_remarks(question, 3)
     make_remarks(question, 3, user)
+
+    set_best_answer(question)
   end
 end
 
@@ -37,4 +39,8 @@ def make_remarks(remarkable, count, user = nil)
   rand(count).times do |i|
     remarkable.remarks.create!(remark: Faker::Lorem.paragraph(4), user: user || FactoryGirl.create(:user, email_base: "sample.com"))
   end
+end
+
+def set_best_answer(question)
+  question.update!(best_answer: question.answers[rand(question.answers.size)])
 end

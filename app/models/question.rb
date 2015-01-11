@@ -1,6 +1,7 @@
 class Question < ActiveRecord::Base
   belongs_to :user
   has_many :answers, dependent: :destroy
+  belongs_to :best_answer, class_name: 'Answer'
   has_many :remarks, as: :remarkable, dependent: :destroy
   has_many :attachments, as: :attachmentable, dependent: :destroy
 
@@ -11,4 +12,8 @@ class Question < ActiveRecord::Base
   scope :ordered_by_creation_date, -> { order(created_at: :desc) }
 
   accepts_nested_attributes_for :attachments, allow_destroy: true, reject_if: proc { |attr| attr['file'].nil? }
+
+  def editable?
+    answers.count == 0
+  end
 end

@@ -46,26 +46,17 @@ RSpec.describe QuestionsController, :type => :controller do
       sign_in_user
       before { show_request }
 
-      context "for question with answers" do
-        let(:question) { create(:question_with_answers, user: @user) }
-
-        it "assigns false to @editable" do
-          expect(assigns(:editable)).to be_falsey
-        end
-      end
-
       context "for another user's question" do
-
-        it "assigns false to @editable" do
-          expect(assigns(:editable)).to be_falsey
+        it "assigns false to @author_signed_in" do
+          expect(assigns(:author_signed_in)).to be_falsey
         end
       end
 
       context "for this user's question without answers" do
         let(:question) { create(:question, user: @user) }
 
-        it "assigns true to @editable" do
-          expect(assigns(:editable)).to be_truthy
+        it "assigns true to @author_signed_in" do
+          expect(assigns(:author_signed_in)).to be_truthy
         end
       end
     end
@@ -73,8 +64,8 @@ RSpec.describe QuestionsController, :type => :controller do
     context "(non-authenticated user)" do
       before { show_request }
 
-      it "assigns false to @editable" do
-        expect(assigns(:editable)).to be_falsey
+      it "assigns false to @author_signed_in" do
+        expect(assigns(:author_signed_in)).to be_falsey
       end
     end
 
@@ -108,26 +99,17 @@ RSpec.describe QuestionsController, :type => :controller do
       sign_in_user
       before { show_request }
 
-      context "for question with answers" do
-        let(:question) { create(:question_with_answers, user: @user) }
-
-        it "assigns false to @editable" do
-          expect(assigns(:editable)).to be_falsey
-        end
-      end
-
       context "for another user's question" do
-
-        it "assigns false to @editable" do
-          expect(assigns(:editable)).to be_falsey
+        it "assigns false to @author_signed_in" do
+          expect(assigns(:author_signed_in)).to be_falsey
         end
       end
 
       context "for this user's question without answers" do
         let(:question) { create(:question, user: @user) }
 
-        it "assigns true to @editable" do
-          expect(assigns(:editable)).to be_truthy
+        it "assigns true to @author_signed_in" do
+          expect(assigns(:author_signed_in)).to be_truthy
         end
       end
     end
@@ -135,8 +117,8 @@ RSpec.describe QuestionsController, :type => :controller do
     context "(non-authenticated user)" do
       before { show_request }
 
-      it "assigns false to @editable" do
-        expect(assigns(:editable)).to be_falsey
+      it "assigns false to @author_signed_in" do
+        expect(assigns(:author_signed_in)).to be_falsey
       end
     end
 
@@ -236,6 +218,10 @@ RSpec.describe QuestionsController, :type => :controller do
           expect(assigns(:answer)).to be_a_new(Answer)
         end
 
+        it "assigns false to @author_signed_in" do
+          expect(assigns(:author_signed_in)).to be_truthy
+        end
+
         it { is_expected.to set_the_flash[:notice].to("You have updated the question").now }
       end
 
@@ -256,6 +242,10 @@ RSpec.describe QuestionsController, :type => :controller do
         it "assigns an array of all answers for this question" do
           expect(assigns(:answers)).to match_array(question.answers)
         end
+
+        it "assigns false to @author_signed_in" do
+          expect(assigns(:author_signed_in)).to be_truthy
+        end
       end
 
       context "question with answers" do
@@ -275,7 +265,11 @@ RSpec.describe QuestionsController, :type => :controller do
           expect(assigns(:answers)).to match_array(question.answers)
         end
 
-        it { is_expected.to set_the_flash[:alert].to("Can't edit question which already has answers").now }
+        it "assigns false to @author_signed_in" do
+          expect(assigns(:author_signed_in)).to be_truthy
+        end
+
+        it { is_expected.to set_the_flash[:alert].to("Can't update question which already has answers").now }
       end
 
       context "another user's question" do
@@ -293,7 +287,11 @@ RSpec.describe QuestionsController, :type => :controller do
           expect(assigns(:answers)).to match_array(question.answers)
         end
 
-        it { is_expected.to set_the_flash[:alert].to("Can't edit another user's question").now }
+        it "assigns false to @author_signed_in" do
+          expect(assigns(:author_signed_in)).to be_falsey
+        end
+
+        it { is_expected.to set_the_flash[:alert].to("Can't update another user's question").now }
       end
     end
 
@@ -302,6 +300,10 @@ RSpec.describe QuestionsController, :type => :controller do
 
       it "redirects to sign in page" do
         expect(response).to redirect_to new_user_session_path
+      end
+
+      it "assigns false to @author_signed_in" do
+        expect(assigns(:author_signed_in)).to be_falsey
       end
 
       it { is_expected.to set_the_flash[:alert].to("You need to sign in or sign up before continuing.") }
@@ -318,6 +320,11 @@ RSpec.describe QuestionsController, :type => :controller do
       context "this user's question without answers" do
         let(:question) { create(:question, user: @user) }
 
+        it "assigns false to @author_signed_in" do
+          delete_request
+          expect(assigns(:author_signed_in)).to be_truthy
+        end
+
         it "redirects to index view" do
           delete_request
           expect(response).to redirect_to questions_path
@@ -333,8 +340,13 @@ RSpec.describe QuestionsController, :type => :controller do
         end
       end
 
-      context "question with answers" do
+      context "this user's question with answers" do
         let(:question) { create(:question_with_answers, user: @user) }
+
+        it "assigns false to @author_signed_in" do
+          delete_request
+          expect(assigns(:author_signed_in)).to be_truthy
+        end
 
         it "redirects to show view" do
           delete_request
@@ -361,6 +373,11 @@ RSpec.describe QuestionsController, :type => :controller do
           expect { delete_request }.not_to change(Question, :count)
         end
 
+        it "assigns false to @author_signed_in" do
+          delete_request
+          expect(assigns(:author_signed_in)).to be_falsey
+        end
+
         it "assigns an error message to flash[:alert]" do
           delete_request
           expect(flash[:alert]).to eql "Can't delete another user's question"
@@ -375,8 +392,11 @@ RSpec.describe QuestionsController, :type => :controller do
         expect(response).to redirect_to new_user_session_path
       end
 
+      it "assigns false to @author_signed_in" do
+        expect(assigns(:author_signed_in)).to be_falsey
+      end
+
       it { is_expected.to set_the_flash[:alert].to("You need to sign in or sign up before continuing.") }
     end
   end
-
 end

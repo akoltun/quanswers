@@ -10,6 +10,8 @@ Rails.application.routes.draw do
     resources :answers, only: [:new, :show, :create, :update, :destroy], concerns: :remarkable, shallow: true
   end
 
+  match '/answers/:id/best', :to => 'answers#best', :via => :patch, as: :best_answer
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

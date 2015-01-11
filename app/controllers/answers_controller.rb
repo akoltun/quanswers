@@ -1,7 +1,7 @@
 class AnswersController < ApplicationController
-  before_action :authenticate_user!, only: [:create, :update, :destroy]
+  before_action :authenticate_user!, except: [:new, :show]
   before_action :load_question, only: [:new, :create]
-  before_action :load_answer, only: [:show, :update, :destroy]
+  before_action :load_answer, except: [:new, :create]
   before_action :assign_question, except: [:new, :create]
   before_action :authorize_user, only: [:update, :destroy]
 
@@ -39,6 +39,20 @@ class AnswersController < ApplicationController
     @editable = @question.answers.empty?
     @id = @answer.id
     @answer = Answer.new
+  end
+
+  def best
+    if @question.user == current_user
+      @answer.best!
+      if @question.save
+        head :ok
+      else
+        @errors = @question.errors.full_messages
+        render :error, status: :unprocessable_entity
+      end
+    else
+      head :forbidden
+    end
   end
 
   private
