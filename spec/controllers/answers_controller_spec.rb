@@ -235,7 +235,7 @@ RSpec.describe AnswersController, :type => :controller do
   describe "PATCH #best" do
     let(:question) { create(:question) }
     let(:answer) { create(:answer, question: question) }
-    let(:best_request) { xhr :patch, :best, id: answer }
+    let(:best_request) { patch :set_as_best, id: answer, format: :js }
 
     context "(authenticated user)" do
       sign_in_user

@@ -7,7 +7,7 @@
 p
   span.label.label-success style="#{answer.best? ? '' : 'display: none;'}" Best
   - if @answer.id.nil? && @author_signed_in
-    = link_to "Best", best_answer_path(answer), data: {method: "PATCH", remote: true}, class: "btn btn-default best-answer-button", style: "#{answer.best? ? 'display: none;' : ''}"
+    = link_to "Best", set_as_best_answer_path(answer), data: {method: "PATCH", remote: true}, class: "btn btn-default best-answer-button", style: "#{answer.best? ? 'display: none;' : ''}"
   | &nbsp;&nbsp;
   = answer.answer
 = render partial: 'attachments/attachments', object: answer.attachments

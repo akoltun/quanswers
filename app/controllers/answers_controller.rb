@@ -41,7 +41,7 @@ class AnswersController < ApplicationController
     @answer = Answer.new
   end
 
-  def best
+  def set_as_best
     if @question.user == current_user
       @answer.best!
       if @question.save
