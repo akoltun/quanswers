@@ -16,6 +16,15 @@ this.cancelRemark = (event) ->
   $('#confirmation-dialog').modal('hide')
   closeRemark()
 
+this.remarkAdded = (remark) ->
+  renderRemark(remark)
+
+this.remarkEdited = (remark) ->
+  $("#remark-#{remark.id}").show().find(".remark-content").html(remark.remark)
+
+this.remarkDeleted = (remark) ->
+  $("#remark-#{remark.id}").remove()
+
 remarkCreated = (event, data, status, xhr) ->
   renderRemark(xhr.responseJSON)
   $('#remark-well').prev().find('.edit-remark').click(editRemark)
@@ -75,8 +84,14 @@ closeRemark = () ->
 renderRemark = (remark) ->
   return if $("#remark-#{remark.id}").length
 
-  remarkTemplate = "<div class=\"well well-sm\" id=\"remark-#{remark.id}\"><a class=\"btn btn-default edit-remark\" data-action=\"/remarks/#{remark.id}\" href=\"\">Edit</a><a class=\"btn btn-default delete-remark\" data-confirm=\"true\" data-error=\"remarkDeleteError\" data-method=\"DELETE\" data-remote=\"true\" data-success=\"remarkDeleteSuccess\" href=\"/remarks/#{remark.id}\">Delete</a><br><br><div class=\"remark-content\">#{remark.remark}</div></div>"
+  btnTemplate = if remark.user_id == getUserId() then "<a class=\"btn btn-default edit-remark\" data-action=\"/remarks/#{remark.id}\" href=\"\">Edit</a><a class=\"btn btn-default delete-remark\" data-confirm=\"true\" data-error=\"remarkDeleteError\" data-method=\"DELETE\" data-remote=\"true\" data-success=\"remarkDeleteSuccess\" href=\"/remarks/#{remark.id}\">Delete</a><br><br>" else ""
+  remarkTemplate = "<div class=\"well well-sm\" id=\"remark-#{remark.id}\">#{btnTemplate}<div class=\"remark-content\">#{remark.remark}</div></div>"
+
   remarksElem = if 'Question' == remark.remarkable_type then $("#question-remarks") else $("#answer-#{remark.remarkable_id} .remarks")
-  remarksElem.find('.add-remark').before(remarkTemplate)
+
+  if getUserId()
+    remarksElem.find('.add-remark').before(remarkTemplate)
+  else
+    remarksElem.append(remarkTemplate)
 
   $("#remark-#{remark.id}").find('.edit-remark').click(editRemark)

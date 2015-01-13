@@ -9,3 +9,12 @@
 .row
   .col-xs-12#new-answer
     = render 'answers/new_answer'
+
+= subscribe_to "/questions/#{@question.id}/new"
+= subscribe_to "/questions/#{@question.id}/edited"
+= subscribe_to "/questions/#{@question.id}/deleted"
+
+javascript:
+  function getUserId() {
+    return #{current_user ? current_user.id : 'null'};
+  }

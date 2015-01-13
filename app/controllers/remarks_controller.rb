@@ -3,10 +3,12 @@ class RemarksController < ApplicationController
   before_action :load_remark, except: :create
   before_action :authorize_user, except: :create
   before_action :load_remarkable, only: :create
+  before_action :load_question, only: [:create, :update, :destroy]
 
   def create
     @remark = @remarkable.remarks.build(remark_params.merge(user: current_user))
     if @remark.save
+      PrivatePub.publish_to "/questions/#{@question.id}/new", remark: @remark.to_json
       render :show, status: :created
     else
       @errors = @remark.errors.full_messages
@@ -16,6 +18,7 @@ class RemarksController < ApplicationController
 
   def update
     if @remark.update(remark_params)
+      PrivatePub.publish_to "/questions/#{@question.id}/edited", remark: @remark.to_json
       render :show
     else
       @errors = @remark.errors.full_messages
@@ -25,6 +28,7 @@ class RemarksController < ApplicationController
 
   def destroy
     @remark.destroy
+    PrivatePub.publish_to "/questions/#{@question.id}/deleted", remark: @remark.to_json
     head :ok
   end
 
@@ -37,6 +41,7 @@ class RemarksController < ApplicationController
 
   def load_remark
     @remark = Remark.find(params[:id])
+    @remarkable = @remark.remarkable
   end
 
   def load_remarkable
@@ -44,6 +49,14 @@ class RemarksController < ApplicationController
       @remarkable = Answer.find(params[:answer_id])
     else
       @remarkable = Question.find(params[:question_id])
+    end
+  end
+
+  def load_question
+    if @remarkable.is_a? Answer
+      @question = @remarkable.question
+    else
+      @question = @remarkable
     end
   end
 

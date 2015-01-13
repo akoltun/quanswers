@@ -37,6 +37,8 @@ gem 'bootstrap_form', git: 'https://github.com/bootstrap-ruby/rails-bootstrap-fo
 gem 'carrierwave'
 gem 'remotipart'
 gem "nested_form"
+gem "private_pub"
+gem "thin"
 
 group :test, :development do
   gem 'rspec-rails'

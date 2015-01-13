@@ -11,6 +11,18 @@ this.initWidgets = () ->
 $ ->
   initWidgets()
 
+  questionId = $('#question').data('question-id')
+  if questionId
+    PrivatePub.subscribe "/questions/#{questionId}/new", (data, channel) ->
+      remarkAdded($.parseJSON(data['remark'])) if data['remark']
+
+    PrivatePub.subscribe "/questions/#{questionId}/edited", (data, channel) ->
+      remarkEdited($.parseJSON(data['remark'])) if data['remark']
+
+    PrivatePub.subscribe "/questions/#{questionId}/deleted", (data, channel) ->
+      remarkDeleted($.parseJSON(data['remark'])) if data['remark']
+
+
   $(document).on 'confirm', (e) ->
     elem = $(e.target)
     confirmation = elem.data('confirm')
