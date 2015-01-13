@@ -1,1 +1,1 @@
-json.(@remark, :id, :remark)
+json.(@remark, :id, :remark, :remarkable_type, :remarkable_id)

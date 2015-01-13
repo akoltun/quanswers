@@ -1,5 +1,5 @@
 - remarks.ordered_by_creation_date.each do |remark|
-  .well.well-sm
+  .well.well-sm id="remark-#{remark.id}"
     - if remark.user == current_user
       = link_to "Edit", '', data: { action: "#{remark_path(remark)}" }, class: "btn btn-default edit-remark"
       = link_to "Delete", remark, data: {method: "DELETE", remote: true, success: 'remarkDeleteSuccess', error: 'remarkDeleteError', confirm: true}, class: "btn btn-default delete-remark"

@@ -9,5 +9,5 @@ p =raw @question.question
 = render partial: 'attachments/attachments', object: @question.attachments
 
 .row
-  #question-remarks.col-xs-offset-1.col-xs-10
+  #question-remarks.col-xs-offset-1.col-xs-10.remarks
     = render partial: 'remarks/remark', locals: { remarks: @question.remarks, add_action: question_remarks_path(@question) }

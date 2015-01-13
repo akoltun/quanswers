@@ -8,7 +8,8 @@ this.addRemark = (event) ->
 
 this.editRemark = (event) ->
   event.preventDefault()
-  initRemark(event.target, $(event.target).parent('.well'), 'PATCH', remarkUpdated)
+  $(event.target).parents('.remarks').find('.add-remark').hide()
+  initRemark(event.target, $(event.target).parents('.well'), 'PATCH', remarkUpdated)
 
 this.cancelRemark = (event) ->
   event.preventDefault()
@@ -16,7 +17,7 @@ this.cancelRemark = (event) ->
   closeRemark()
 
 remarkCreated = (event, data, status, xhr) ->
-  $('#remark-well').before("<div class=\"well well-sm\"><a class=\"btn btn-default edit-remark\" data-action=\"/remarks/#{xhr.responseJSON.id}\" href=\"\">Edit</a><a class=\"btn btn-default delete-remark\" data-confirm=\"true\" data-error=\"remarkDeleteError\" data-method=\"DELETE\" data-remote=\"true\" data-success=\"remarkDeleteSuccess\" href=\"/remarks/#{xhr.responseJSON.id}\">Delete</a><br><br><div class=\"remark-content\">#{xhr.responseJSON.remark}</div></div>")
+  renderRemark(xhr.responseJSON)
   $('#remark-well').prev().find('.edit-remark').click(editRemark)
   $('#flash').html(flashMessage("You have added a new remark", 'success'))
   closeRemark()
@@ -38,7 +39,6 @@ this.remarkDeleteSuccess = (event, data, status, xhr) ->
 
 this.remarkDeleteError = (event, xhr, status, error) ->
   $('#flash').html(flashMessage(error.message, 'error'))
-  console.log xhr
 
 flashMessage = (message, type) ->
   switch type
@@ -65,13 +65,18 @@ closeRemark = () ->
   $('#remark-error').addClass('hide').html('')
   elem = $('#remark-well')
   elem.next().show()
-#  elem.find('.wysihtml5-toolbar').remove()
-#  elem.find('iframe').remove()
-#  elem.find('input[name="_wysihtml5_mode"]').remove()
-#  elem.find('textarea').remove()
-#  elem.find('textarea').val('').show()
+  elem.parents('.remarks').find('.add-remark').show()
   elem.find('div.form-group').html('<div class="form-group"><label class="sr-only control-label" for="remark-textarea">Remark</label><textarea class="form-control" cols="100" id="remark-textarea" name="remark[remark]" rows="15"></textarea></div>')
   elem.addClass('hide').prependTo(document.body)
   $("#answers .answer-buttons .btn").removeClass('disabled')
   $(".edit-remark,.delete-remark").removeClass('disabled')
   $('#new-answer').show()
+
+renderRemark = (remark) ->
+  return if $("#remark-#{remark.id}").length
+
+  remarkTemplate = "<div class=\"well well-sm\" id=\"remark-#{remark.id}\"><a class=\"btn btn-default edit-remark\" data-action=\"/remarks/#{remark.id}\" href=\"\">Edit</a><a class=\"btn btn-default delete-remark\" data-confirm=\"true\" data-error=\"remarkDeleteError\" data-method=\"DELETE\" data-remote=\"true\" data-success=\"remarkDeleteSuccess\" href=\"/remarks/#{remark.id}\">Delete</a><br><br><div class=\"remark-content\">#{remark.remark}</div></div>"
+  remarksElem = if 'Question' == remark.remarkable_type then $("#question-remarks") else $("#answer-#{remark.remarkable_id} .remarks")
+  remarksElem.find('.add-remark').before(remarkTemplate)
+
+  $("#remark-#{remark.id}").find('.edit-remark').click(editRemark)
