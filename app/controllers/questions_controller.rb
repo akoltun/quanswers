@@ -1,4 +1,6 @@
 class QuestionsController < ApplicationController
+  include TruncateHtmlHelper
+
   before_action :authenticate_user!, except: [:index, :show]
   before_action :load_question, only: [:show, :update, :destroy]
   before_action :load_answers, only: [:show, :update]
@@ -19,6 +21,8 @@ class QuestionsController < ApplicationController
   def create
     @question = Question.new(question_params.merge({ user: current_user }))
     if @question.save
+      @question.question = truncate_html(@question.question)
+      PrivatePub.publish_to "/questions/new", question: @question.to_json
       redirect_to questions_path, notice: "You have created a new question"
     else
       render :new
@@ -29,6 +33,7 @@ class QuestionsController < ApplicationController
     if @author_signed_in
       if @question.editable?
         if @question.update(question_params)
+          PrivatePub.publish_to "/questions/edited", question: @question.to_json
           flash.now[:notice] = "You have updated the question"
         end
       else
@@ -45,6 +50,7 @@ class QuestionsController < ApplicationController
     if @author_signed_in
       if @question.editable?
         if @question.destroy
+          PrivatePub.publish_to "/questions/deleted", question: @question.to_json
           redirect_to questions_path, notice: "You have deleted the question"
         end
       else

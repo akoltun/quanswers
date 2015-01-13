@@ -10,40 +10,52 @@ this.initWidgets = () ->
 
 $ ->
   initWidgets()
-
+  setQuestionsPub() if $('#questions').length
   questionId = $('#question').data('question-id')
-  if questionId
-    PrivatePub.subscribe "/questions/#{questionId}/new", (data, channel) ->
-      remarkAdded($.parseJSON(data['remark'])) if data['remark']
+  setQuestionPub(questionId) if questionId
+  $(document).on 'confirm', confirmEvent
 
-    PrivatePub.subscribe "/questions/#{questionId}/edited", (data, channel) ->
-      remarkEdited($.parseJSON(data['remark'])) if data['remark']
+setQuestionPub = (questionId) ->
+  PrivatePub.subscribe "/questions/#{questionId}/new", (data, channel) ->
+    remarkAdded($.parseJSON(data['remark'])) if data['remark']
 
-    PrivatePub.subscribe "/questions/#{questionId}/deleted", (data, channel) ->
-      remarkDeleted($.parseJSON(data['remark'])) if data['remark']
+  PrivatePub.subscribe "/questions/#{questionId}/edited", (data, channel) ->
+    remarkEdited($.parseJSON(data['remark'])) if data['remark']
 
+  PrivatePub.subscribe "/questions/#{questionId}/deleted", (data, channel) ->
+    remarkDeleted($.parseJSON(data['remark'])) if data['remark']
 
-  $(document).on 'confirm', (e) ->
-    elem = $(e.target)
-    confirmation = elem.data('confirm')
-    return true unless confirmation
+setQuestionsPub = () ->
+  PrivatePub.subscribe "/questions/new", (data, channel) ->
+    questionAdded($.parseJSON(data['question'])) if data['question']
 
-    $('#confirmation-dialog-label').text(if confirmation == true then "Are you sure?" else confirmation)
+  PrivatePub.subscribe "/questions/edited", (data, channel) ->
+    questionEdited($.parseJSON(data['question'])) if data['question']
 
-    elemYes = $('#confirmation-dialog-yes-button')
-    copyAttrs(elem, elemYes, 'href', 'data-method', 'data-remote', 'data-type')
+  PrivatePub.subscribe "/questions/deleted", (data, channel) ->
+    questionDeleted($.parseJSON(data['question'])) if data['question']
 
-    if elem.data('remote')
-      elemYes.attr
-        'data-remote': true
-        'data-dismiss': 'modal'
+confirmEvent = (e) ->
+  elem = $(e.target)
+  confirmation = elem.data('confirm')
+  return true unless confirmation
 
-    attachEvent(elem, elemYes, 'click', 'click')
-    attachEvent(elem, elemYes, 'ajax:success', 'success')
-    attachEvent(elem, elemYes, 'ajax:error', 'error')
+  $('#confirmation-dialog-label').text(if confirmation == true then "Are you sure?" else confirmation)
 
-    $('#confirmation-dialog').modal('show')
-    false
+  elemYes = $('#confirmation-dialog-yes-button')
+  copyAttrs(elem, elemYes, 'href', 'data-method', 'data-remote', 'data-type')
+
+  if elem.data('remote')
+    elemYes.attr
+      'data-remote': true
+      'data-dismiss': 'modal'
+
+  attachEvent(elem, elemYes, 'click', 'click')
+  attachEvent(elem, elemYes, 'ajax:success', 'success')
+  attachEvent(elem, elemYes, 'ajax:error', 'error')
+
+  $('#confirmation-dialog').modal('show')
+  false
 
 copyAttrs = (source, target, attrs...) ->
   attrs.forEach (attr)->

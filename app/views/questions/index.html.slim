@@ -2,7 +2,13 @@
   .col-xs-12
     = link_to "Ask New Question", new_question_path, class: "btn btn-primary"
     h1 Questions
-    - @questions.each do |question|
-      hr
-        h4 =link_to question.title, question
-        p = truncate_html(question.question)
+    #questions
+      - @questions.each do |question|
+        div id="question-#{question.id}"
+          hr
+            h4 =link_to question.title, question
+            p = truncate_html(question.question)
+
+= subscribe_to "/questions/new"
+= subscribe_to "/questions/edited"
+= subscribe_to "/questions/deleted"
