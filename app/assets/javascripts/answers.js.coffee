@@ -22,7 +22,7 @@ this.answerSaved = (event, data, status, xhr) ->
     $('#answer-error').addClass('hide')
     renderNewAnswer(answer)
     $('#flash').html(flashMessage("You have created a new answer", 'success'))
-    $('#answer_answer').val('')
+    $('#answer_answer').data("wysihtml5").editor.setValue('')
 
 this.answerSaveError = (event, xhr, status, error) ->
   $('#flash').html('')
@@ -70,6 +70,7 @@ renderNewAnswer = (answer) ->
 
   $('#answers').prepend(template)
   template.find('.edit-answer-button').click(editAnswer);
+  template.find('.add-remark').click(addRemark);
 
 renderExistingAnswer = (answer) ->
   $("#answer-#{answer.id} .answer-content").html(answer.answer)

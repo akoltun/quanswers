@@ -1,13 +1,15 @@
 this.initWidgets = () ->
   $('.wysihtml5').removeClass('wysihtml5').wysihtml5();
-  $('#remark-well').on('ajax:error', remarkError)
   $('#edit-question-button').click(editQuestionClicked);
-  $('.add-remark').click(addRemark);
-  $('.edit-remark').click(editRemark);
   $('.best-answer-button').on('ajax:success', setBestAnswerSuccess).on('ajax:error', setBestAnswerError)
 
   $('#answer-form').on('ajax:success', answerSaved).on('ajax:error', answerSaveError)
   $('.edit-answer-button').click(editAnswer);
+
+  $('#remark-well form').on('ajax:success', remarkSaved).on('ajax:error', remarkError)
+  $('.add-remark').click(addRemark);
+  $('.edit-remark').click(editRemark);
+
 
 $ ->
   initWidgets()

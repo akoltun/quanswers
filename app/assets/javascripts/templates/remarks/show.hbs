@@ -1,0 +1,15 @@
+<div class="well well-sm" id="remark-{{remark.id}}">
+  {{#if thisUserRemark}}
+    <a class="btn btn-default edit-remark" data-action="/remarks/{{remark.id}}" href="">Edit</a>
+    <a class="btn btn-default delete-remark"
+       data-confirm="true"
+       data-error="remarkDeleteError"
+       data-method="DELETE"
+       data-remote="true"
+       data-success="remarkDeleteSuccess"
+       href="/remarks/{{remark.id}}">Delete</a>
+    <br>
+    <br>
+  {{/if}}
+  <div class="remark-content">{{remark.remark}}</div>
+</div>

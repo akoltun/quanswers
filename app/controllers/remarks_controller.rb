@@ -9,27 +9,25 @@ class RemarksController < ApplicationController
     @remark = @remarkable.remarks.build(remark_params.merge(user: current_user))
     if @remark.save
       PrivatePub.publish_to "/questions/#{@question.id}/new", remark: @remark.to_json
-      render :show, status: :created
+      render json: @remark, status: :created
     else
-      @errors = @remark.errors.full_messages
-      render :error, status: :unprocessable_entity
+      render json: @remark.errors.full_messages, status: :unprocessable_entity
     end
   end
 
   def update
     if @remark.update(remark_params)
       PrivatePub.publish_to "/questions/#{@question.id}/edited", remark: @remark.to_json
-      render :show
+      render json: @remark
     else
-      @errors = @remark.errors.full_messages
-      render :error, status: :unprocessable_entity
+      render json: @remark.errors.full_messages, status: :unprocessable_entity
     end
   end
 
   def destroy
     @remark.destroy
     PrivatePub.publish_to "/questions/#{@question.id}/deleted", remark: @remark.to_json
-    head :ok
+    render json: { id: @remark.id }
   end
 
   private
