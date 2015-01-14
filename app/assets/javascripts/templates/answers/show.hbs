@@ -1,0 +1,17 @@
+<div id="answer-{{answer.id}}" class="answer">
+  {{#if thisUserAnswer}}
+    <div class="answer-buttons">
+      <a class="btn btn-primary edit-answer-button" data-action="/answers/{{answer.id}}" href="">Edit Answer</a>
+      <a class="btn btn-danger delete-answer-button" data-confirm="true" data-error="answerDeleteError" data-method="DELETE" data-remote="true" data-success="answerDeleteSuccess" href="/answers/{{answer.id}}">Delete Answer</a>
+    </div>
+    <br>
+  {{/if}}
+  <p>
+    <span class="label label-success best-answer" style="display: none;">Best</span>
+    {{#if thisUserQuestion}}
+      <a class="btn btn-default best-answer-button" data-method="PATCH" data-remote="true" href="/answers/{{answer.id}}/set_as_best" style="">Best</a>
+    {{/if}}
+  </p>
+  <p class="answer-content">{{answer.answer}}</p>
+  <hr>
+</div>

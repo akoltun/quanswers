@@ -43,7 +43,6 @@ feature 'User answers question', %q{
       click_on 'Save Answer'
 
       expect(current_path).to eq question_path(question)
-      expect(page).to have_content "There is one error"
       expect(page).to have_content "Answer can't be blank"
     end
   end

@@ -2,18 +2,19 @@ this.initWidgets = () ->
   $('.wysihtml5').removeClass('wysihtml5').wysihtml5();
   $('#remark-well').on('ajax:error', remarkError)
   $('#edit-question-button').click(editQuestionClicked);
-  $('#edit-question-button').click(editQuestionClicked);
-  $('.edit-answer-button').click(editAnswerClicked);
   $('.add-remark').click(addRemark);
   $('.edit-remark').click(editRemark);
   $('.best-answer-button').on('ajax:success', setBestAnswerSuccess).on('ajax:error', setBestAnswerError)
 
+  $('#answer-form').on('ajax:success', answerSaved).on('ajax:error', answerSaveError)
+  $('.edit-answer-button').click(editAnswer);
+
 $ ->
   initWidgets()
-  setQuestionsPub() if $('#questions').length
-  questionId = $('#question').data('question-id')
-  setQuestionPub(questionId) if questionId
   $(document).on 'confirm', confirmEvent
+#  setQuestionsPub() if $('#questions').length
+#  questionId = $('#question').data('question-id')
+#  setQuestionPub(questionId) if questionId
 
 setQuestionPub = (questionId) ->
   PrivatePub.subscribe "/questions/#{questionId}/new", (data, channel) ->
@@ -68,3 +69,10 @@ copyAttrs = (source, target, attrs...) ->
 attachEvent = (source, target, eventName, dataAttr) ->
   event = source.data(dataAttr)
   target.one(eventName, source, window[event]) if event && window[event]
+
+this.flashMessage = (message, type) ->
+  switch type
+    when 'success' then "<div class=\"alert alert-success\"><strong>Success!&nbsp;</strong>#{message}</div>"
+    when 'error'   then "<div class=\"alert alert-danger\"><strong>Alert!&nbsp;</strong>#{message}</div>"
+    else message
+

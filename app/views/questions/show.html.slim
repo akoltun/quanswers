@@ -3,18 +3,22 @@
     = render 'questions/question'
 
 .row
-  .col-xs-12#answers
+  .col-xs-12
     = render 'answers/answers'
 
-.row
-  .col-xs-12#new-answer
-    = render 'answers/new_answer'
+- if user_signed_in?
+  .row
+    .col-xs-12#new-answer
+      = render partial: 'answers/answer_form'
 
-= subscribe_to "/questions/#{@question.id}/new"
-= subscribe_to "/questions/#{@question.id}/edited"
-= subscribe_to "/questions/#{@question.id}/deleted"
+/= subscribe_to "/questions/#{@question.id}/new"
+/= subscribe_to "/questions/#{@question.id}/edited"
+/= subscribe_to "/questions/#{@question.id}/deleted"
 
 javascript:
   function getUserId() {
     return #{current_user ? current_user.id : 'null'};
+  }
+  function getQuestionUserId() {
+    return #{current_user ? @question.user.id : 'null'};
   }

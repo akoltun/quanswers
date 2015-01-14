@@ -43,12 +43,12 @@ feature 'User edits answer', %q{
       end
 
       scenario 'with valid attributes', js: true do
-        within("#answer-#{answer.id}") do
-          # fill_in 'Answer', with: new_answer[:answer]
-          page.execute_script %Q{ $('#answer_answer').data("wysihtml5").editor.setValue('#{new_value}') }
-          click_on 'Save Answer'
+        # fill_in 'Answer', with: new_answer[:answer]
+        page.execute_script %Q{ $('#answer_answer').data("wysihtml5").editor.setValue('#{new_value}') }
+        click_on 'Save Answer'
 
-          expect(current_path).to eq question_path(answer.question)
+        expect(current_path).to eq question_path(answer.question)
+        within("#answer-#{answer.id}") do
           expect(page).to have_content new_answer[:answer]
           expect(page).not_to have_selector 'iframe'
           expect(page).to have_content "Edit Answer"
@@ -58,33 +58,28 @@ feature 'User edits answer', %q{
       end
 
       scenario 'with invalid attributes', js: true do
-        within("#answer-#{answer.id}") do
-          # fill_in 'Answer', with: new_answer[:answer]
-          page.execute_script %Q{ $('#answer_answer').data("wysihtml5").editor.setValue('') }
-          click_on 'Save Answer'
+        # fill_in 'Answer', with: new_answer[:answer]
+        page.execute_script %Q{ $('#answer_answer').data("wysihtml5").editor.setValue('') }
+        click_on 'Save Answer'
 
-          expect(current_path).to eq question_path(answer.question)
-          expect(page).to have_content "There is one error"
-          expect(page).to have_content "Answer can't be blank"
-          expect(page).to have_css '.has-error'
-          expect(page).to have_selector 'iframe'
-          expect(page).to have_selector 'input[value="Save Answer"]'
-          expect(page).not_to have_content "Edit Answer"
-        end
+        expect(current_path).to eq question_path(answer.question)
+        expect(page).to have_content "Answer can't be blank"
+        expect(page).to have_css '.alert-danger'
+        expect(page).to have_selector 'iframe'
+        expect(page).to have_selector 'input[value="Save Answer"]'
+        expect(page).not_to have_content "Edit Answer"
         expect(page).not_to have_content 'You have updated the answer'
       end
 
       scenario 'and then changes his mind', js: true do
-        within("#answer-#{answer.id}") do
-          # fill_in 'Answer', with: new_answer[:answer]
-          page.execute_script %Q{ $('#answer_answer').data("wysihtml5").editor.setValue('#{new_value}') }
-          find('a', text: 'Cancel').click
-        end
+        # fill_in 'Answer', with: new_answer[:answer]
+        page.execute_script %Q{ $('#answer_answer').data("wysihtml5").editor.setValue('#{new_value}') }
+        find('a', text: 'Cancel').click
 
         within("#confirmation-dialog") { click_on "Yes" }
 
+        expect(current_path).to eq question_path(answer.question)
         within("#answer-#{answer.id}") do
-          expect(current_path).to eq question_path(answer.question)
           expect(page).to have_content answer.answer
           expect(page).not_to have_selector 'iframe'
           expect(page).not_to have_selector 'input[value="Save Answer"]'

@@ -49,12 +49,6 @@ this.remarkDeleteSuccess = (event, data, status, xhr) ->
 this.remarkDeleteError = (event, xhr, status, error) ->
   $('#flash').html(flashMessage(error.message, 'error'))
 
-flashMessage = (message, type) ->
-  switch type
-    when 'success' then "<div class=\"alert alert-success\"><strong>Success!&nbsp;</strong>#{message}</div>"
-    when 'error'   then "<div class=\"alert alert-danger\"><strong>Alert!&nbsp;</strong>#{message}</div>"
-    else message
-
 initRemark = (initiator, elem, method, successSaveHandler) ->
   $('#remark-well').insertBefore(elem)
   elem.hide()

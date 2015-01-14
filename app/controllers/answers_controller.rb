@@ -15,30 +15,35 @@ class AnswersController < ApplicationController
   def create
     @answer = @question.answers.build(answer_params.merge(user: current_user))
     if @answer.save
-      flash.now[:notice] = 'You have created a new answer'
-      load_answers
-      @answer = Answer.new
-      @editable = false
+      render json: @answer, status: :created
+      # flash.now[:notice] = 'You have created a new answer'
+      # load_answers
+      # @answer = Answer.new
+      # @editable = false
     else
-      load_errors
+      render json: @answer.errors.full_messages, status: :unprocessable_entity
+      # load_errors
     end
   end
 
   def update
     if @answer.update(answer_params)
-      flash.now[:notice] = "You have updated the answer"
-      load_answers
+      render json: @answer
+      # flash.now[:notice] = "You have updated the answer"
+      # load_answers
     else
-      load_errors
+      render json: @answer.errors.full_messages, status: :unprocessable_entity
+      # load_errors
     end
   end
 
   def destroy
     @answer.destroy
-    flash.now[:notice] = "You have deleted the answer"
-    @editable = @question.answers.empty?
-    @id = @answer.id
-    @answer = Answer.new
+    render json: { id: @answer.id }
+    # flash.now[:notice] = "You have deleted the answer"
+    # @editable = @question.answers.empty?
+    # @id = @answer.id
+    # @answer = Answer.new
   end
 
   def set_as_best

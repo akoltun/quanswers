@@ -1,4 +1,4 @@
-div class="form-inline form-group" id="#{attachment_form_id}"
+.form-inline.form-group id="#{attachment_form_id}"
   = form.fields_for :attachments do |a|
     = a.link_to_remove "Remove", class: "btn btn-danger"
     - if a.object.new_record?

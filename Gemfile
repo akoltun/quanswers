@@ -39,6 +39,7 @@ gem 'remotipart'
 gem "nested_form"
 gem "private_pub"
 gem "thin"
+gem 'handlebars_assets'
 
 group :test, :development do
   gem 'rspec-rails'
