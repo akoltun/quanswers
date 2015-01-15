@@ -11,7 +11,7 @@
     .col-xs-12#new-answer
       = render partial: 'answers/answer_form'
 
-/- unless Rails.env.test?
+- unless Rails.env.test?
   = subscribe_to "/questions/#{@question.id}/new"
   = subscribe_to "/questions/#{@question.id}/edited"
   = subscribe_to "/questions/#{@question.id}/deleted"

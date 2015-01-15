@@ -28,7 +28,6 @@ this.remarkDeleted = (remark) ->
 this.remarkSaved = (event, data, status, xhr) ->
   if 201 == xhr.status
     renderRemark(xhr.responseJSON)
-    $('#remark-well').prev().find('.edit-remark').click(editRemark)
     $('#flash').html(flashMessage("You have added a new remark", 'success'))
   else
     $('#remark-well').next().find('.remark-content').html(xhr.responseJSON.remark)

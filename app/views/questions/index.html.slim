@@ -6,11 +6,13 @@
       - @questions.each do |question|
         div id="question-#{question.id}"
           hr
-            h4 =link_to question.title, question
-            p = truncate_html(question.question)
+            .title
+              h4 =link_to question.title, question
+            .content
+              = truncate_html(question.question)
 
 hr
-/- unless Rails.env.test?
+- unless Rails.env.test?
   = subscribe_to "/questions/new"
   = subscribe_to "/questions/edited"
   = subscribe_to "/questions/deleted"

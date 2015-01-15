@@ -13,9 +13,9 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery.remotipart
+//= require private_pub
 //= require handlebars.runtime
 //= require_tree ./templates
-//= require private_pub
 //= require jquery_nested_form
 //= require bootstrap-sprockets
 //= require bootstrap-wysihtml5

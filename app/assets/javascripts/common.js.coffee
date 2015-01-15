@@ -14,9 +14,9 @@ this.initWidgets = () ->
 $ ->
   initWidgets()
   $(document).on 'confirm', confirmEvent
-#  setQuestionsPub() if $('#questions').length
-#  questionId = $('#question').data('question-id')
-#  setQuestionPub(questionId) if questionId
+  setQuestionsPub() if $('#questions').length
+  questionId = $('#question').data('question-id')
+  setQuestionPub(questionId) if questionId
 
 setQuestionPub = (questionId) ->
   PrivatePub.subscribe "/questions/#{questionId}/new", (data, channel) ->

@@ -11,11 +11,11 @@ this.editQuestionClicked = (event) ->
 
 this.questionAdded = (question) ->
   unless $("#question-#{question.id}").length
-    $('#questions').prepend("<div id=\"question-#{question.id}\"><hr><h4><a href=\"/questions/#{question.id}\">#{question.title}</a></h4><p>#{question.question}</p></div>")
+    $('#questions').prepend("<div id=\"question-#{question.id}\"><div class=\"title\"><hr><h4><a href=\"/questions/#{question.id}\">#{question.title}</a></h4></div><div class=\"content\">#{question.question}</div></div>")
 
 this.questionEdited = (question) ->
-  $("#question-#{question.id} a").html(question.title)
-  $("#question-#{question.id} p").html(question.question)
+  $("#question-#{question.id} .title a").html(question.title)
+  $("#question-#{question.id} div.content").html(question.question)
 
 this.questionDeleted = (question) ->
   $("#question-#{question.id}").remove()

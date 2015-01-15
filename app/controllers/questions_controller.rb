@@ -22,7 +22,7 @@ class QuestionsController < ApplicationController
     @question = Question.new(question_params.merge({ user: current_user }))
     if @question.save
       @question.question = truncate_html(@question.question)
-      # PrivatePub.publish_to "/questions/new", question: @question.to_json
+      PrivatePub.publish_to "/questions/new", question: @question.to_json unless Rails.env.test?
       redirect_to questions_path, notice: "You have created a new question"
     else
       render :new
@@ -33,7 +33,7 @@ class QuestionsController < ApplicationController
     if @author_signed_in
       if @question.editable?
         if @question.update(question_params)
-          PrivatePub.publish_to "/questions/edited", question: @question.to_json
+          PrivatePub.publish_to "/questions/edited", question: @question.to_json unless Rails.env.test?
           flash.now[:notice] = "You have updated the question"
         end
       else
@@ -50,7 +50,7 @@ class QuestionsController < ApplicationController
     if @author_signed_in
       if @question.editable?
         if @question.destroy
-          PrivatePub.publish_to "/questions/deleted", question: @question.to_json
+          PrivatePub.publish_to "/questions/deleted", question: @question.to_json unless Rails.env.test?
           redirect_to questions_path, notice: "You have deleted the question"
         end
       else
