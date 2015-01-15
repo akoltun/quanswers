@@ -2,13 +2,14 @@ class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :load_question, only: :create
   before_action :load_answer, except: :create
-  before_action :assign_question, only: :set_as_best
+  before_action :assign_question, except: :create
   before_action :authorize_user, except: [:create, :set_as_best]
 
   def create
     @answer = @question.answers.build(answer_params.merge(user: current_user))
     if @answer.save
-      render json: @answer, include: [:attachments], status: :created
+      PrivatePub.publish_to "/questions/#{@question.id}/new", answer: @answer.to_json(include: :attachments) unless Rails.env.test?
+      render json: @answer, include: :attachments, status: :created
     else
       render_errors @answer
     end
@@ -16,7 +17,8 @@ class AnswersController < ApplicationController
 
   def update
     if @answer.update(answer_params)
-      render json: @answer, include: [:attachments]
+      PrivatePub.publish_to "/questions/#{@question.id}/edited", answer: @answer.to_json(include: :attachments) unless Rails.env.test?
+      render json: @answer, include: :attachments
     else
       render_errors @answer
     end
@@ -24,6 +26,7 @@ class AnswersController < ApplicationController
 
   def destroy
     @answer.destroy
+    PrivatePub.publish_to "/questions/#{@question.id}/deleted", answer: { id: @answer.id }.to_json unless Rails.env.test?
     render json: { id: @answer.id }
   end
 
@@ -31,7 +34,8 @@ class AnswersController < ApplicationController
     if @question.user == current_user
       @answer.best!
       if @question.save
-        head :ok
+        PrivatePub.publish_to "/questions/#{@question.id}/edited", best_answer: { id: @answer.id }.to_json unless Rails.env.test?
+        render json: { id: @answer.id }
       else
         render_errors @question
       end

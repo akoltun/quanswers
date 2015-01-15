@@ -12,6 +12,15 @@ this.cancelAnswer = (event) ->
   $('#confirmation-dialog').modal('hide')
   unprepareAnswerForm()
 
+this.answerAdded = (answer) ->
+  renderNewAnswer answer
+
+this.answerEdited = (answer) ->
+  renderExistingAnswer answer
+
+this.answerDeleted = (answer) ->
+  $("#answer-#{answer.id}").remove()
+
 this.answerSaved = (event, data, status, xhr) ->
   answer = xhr.responseJSON
   if $("#answer-#{answer.id}").length

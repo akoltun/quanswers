@@ -20,12 +20,16 @@ $ ->
 
 setQuestionPub = (questionId) ->
   PrivatePub.subscribe "/questions/#{questionId}/new", (data, channel) ->
+    answerAdded($.parseJSON(data['answer'])) if data['answer']
     remarkAdded($.parseJSON(data['remark'])) if data['remark']
 
   PrivatePub.subscribe "/questions/#{questionId}/edited", (data, channel) ->
+    answerEdited($.parseJSON(data['answer'])) if data['answer']
+    setBestAnswer($.parseJSON(data['best_answer']).id) if data['best_answer']
     remarkEdited($.parseJSON(data['remark'])) if data['remark']
 
   PrivatePub.subscribe "/questions/#{questionId}/deleted", (data, channel) ->
+    answerDeleted($.parseJSON(data['answer'])) if data['answer']
     remarkDeleted($.parseJSON(data['remark'])) if data['remark']
 
 setQuestionsPub = () ->

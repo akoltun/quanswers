@@ -50,7 +50,7 @@ class QuestionsController < ApplicationController
     if @author_signed_in
       if @question.editable?
         if @question.destroy
-          PrivatePub.publish_to "/questions/deleted", question: @question.to_json unless Rails.env.test?
+          PrivatePub.publish_to "/questions/deleted", question: { id: @question.id }.to_json unless Rails.env.test?
           redirect_to questions_path, notice: "You have deleted the question"
         end
       else

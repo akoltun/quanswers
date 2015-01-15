@@ -26,7 +26,7 @@ class RemarksController < ApplicationController
 
   def destroy
     @remark.destroy
-    PrivatePub.publish_to "/questions/#{@question.id}/deleted", remark: @remark.to_json unless Rails.env.test?
+    PrivatePub.publish_to "/questions/#{@question.id}/deleted", remark: { id: @remark.id }.to_json unless Rails.env.test?
     render json: { id: @remark.id }
   end
 
