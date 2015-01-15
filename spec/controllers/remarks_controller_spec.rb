@@ -27,18 +27,8 @@ RSpec.describe RemarksController, :type => :controller do
           expect(response).to have_http_status(:created)
         end
 
-        it "renders show view" do
-          post_request
-          expect(response).to render_template :show
-        end
-
         it "creates new remark in db" do
           expect { post_request }.to change(question.remarks, :count).by(1)
-        end
-
-        it "assigns created remark to @remark" do
-          post_request
-          expect(assigns(:remark)).to eq question.remarks.last
         end
       end
 
@@ -50,19 +40,9 @@ RSpec.describe RemarksController, :type => :controller do
           expect(response).to have_http_status(:unprocessable_entity)
         end
 
-        it "renders error view" do
-          post_request
-          expect(response).to render_template :error
-        end
-
         it "does not create new remark in db" do
           question
           expect { post_request }.not_to change(Remark, :count)
-        end
-
-        it "assigns an error message to @errors" do
-          post_request
-          expect(assigns(:errors)).to match_array ["Remark can't be blank"]
         end
       end
     end
@@ -86,18 +66,8 @@ RSpec.describe RemarksController, :type => :controller do
           expect(response).to have_http_status(:created)
         end
 
-        it "renders show view" do
-          post_request
-          expect(response).to render_template :show
-        end
-
         it "creates new remark in db" do
           expect { post_request }.to change(answer.remarks, :count).by(1)
-        end
-
-        it "assigns created remark to @remark" do
-          post_request
-          expect(assigns(:remark)).to eq answer.remarks.last
         end
       end
 
@@ -109,19 +79,9 @@ RSpec.describe RemarksController, :type => :controller do
           expect(response).to have_http_status(:unprocessable_entity)
         end
 
-        it "renders error view" do
-          post_request
-          expect(response).to render_template :error
-        end
-
         it "does not create new remark in db" do
           answer
           expect { post_request }.not_to change(Remark, :count)
-        end
-
-        it "assigns an error message to @errors" do
-          post_request
-          expect(assigns(:errors)).to match_array ["Remark can't be blank"]
         end
       end
     end
@@ -160,18 +120,9 @@ RSpec.describe RemarksController, :type => :controller do
         context "with valid attributes" do
           it { is_expected.to respond_with(:ok) }
 
-          it 'renders show view' do
-            expect(response).to render_template :show
-          end
-
           it "updates remark in db" do
             remark.reload
             expect(remark.remark).to eq new_remark[:remark]
-          end
-
-          it "assigns updated remark to @remark" do
-            remark.reload
-            expect(assigns(:remark)).to eq remark
           end
         end
 
@@ -180,17 +131,9 @@ RSpec.describe RemarksController, :type => :controller do
 
           it { is_expected.to respond_with(:unprocessable_entity) }
 
-          it 'renders error view' do
-            expect(response).to render_template :error
-          end
-
           it "does not change remark in db" do
             remark.reload
             expect(remark.remark).to eq old_remark[:remark]
-          end
-
-          it "assigns an error message to @errors" do
-            expect(assigns(:errors)).to match_array ["Remark can't be blank"]
           end
         end
       end
@@ -201,18 +144,9 @@ RSpec.describe RemarksController, :type => :controller do
         context "with valid attributes" do
           it { is_expected.to respond_with(:ok) }
 
-          it 'renders show view' do
-            expect(response).to render_template :show
-          end
-
           it "updates remark in db" do
             remark.reload
             expect(remark.remark).to eq new_remark[:remark]
-          end
-
-          it "assigns updated remark to @remark" do
-            remark.reload
-            expect(assigns(:remark)).to eq remark
           end
         end
 
@@ -221,17 +155,9 @@ RSpec.describe RemarksController, :type => :controller do
 
           it { is_expected.to respond_with(:unprocessable_entity) }
 
-          it 'renders error view' do
-            expect(response).to render_template :error
-          end
-
           it "does not change remark in db" do
             remark.reload
             expect(remark.remark).to eq old_remark[:remark]
-          end
-
-          it "assigns an error message to @errors" do
-            expect(assigns(:errors)).to match_array ["Remark can't be blank"]
           end
         end
       end
@@ -273,7 +199,7 @@ RSpec.describe RemarksController, :type => :controller do
 
         it { expect(response).to have_http_status :ok }
 
-        it "deletes answer" do
+        it "deletes remark" do
           remark
           expect { delete_request }.to change(Remark, :count).by(-1)
         end
@@ -284,7 +210,7 @@ RSpec.describe RemarksController, :type => :controller do
 
         it { expect(response).to have_http_status :ok }
 
-        it "deletes answer" do
+        it "deletes remark" do
           remark
           expect { delete_request }.to change(Remark, :count).by(-1)
         end

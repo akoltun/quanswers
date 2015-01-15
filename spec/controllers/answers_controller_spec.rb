@@ -8,38 +8,6 @@ RSpec.describe AnswersController, :type => :controller do
   let(:old_answer) { attributes_for(:answer) }
   let(:new_answer) { attributes_for(:unique_answer) }
 
-  describe "GET #new" do
-    before { xhr :get, :new, question_id: question, format: :js }
-
-    it "renders new template" do
-      expect(response).to render_template :new
-    end
-
-    it "populates requested question" do
-      expect(assigns(:question)).to eq question
-    end
-
-    it "assigns a new answer to @answer" do
-      expect(assigns(:answer)).to be_a_new(Answer)
-    end
-  end
-
-  describe "GET #show" do
-    before { xhr :get, :show, question_id: question, id: answer, format: :js }
-
-    it "renders show template" do
-      expect(response).to render_template :show
-    end
-
-    it "populates requested question" do
-      expect(assigns(:question)).to eq question
-    end
-
-    it "assigns a new answer to @answer" do
-      expect(assigns(:answer)).to eq answer
-    end
-  end
-
   describe "POST #create" do
     let(:post_request) { post :create, question_id: question, answer: new_answer, format: :js }
 
@@ -53,50 +21,25 @@ RSpec.describe AnswersController, :type => :controller do
       sign_in_user
 
       context "with valid attributes" do
-        it "renders create template" do
-          post_request
-          expect(response).to render_template :create
-        end
-
         it "creates new answer in db" do
           expect { post_request }.to change(question.answers, :count).by(1)
-        end
-
-        it "assigns all answers for this question to @answers" do
-          post_request
-          expect(assigns(:answers)).to match_array(question.answers)
-        end
-
-        it "assigns a new answer to @answer" do
-          post_request
-          expect(assigns(:answer)).to be_a_new(Answer)
-        end
-
-        it "assigns false to @editable" do
-          expect(assigns(:editable)).to be_falsey
         end
       end
 
       context "with invalid attributes" do
         let(:new_answer) { attributes_for(:invalid_answer) }
 
-        it "renders create template" do
+        it "responds with Unprocessable Entity" do
           post_request
-          expect(response).to render_template :create
+          expect(response).to have_http_status :unprocessable_entity
         end
 
         it "does not create new answer in db" do
           question
           expect { post_request }.not_to change(Answer, :count)
         end
-
-        it "assigns an error message to @errors" do
-          post_request
-          expect(assigns(:errors)).to eq ["Answer can't be blank"]
-        end
       end
     end
-
   end
 
   describe "PATCH #update" do
@@ -129,25 +72,11 @@ RSpec.describe AnswersController, :type => :controller do
       context "current user's answer" do
         let(:answer) { create(:answer, user: @user) }
 
-        it 'renders update view' do
-          expect(response).to render_template :update
-        end
-
         context "with valid attributes" do
           it "updates answer in db" do
             answer.reload
             expect(answer.answer).to eq new_answer[:answer]
           end
-
-          it "assigns the question to @question" do
-            expect(assigns(:question)).to eq question
-          end
-
-          it "assigns all answers for this question to @answers" do
-            expect(assigns(:answers)).to match_array(question.answers)
-          end
-
-          it { is_expected.to set_the_flash[:notice].to("You have updated the answer").now }
         end
 
         context "with invalid attributes" do
@@ -158,9 +87,7 @@ RSpec.describe AnswersController, :type => :controller do
             expect(answer.answer).to eq old_answer[:answer]
           end
 
-          it "assigns an error message to @errors" do
-            expect(assigns(:errors)).to eq ["Answer can't be blank"]
-          end
+          it { is_expected.to respond_with :unprocessable_entity }
         end
       end
     end
@@ -199,34 +126,9 @@ RSpec.describe AnswersController, :type => :controller do
       context "current user's answer" do
         let(:answer) { create(:answer, user: @user) }
 
-        it 'renders delete view' do
-          delete_request
-          expect(response).to render_template :destroy
-        end
-
         it "deletes answer" do
           answer
           expect { delete_request }.to change(Answer, :count).by(-1)
-        end
-
-        it "assigns deleted answer's id to @id" do
-          delete_request
-          expect(assigns(:id)).to eq answer.id
-        end
-
-        it "assigns true to @editable" do
-          delete_request
-          expect(assigns(:editable)).to be_truthy
-        end
-
-        it "assigns nil to @answer.id" do
-          delete_request
-          expect(assigns(:answer).id).to be_nil
-        end
-
-        it "assigns a success message to flash[:notice]" do
-          delete_request
-          expect(flash[:notice]).to eql "You have deleted the answer"
         end
       end
     end

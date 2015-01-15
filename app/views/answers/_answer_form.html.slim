@@ -1,4 +1,4 @@
-= bootstrap_nested_form_for [@question, @answer], label_errors: true, remote: true, html: { id: "answer-form" } do |f|
+= bootstrap_nested_form_for [@question, @answer], label_errors: true, remote: true, data: { type: :json }, html: { id: "answer-form" } do |f|
   #answer-error.alert.alert-danger.well-sm.hide
 
   = f.submit "Save Answer", class: "btn btn-success answer-submit-button"
@@ -7,7 +7,7 @@
   br
   = f.text_area :answer, size: "100x15", class: "wysihtml5"
 
-  /= render partial: 'attachments/attachment_form', locals: { form: f, attachment_form_id: "attachment-form-#{answer.id}" }
+  = render partial: 'attachments/attachment_form', locals: { form: f, attachment_form_id: "answer-attachment-form-new" }
 
   br
   br

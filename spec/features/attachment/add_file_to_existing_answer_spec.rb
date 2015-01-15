@@ -16,7 +16,7 @@ feature 'User adds file to existing answer', %q{
   end
 
   scenario 'User adds file to existing answer', js: true do
-    within("#answer-#{answer.id}") do
+    within("#answer-form") do
       click_on "Add a file"
       attach_file 'File', "#{Rails.root}/spec/files/file_to_upload.txt"
       click_on 'Save Answer'

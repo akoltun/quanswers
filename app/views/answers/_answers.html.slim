@@ -1,5 +1,6 @@
-hr
-h3 Answers
+#answers-title
+  hr
+  h3 Answers
 #answers
   - @answers.each do |answer|
     .answer id="answer-#{answer.id}"
@@ -15,7 +16,7 @@ h3 Answers
           = link_to "Best", set_as_best_answer_path(answer), data: {method: "PATCH", remote: true}, class: "btn btn-default best-answer-button", style: "#{answer.best? ? 'display: none;' : ''}"
       p.answer-content
         = raw answer.answer
-      /= render partial: 'attachments/attachments', object: answer.attachments
+      = render partial: 'attachments/attachments', object: answer.attachments
 
       .row
         .answer-remarks.col-xs-offset-1.col-xs-10.remarks

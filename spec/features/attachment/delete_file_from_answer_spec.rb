@@ -18,8 +18,8 @@ feature 'User deletes file from answer', %q{
   end
 
   scenario 'User deletes file from existing answer', js: true do
-    within("#answer-#{answer.id}") do
-      within("#attachment-form-#{answer.id}") { click_on "Remove" }
+    within("#answer-form") do
+      click_on "Remove"
       click_on 'Save Answer'
     end
 

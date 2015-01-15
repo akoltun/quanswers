@@ -10,6 +10,7 @@
             p = truncate_html(question.question)
 
 hr
-/= subscribe_to "/questions/new"
-/= subscribe_to "/questions/edited"
-/= subscribe_to "/questions/deleted"
+/- unless Rails.env.test?
+  = subscribe_to "/questions/new"
+  = subscribe_to "/questions/edited"
+  = subscribe_to "/questions/deleted"

@@ -1,0 +1,9 @@
+{{#each attachments}}
+    <div class="fields">
+      <input id="{{../type}}_attachments_attributes_{{@index}}__destroy" name="{{../type}}[attachments_attributes][{{@index}}][_destroy]" type="hidden" value="false">
+      <a class="btn btn-danger remove_nested_fields" data-association="attachments" href="javascript:void(0)">Remove</a>
+      {{{this.link}}}
+      <input id="{{../type}}_attachments_attributes_{{@index}}_id" name="{{../type}}[attachments_attributes][{{@index}}][id]" type="hidden" value="{{this.id}}">
+    </div>
+{{/each}}
+

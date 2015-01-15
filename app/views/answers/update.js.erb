@@ -1,8 +1,0 @@
-$('#flash').html('<%= j render 'layouts/flash' %>');
-<% if @errors.present? %>
-    $('#answer-<%= @answer.id %> .answer-form').html('<%= j render partial: 'answers/answer_form', locals: { answer: @answer } %>');
-<% else %>
-    $('#answers').html('<%= j render 'answers/answers' %>');
-    $('#new-answer').show();
-<% end %>
-initWidgets();

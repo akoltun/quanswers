@@ -13,6 +13,11 @@
     {{/if}}
   </p>
   <p class="answer-content">{{answer.answer}}</p>
+  <ul class="attachments">
+    {{#each answer.attachments}}
+        <li><a href="{{this.file.url}}" data-id="{{this.id}}" target="_blank">{{this.file.name}}</a></li>
+    {{/each}}
+  </ul>
   <div class="row">
     <div class="answer-remarks col-xs-offset-1 col-xs-10 remarks">
       <a class="btn add-remark" data-action="/answers/{{answer.id}}/remarks" href="">Add Remark</a>

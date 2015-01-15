@@ -6,10 +6,8 @@
 this.editQuestionClicked = (event) ->
   event.preventDefault()
   $('#flash').html('')
-  $('#question-itself').hide()
+  $('#question-itself,#answers,#answers-title,#new-answer').hide()
   $('#question-form').show()
-  $('#answers').hide()
-  $('#new-answer').hide()
 
 this.questionAdded = (question) ->
   unless $("#question-#{question.id}").length

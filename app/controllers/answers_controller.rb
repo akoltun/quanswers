@@ -1,49 +1,30 @@
 class AnswersController < ApplicationController
-  before_action :authenticate_user!, except: [:new, :show]
-  before_action :load_question, only: [:new, :create]
-  before_action :load_answer, except: [:new, :create]
-  before_action :assign_question, except: [:new, :create]
-  before_action :authorize_user, only: [:update, :destroy]
-
-  def new
-    @answer = Answer.new
-  end
-
-  def show
-  end
+  before_action :authenticate_user!
+  before_action :load_question, only: :create
+  before_action :load_answer, except: :create
+  before_action :assign_question, only: :set_as_best
+  before_action :authorize_user, except: [:create, :set_as_best]
 
   def create
     @answer = @question.answers.build(answer_params.merge(user: current_user))
     if @answer.save
-      render json: @answer, status: :created
-      # flash.now[:notice] = 'You have created a new answer'
-      # load_answers
-      # @answer = Answer.new
-      # @editable = false
+      render json: @answer, include: [:attachments], status: :created
     else
-      render json: @answer.errors.full_messages, status: :unprocessable_entity
-      # load_errors
+      render_errors @answer
     end
   end
 
   def update
     if @answer.update(answer_params)
-      render json: @answer
-      # flash.now[:notice] = "You have updated the answer"
-      # load_answers
+      render json: @answer, include: [:attachments]
     else
-      render json: @answer.errors.full_messages, status: :unprocessable_entity
-      # load_errors
+      render_errors @answer
     end
   end
 
   def destroy
     @answer.destroy
     render json: { id: @answer.id }
-    # flash.now[:notice] = "You have deleted the answer"
-    # @editable = @question.answers.empty?
-    # @id = @answer.id
-    # @answer = Answer.new
   end
 
   def set_as_best
@@ -52,8 +33,7 @@ class AnswersController < ApplicationController
       if @question.save
         head :ok
       else
-        @errors = @question.errors.full_messages
-        render :error, status: :unprocessable_entity
+        render_errors @question
       end
     else
       head :forbidden
@@ -76,19 +56,15 @@ class AnswersController < ApplicationController
     @question = Question.find(params[:question_id])
   end
 
-  def assign_question
-    @question = @answer.question
-  end
-
-  def load_answers
-    @answers = @question.answers.ordered_by_creation_date
-  end
-
   def load_answer
     @answer = Answer.find(params[:id])
   end
 
-  def load_errors
-    @errors = @answer.errors.full_messages
+  def assign_question
+    @question = @answer.question
+  end
+
+  def render_errors(source)
+    render json: { errors: source.errors.full_messages }, status: :unprocessable_entity
   end
 end

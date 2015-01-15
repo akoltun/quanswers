@@ -3,5 +3,5 @@ this.setBestAnswerSuccess = (event, data, status, xhr) ->
   $(event.target).hide().prev().show()
 
 this.setBestAnswerError = (event, xhr, status, error) ->
-  $('#flash').html(flashMessage(error.message, 'error'))
+  $('#flash').html(flashMessage(error, 'error'))
   console.log xhr

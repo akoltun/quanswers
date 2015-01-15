@@ -26,10 +26,10 @@ this.answerSaved = (event, data, status, xhr) ->
 
 this.answerSaveError = (event, xhr, status, error) ->
   $('#flash').html('')
-  $('#answer-error').removeClass('hide').html if xhr.status != 422
-    flashMessage(error.message, 'error')
+  $('#answer-error').removeClass('hide').html if 422 != +xhr.status
+    "<strong>Alert!&nbsp;</strong>#{error.message}"
   else
-    "<ul><li>#{xhr.responseJSON.join('</li><li>')}</li></ul>"
+    "<ul><li>#{xhr.responseJSON.errors.join('</li><li>')}</li></ul>"
 
 this.answerDeleteSuccess = (event, data, status, xhr) ->
   $("#answer-#{xhr.responseJSON.id}").remove()
@@ -42,7 +42,13 @@ prepareAnswerForm = (answerElem) ->
   $("#question .btn,#answers .btn").addClass('disabled')
   answerForm = $('#answer-form')
   answerForm.insertBefore(answerElem)
-  answerForm.find('div.form-group').replaceWith(HandlebarsTemplates['answers/textarea']())
+  answerForm.find('div.form-group:first').replaceWith(HandlebarsTemplates['answers/textarea']())
+  attachments = HandlebarsTemplates['attachments/list_form']
+    type: 'answer'
+    attachments: $.map answerElem.find('.attachments a'), (elem, index) ->
+      id: $(elem).data('id')
+      link: $(elem).prop('outerHTML')
+  answerForm.find('div.form-group:last').html(attachments)
   $('#answer_answer').val(answerElem.find('.answer-content').html()).removeClass('wysihtml5').wysihtml5();
   answerForm.attr('action', "/answers/#{answerElem.attr('id').slice(7)}")
   answerForm.find('div:first').append('<input name="_method" type="hidden" value="patch">')
@@ -55,14 +61,16 @@ unprepareAnswerForm = () ->
   answerForm.next().show()
   answerForm.find('div:first input[value=patch]').remove()
   answerForm.attr('action', "/questions/#{$('#question').data('question-id')}/answers")
+  $('#answer-attachment-form-new').html('')
   $('#new-answer').append(answerForm)
-  answerForm.find('div.form-group').replaceWith(HandlebarsTemplates['answers/textarea']())
+  answerForm.find('div.form-group:first').replaceWith(HandlebarsTemplates['answers/textarea']())
   $('#answer_answer').val('').removeClass('wysihtml5').wysihtml5();
   $("#question .btn,#answers .btn").removeClass('disabled')
 
 renderNewAnswer = (answer) ->
   return if $("#answer-#{answer.id}").length
 
+  addAttachmentsNames(answer.attachments)
   template = $ HandlebarsTemplates['answers/show']
     thisUserQuestion: getUserId() == getQuestionUserId()
     thisUserAnswer: getUserId() == answer.user_id
@@ -71,6 +79,15 @@ renderNewAnswer = (answer) ->
   $('#answers').prepend(template)
   template.find('.edit-answer-button').click(editAnswer);
   template.find('.add-remark').click(addRemark);
+  template.find('.best-answer-button').on('ajax:success', setBestAnswerSuccess).on('ajax:error', setBestAnswerError)
+
 
 renderExistingAnswer = (answer) ->
   $("#answer-#{answer.id} .answer-content").html(answer.answer)
+  addAttachmentsNames(answer.attachments)
+  $("#answer-#{answer.id} .attachments").html HandlebarsTemplates['attachments/index']
+    attachments: answer.attachments
+
+addAttachmentsNames = (attachments) ->
+  attachments.forEach (attachment) ->
+    attachment.file.name = attachment.file.url.slice(attachment.file.url.lastIndexOf('/') + 1)
