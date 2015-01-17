@@ -144,18 +144,8 @@ RSpec.describe QuestionsController, :type => :controller do
       sign_in_user
 
       context "with valid attributes" do
-        it "redirects to show view" do
-          post_request
-          expect(response).to redirect_to questions_path
-        end
-
         it "creates new question in db" do
           expect { post_request }.to change(Question, :count).by(1)
-        end
-
-        it "assigns a success message to flash[:notice]" do
-          post_request
-          expect(flash[:notice]).to eql "You have created a new question"
         end
       end
 
@@ -187,7 +177,7 @@ RSpec.describe QuestionsController, :type => :controller do
   describe "PATCH #update" do
     let(:update_hash) { attributes_for(:another_question) }
     let(:question_hash) { attributes_for(:question) }
-    let(:patch_request) { patch :update, id: question, question: update_hash }
+    let(:patch_request) { patch :update, id: question, question: update_hash, format: :js }
 
     context "(authenticated user)" do
       sign_in_user
@@ -298,15 +288,11 @@ RSpec.describe QuestionsController, :type => :controller do
     context "(non-authenticated user)" do
       before { patch_request }
 
-      it "redirects to sign in page" do
-        expect(response).to redirect_to new_user_session_path
-      end
+      it { is_expected.to respond_with :unauthorized }
 
       it "assigns false to @author_signed_in" do
         expect(assigns(:author_signed_in)).to be_falsey
       end
-
-      it { is_expected.to set_the_flash[:alert].to("You need to sign in or sign up before continuing.") }
     end
   end
 
@@ -332,11 +318,6 @@ RSpec.describe QuestionsController, :type => :controller do
 
         it "deletes question" do
           expect { delete_request }.to change(Question, :count).by(-1)
-        end
-
-        it "assigns a success message to flash[:notice]" do
-          delete_request
-          expect(flash[:notice]).to eql "You have deleted the question"
         end
       end
 

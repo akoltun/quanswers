@@ -8,25 +8,23 @@ class QuestionsController < ApplicationController
   before_action :assigns_author_signed_in, only: [:show, :update, :destroy]
   after_action :publish, only: [:create, :update, :destroy], if: "@question.errors.empty?", unless: "Rails.env.test?"
 
+  respond_to :html, except: :update
+  respond_to :js, only: [:show, :update]
+
   def index
-    @questions = Question.ordered_by_creation_date
+    respond_with(@questions = Question.ordered_by_creation_date)
   end
 
   def show
+    respond_with(@question)
   end
 
   def new
-    @question = Question.new
+    respond_with(@question = Question.new)
   end
 
   def create
-    @question = Question.new(question_params.merge({ user: current_user }))
-    if @question.save
-      @question.question = truncate_html(@question.question)
-      redirect_to questions_path, notice: "You have created a new question"
-    else
-      render :new
-    end
+    respond_with(@question = Question.create(question_params.merge({ user: current_user })))
   end
 
   def update
@@ -42,21 +40,16 @@ class QuestionsController < ApplicationController
       flash.now[:alert] = "Can't update another user's question"
     end
     create_answer
-    render :show
+    respond_with @question do |format|
+      format.js { render :show }
+    end
   end
 
   def destroy
-    if @author_signed_in
-      if @question.editable?
-        if @question.destroy
-          redirect_to questions_path, notice: "You have deleted the question"
-        end
-      else
-        redirect_to @question, alert: "Can't delete question which already has answers"
-      end
-    else
-      redirect_to @question, alert: "Can't delete another user's question"
-    end
+    redirect_to @question, alert: "Can't delete another user's question" and return unless @author_signed_in
+    redirect_to @question, alert: "Can't delete question which already has answers" and return unless @question.editable?
+
+    respond_with(@question.destroy)
   end
 
   private
@@ -82,6 +75,7 @@ class QuestionsController < ApplicationController
   end
 
   def publish
+    @question.question = truncate_html(@question.question) unless @question.frozen?
     PrivatePub.publish_to "/questions", action: action_name, question: @question
   end
 end

@@ -7,7 +7,7 @@
       - if answer.user == current_user
         .answer-buttons
           = link_to "Edit Answer", '', data: { action: "#{answer_path(answer)}" }, class: "btn btn-primary edit-answer-button"
-          = link_to "Delete Answer", answer, data: { method: "DELETE", confirm: true, remote: true, success: 'answerDeleteSuccess', error: 'answerDeleteError' }, class: "btn btn-danger delete-answer-button"
+          = link_to "Delete Answer", answer, data: { type: :json, method: "DELETE", confirm: true, remote: true, success: 'answerDeleteSuccess', error: 'answerDeleteError' }, class: "btn btn-danger delete-answer-button"
         br
 
       p

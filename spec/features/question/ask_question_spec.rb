@@ -43,8 +43,7 @@ feature 'User asks question', %q{
         fill_in 'Question', with: new_question[:question]
         click_on 'Save Question'
 
-        expect(current_path).to eq questions_path
-        expect(page).to have_content 'You have created a new question'
+        expect(page).to have_content 'You have created a new Question'
         expect(page).to have_content new_question[:title]
         expect(page).to have_content new_question[:question]
       end

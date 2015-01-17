@@ -9,7 +9,7 @@ RSpec.describe AnswersController, :type => :controller do
   let(:new_answer) { attributes_for(:unique_answer) }
 
   describe "POST #create" do
-    let(:post_request) { post :create, question_id: question, answer: new_answer, format: :js }
+    let(:post_request) { post :create, question_id: question, answer: new_answer, format: :json }
 
     context "(non-authenticated user)" do
       before { post_request }
@@ -43,7 +43,7 @@ RSpec.describe AnswersController, :type => :controller do
   end
 
   describe "PATCH #update" do
-    let(:patch_request) { patch :update, question_id: question, id: answer, answer: new_answer, format: :js }
+    let(:patch_request) { patch :update, question_id: question, id: answer, answer: new_answer, format: :json }
 
     context "(non-authenticated user)" do
       before { patch_request }
@@ -94,7 +94,7 @@ RSpec.describe AnswersController, :type => :controller do
   end
 
   describe "DELETE #destroy" do
-    let(:delete_request) { delete :destroy, question_id: question, id: answer, format: :js }
+    let(:delete_request) { delete :destroy, question_id: question, id: answer, format: :json }
 
     context "(non-authenticated user)" do
       it "doesn't delete answer" do
@@ -137,7 +137,7 @@ RSpec.describe AnswersController, :type => :controller do
   describe "PATCH #best" do
     let(:question) { create(:question) }
     let(:answer) { create(:answer, question: question) }
-    let(:best_request) { patch :set_as_best, id: answer, format: :js }
+    let(:best_request) { patch :set_as_best, id: answer, format: :json }
 
     context "(authenticated user)" do
       sign_in_user

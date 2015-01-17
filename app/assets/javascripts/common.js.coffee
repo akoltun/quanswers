@@ -23,31 +23,9 @@ setQuestionPub = (questionId) ->
     answerPublished(data.action, data.answer) if data.answer
     remarkPublished(data.action, data.remark) if data.remark
 
-#  PrivatePub.subscribe "/questions/#{questionId}/new", (data, channel) ->
-#    answerAdded($.parseJSON(data['answer'])) if data['answer']
-#    remarkAdded($.parseJSON(data['remark'])) if data['remark']
-
-#  PrivatePub.subscribe "/questions/#{questionId}/edited", (data, channel) ->
-#    answerEdited($.parseJSON(data['answer'])) if data['answer']
-#    setBestAnswer($.parseJSON(data['best_answer']).id) if data['best_answer']
-#    remarkEdited($.parseJSON(data['remark'])) if data['remark']
-
-#  PrivatePub.subscribe "/questions/#{questionId}/deleted", (data, channel) ->
-#    answerDeleted($.parseJSON(data['answer'])) if data['answer']
-#    remarkDeleted($.parseJSON(data['remark'])) if data['remark']
-
 setQuestionsPub = () ->
   PrivatePub.subscribe "/questions", (data, channel) ->
     questionPublished(data.action, data.question) if data.question
-
-#  PrivatePub.subscribe "/questions/new", (data, channel) ->
-#    questionAdded($.parseJSON(data['question'])) if data['question']
-#
-#  PrivatePub.subscribe "/questions/edited", (data, channel) ->
-#    questionEdited($.parseJSON(data['question'])) if data['question']
-#
-#  PrivatePub.subscribe "/questions/deleted", (data, channel) ->
-#    questionDeleted($.parseJSON(data['question'])) if data['question']
 
 confirmEvent = (e) ->
   elem = $(e.target)
@@ -89,3 +67,9 @@ this.flashMessage = (message, type) ->
     when 'error'   then "<div class=\"alert alert-danger\"><strong>Alert!&nbsp;</strong>#{message}</div>"
     else message
 
+this.errorsList = (errors) ->
+  "<ul><li>" +
+  (for own key, values of errors
+    for value in values
+      "#{key.charAt(0).toUpperCase() + key.slice(1)} #{value}").join('</li><li>') +
+  "</li></ul>"

@@ -56,9 +56,10 @@ this.answerSaved = (event, data, status, xhr) ->
 this.answerSaveError = (event, xhr, status, error) ->
   $('#flash').html('')
   $('#answer-error').removeClass('hide').html if 422 != +xhr.status
-    "<strong>Alert!&nbsp;</strong>#{error.message}"
+    "<strong>Alert!&nbsp;</strong>#{error}"
   else
-    "<ul><li>#{xhr.responseJSON.errors.join('</li><li>')}</li></ul>"
+    errorsList(xhr.responseJSON.errors)
+#    "<ul><li>#{xhr.responseJSON.errors.join('</li><li>')}</li></ul>"
 
 this.answerDeleteSuccess = (event, data, status, xhr) ->
   $("#answer-#{xhr.responseJSON.id}").remove()
@@ -99,7 +100,7 @@ unprepareAnswerForm = () ->
 renderNewAnswer = (answer) ->
   return if $("#answer-#{answer.id}").length
 
-  addAttachmentsNames(answer.attachments)
+  addAttachmentsNames(answer.attachments ||= [])
   template = $ HandlebarsTemplates['answers/show']
     thisUserQuestion: getUserId() == getQuestionUserId()
     thisUserAnswer: getUserId() == answer.user_id
@@ -113,7 +114,7 @@ renderNewAnswer = (answer) ->
 
 renderExistingAnswer = (answer) ->
   $("#answer-#{answer.id} .answer-content").html(answer.answer)
-  addAttachmentsNames(answer.attachments)
+  addAttachmentsNames(answer.attachments ||= [])
   $("#answer-#{answer.id} .attachments").html HandlebarsTemplates['attachments/index']
     attachments: answer.attachments
 

@@ -40,7 +40,7 @@ feature 'User deletes question', %q{
       within("#confirmation-dialog") { click_on "Yes" }
 
       expect(current_path).to eq questions_path
-      expect(page).to have_content 'You have deleted the question'
+      expect(page).to have_content 'You have deleted the Question'
       expect(Question.count).to eq 0
     end
 
@@ -53,7 +53,7 @@ feature 'User deletes question', %q{
       within("#confirmation-dialog") { click_on "No" }
 
       expect(current_path).to eq question_path(current_user_question)
-      expect(page).not_to have_content 'You have deleted the question'
+      expect(page).not_to have_content 'You have deleted the Question'
       expect(Question.count).to eq 1
     end
   end

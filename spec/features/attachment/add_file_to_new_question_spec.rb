@@ -23,8 +23,6 @@ feature 'User adds file to new question', %q{
     attach_file 'File', "#{Rails.root}/spec/files/file_to_upload.txt"
     click_on 'Save Question'
 
-    click_on new_question[:title]
-
     within('#question') do
       expect(page).to have_link 'file_to_upload.txt', href: '/uploads/attachment/file/1/file_to_upload.txt'
     end

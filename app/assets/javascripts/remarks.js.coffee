@@ -32,10 +32,11 @@ this.remarkSaved = (event, data, status, xhr) ->
   closeRemark()
 
 this.remarkError = (event, xhr, status, error) ->
+  console.log error
   $('#remark-error').removeClass('hide').html if xhr.status != 422
-    flashMessage(error.message, 'error')
+    "<strong>Alert!&nbsp;</strong>#{error}"
   else
-    "<ul><li>#{xhr.responseJSON.join('</li><li>')}</li></ul>"
+    errorsList(xhr.responseJSON.errors)
 
 this.remarkDeleteSuccess = (event, data, status, xhr) ->
   event.data.parent('.well').remove()

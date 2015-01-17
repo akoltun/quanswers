@@ -6,26 +6,23 @@ class AnswersController < ApplicationController
   before_action :authorize_user, except: [:create, :set_as_best]
   after_action :publish, if: "@answer.errors.empty?", unless: "Rails.env.test?"
 
+  respond_to :json
+
   def create
-    @answer = @question.answers.build(answer_params.merge(user: current_user))
-    if @answer.save
-      render json: @answer, include: :attachments, status: :created
-    else
-      render_errors @answer
-    end
+    respond_with(@answer = @question.answers.create(answer_params.merge(user: current_user)))
   end
 
   def update
-    if @answer.update(answer_params)
-      render json: @answer, include: :attachments
-    else
-      render_errors @answer
+    @answer.update(answer_params)
+    respond_with @answer do |format|
+      format.json { render json: @answer, include: :attachments } if @answer.errors.empty?
     end
   end
 
   def destroy
-    @answer.destroy
-    render json: { id: @answer.id }
+    respond_with(@answer.destroy) do |format|
+      format.json { render json: { id: @answer.id } }
+    end
   end
 
   def set_as_best

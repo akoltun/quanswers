@@ -6,26 +6,23 @@ class RemarksController < ApplicationController
   before_action :load_question, only: [:create, :update, :destroy]
   after_action :publish, if: "@remark.errors.empty?", unless: "Rails.env.test?"
 
+  respond_to :json
+
   def create
-    @remark = @remarkable.remarks.build(remark_params.merge(user: current_user))
-    if @remark.save
-      render json: @remark, status: :created
-    else
-      render json: @remark.errors.full_messages, status: :unprocessable_entity
-    end
+    respond_with(@remark = @remarkable.remarks.create(remark_params.merge(user: current_user)))
   end
 
   def update
-    if @remark.update(remark_params)
-      render json: @remark
-    else
-      render json: @remark.errors.full_messages, status: :unprocessable_entity
+    @remark.update(remark_params)
+    respond_with(@remark) do |format|
+      format.json { render :show } if @remark.errors.empty?
     end
   end
 
   def destroy
-    @remark.destroy
-    render json: { id: @remark.id }
+    respond_with(@remark.destroy) do |format|
+      format.json { render json: { id: @remark.id } }
+    end
   end
 
   private
