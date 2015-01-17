@@ -16,14 +16,11 @@ this.cancelRemark = (event) ->
   $('#confirmation-dialog').modal('hide')
   closeRemark()
 
-this.remarkAdded = (remark) ->
-  renderRemark(remark)
-
-this.remarkEdited = (remark) ->
-  $("#remark-#{remark.id}").show().find(".remark-content").html(remark.remark)
-
-this.remarkDeleted = (remark) ->
-  $("#remark-#{remark.id}").remove()
+this.remarkPublished = (action, remark) ->
+  switch action
+    when 'create' then renderRemark(remark)
+    when 'update' then $("#remark-#{remark.id}").show().find(".remark-content").html(remark.remark)
+    when 'destroy' then $("#remark-#{remark.id}").remove()
 
 this.remarkSaved = (event, data, status, xhr) ->
   if 201 == xhr.status

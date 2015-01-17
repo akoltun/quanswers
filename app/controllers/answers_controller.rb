@@ -4,11 +4,11 @@ class AnswersController < ApplicationController
   before_action :load_answer, except: :create
   before_action :assign_question, except: :create
   before_action :authorize_user, except: [:create, :set_as_best]
+  after_action :publish, if: "@answer.errors.empty?", unless: "Rails.env.test?"
 
   def create
     @answer = @question.answers.build(answer_params.merge(user: current_user))
     if @answer.save
-      PrivatePub.publish_to "/questions/#{@question.id}/new", answer: @answer.to_json(include: :attachments) unless Rails.env.test?
       render json: @answer, include: :attachments, status: :created
     else
       render_errors @answer
@@ -17,7 +17,6 @@ class AnswersController < ApplicationController
 
   def update
     if @answer.update(answer_params)
-      PrivatePub.publish_to "/questions/#{@question.id}/edited", answer: @answer.to_json(include: :attachments) unless Rails.env.test?
       render json: @answer, include: :attachments
     else
       render_errors @answer
@@ -26,7 +25,6 @@ class AnswersController < ApplicationController
 
   def destroy
     @answer.destroy
-    PrivatePub.publish_to "/questions/#{@question.id}/deleted", answer: { id: @answer.id }.to_json unless Rails.env.test?
     render json: { id: @answer.id }
   end
 
@@ -34,7 +32,6 @@ class AnswersController < ApplicationController
     if @question.user == current_user
       @answer.best!
       if @question.save
-        PrivatePub.publish_to "/questions/#{@question.id}/edited", best_answer: { id: @answer.id }.to_json unless Rails.env.test?
         render json: { id: @answer.id }
       else
         render_errors @question
@@ -70,5 +67,9 @@ class AnswersController < ApplicationController
 
   def render_errors(source)
     render json: { errors: source.errors.full_messages }, status: :unprocessable_entity
+  end
+
+  def publish
+    PrivatePub.publish_to "/questions/#{@question.id}", action: action_name, answer: @answer.as_json(include: :attachments)
   end
 end

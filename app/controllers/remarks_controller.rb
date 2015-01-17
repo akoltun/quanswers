@@ -4,11 +4,11 @@ class RemarksController < ApplicationController
   before_action :authorize_user, except: :create
   before_action :load_remarkable, only: :create
   before_action :load_question, only: [:create, :update, :destroy]
+  after_action :publish, if: "@remark.errors.empty?", unless: "Rails.env.test?"
 
   def create
     @remark = @remarkable.remarks.build(remark_params.merge(user: current_user))
     if @remark.save
-      PrivatePub.publish_to "/questions/#{@question.id}/new", remark: @remark.to_json unless Rails.env.test?
       render json: @remark, status: :created
     else
       render json: @remark.errors.full_messages, status: :unprocessable_entity
@@ -17,7 +17,6 @@ class RemarksController < ApplicationController
 
   def update
     if @remark.update(remark_params)
-      PrivatePub.publish_to "/questions/#{@question.id}/edited", remark: @remark.to_json unless Rails.env.test?
       render json: @remark
     else
       render json: @remark.errors.full_messages, status: :unprocessable_entity
@@ -26,7 +25,6 @@ class RemarksController < ApplicationController
 
   def destroy
     @remark.destroy
-    PrivatePub.publish_to "/questions/#{@question.id}/deleted", remark: { id: @remark.id }.to_json unless Rails.env.test?
     render json: { id: @remark.id }
   end
 
@@ -64,4 +62,7 @@ class RemarksController < ApplicationController
     end
   end
 
+  def publish
+    PrivatePub.publish_to "/questions/#{@question.id}", action: action_name, remark: @remark
+  end
 end

@@ -9,13 +9,28 @@ this.editQuestionClicked = (event) ->
   $('#question-itself,#answers,#answers-title,#new-answer').hide()
   $('#question-form').show()
 
-this.questionAdded = (question) ->
-  unless $("#question-#{question.id}").length
-    $('#questions').prepend("<div id=\"question-#{question.id}\"><div class=\"title\"><hr><h4><a href=\"/questions/#{question.id}\">#{question.title}</a></h4></div><div class=\"content\">#{question.question}</div></div>")
+this.questionPublished = (action, question) ->
+  switch action
+    when 'create' then renderNewQuestion question
+    when 'update' then renderExistingQuestion question
+    when 'destroy' then $("#question-#{question.id}").remove()
 
-this.questionEdited = (question) ->
+#this.questionAdded = (question) ->
+#  unless $("#question-#{question.id}").length
+#    $('#questions').prepend("<div id=\"question-#{question.id}\"><div class=\"title\"><hr><h4><a href=\"/questions/#{question.id}\">#{question.title}</a></h4></div><div class=\"content\">#{question.question}</div></div>")
+#
+#this.questionEdited = (question) ->
+#  $("#question-#{question.id} .title a").html(question.title)
+#  $("#question-#{question.id} div.content").html(question.question)
+#
+#this.questionDeleted = (question) ->
+#  $("#question-#{question.id}").remove()
+
+renderNewQuestion = (question) ->
+  unless $("#question-#{question.id}").length
+    $('#questions').prepend HandlebarsTemplates['questions/show']
+      question: question
+
+renderExistingQuestion = (question) ->
   $("#question-#{question.id} .title a").html(question.title)
   $("#question-#{question.id} div.content").html(question.question)
-
-this.questionDeleted = (question) ->
-  $("#question-#{question.id}").remove()

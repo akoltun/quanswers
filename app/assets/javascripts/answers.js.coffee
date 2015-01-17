@@ -12,6 +12,13 @@ this.cancelAnswer = (event) ->
   $('#confirmation-dialog').modal('hide')
   unprepareAnswerForm()
 
+this.answerPublished = (action, answer) ->
+  switch action
+    when 'create' then renderNewAnswer answer
+    when 'update' then renderExistingAnswer answer
+    when 'destroy' then $("#answer-#{answer.id}").remove()
+    when 'set_as_best' then setBestAnswer answer.id
+
 this.answerAdded = (answer) ->
   renderNewAnswer answer
 
@@ -20,6 +27,19 @@ this.answerEdited = (answer) ->
 
 this.answerDeleted = (answer) ->
   $("#answer-#{answer.id}").remove()
+
+this.setBestAnswerSuccess = (event, data, status, xhr) ->
+  setBestAnswer xhr.responseJSON.id
+
+this.setBestAnswerError = (event, xhr, status, error) ->
+  $('#flash').html(flashMessage(error, 'error'))
+  console.log xhr
+
+this.setBestAnswer = (id) ->
+  $('.best-answer-button').show()
+  $('.best-answer').hide()
+  $("#answer-#{id} .best-answer").show()
+  $("#answer-#{id} .best-answer-button").hide()
 
 this.answerSaved = (event, data, status, xhr) ->
   answer = xhr.responseJSON
