@@ -41,6 +41,8 @@ gem "private_pub"
 gem "thin"
 gem 'handlebars_assets'
 gem 'responders'
+gem 'omniauth'
+gem 'omniauth-facebook'
 
 group :test, :development do
   gem 'rspec-rails'
