@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :omniauthable, omniauth_providers: [:facebook, :google_oauth2]
+         :omniauthable, omniauth_providers: [:facebook, :google_oauth2, :twitter]
 
   has_many :identities, dependent: :destroy
   has_many :questions, dependent: :restrict_with_error
@@ -15,13 +15,21 @@ class User < ActiveRecord::Base
     identity = Identity.where(provider: auth.provider, uid: auth.uid).first
     return identity.user if identity
 
-    user = User.where(email: auth.info[:email]).first
-    unless user
-      password = Devise.friendly_token[0, 20]
-      user = User.create!(username: auth.info[:nickname] || auth.info[:name], email: auth.info[:email], password: password, password_confirmation: password)
-    end
-    user.identities.create(provider: auth.provider, uid: auth.uid)
+    email = auth.info[:email]
 
-    user
+    if email
+      user = User.where(email: email).first
+      unless user
+        password = Devise.friendly_token[0, 20]
+        user = User.create!(username: auth.info[:nickname] || auth.info[:name] || email, email: email, password: password, password_confirmation: password)
+      end
+      user.identities.create(provider: auth.provider, uid: auth.uid)
+
+      user
+
+    else
+      UserConfirmationRequest.where(provider: auth.provider, uid: auth.uid).first ||
+          UserConfirmationRequest.new(provider: auth.provider, uid: auth.uid)
+    end
   end
 end

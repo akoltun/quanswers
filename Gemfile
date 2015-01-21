@@ -44,6 +44,8 @@ gem 'responders'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem "omniauth-google-oauth2"
+gem 'omniauth-twitter'
+gem 'capybara-email'
 
 group :test, :development do
   gem 'rspec-rails'

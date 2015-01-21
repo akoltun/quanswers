@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150120152424) do
+ActiveRecord::Schema.define(version: 20150121131227) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,6 +71,18 @@ ActiveRecord::Schema.define(version: 20150120152424) do
 
   add_index "remarks", ["remarkable_type", "remarkable_id"], name: "index_remarks_on_remarkable_type_and_remarkable_id", using: :btree
   add_index "remarks", ["user_id"], name: "index_remarks_on_user_id", using: :btree
+
+  create_table "user_confirmation_requests", force: true do |t|
+    t.string   "provider"
+    t.string   "uid"
+    t.string   "email"
+    t.string   "username"
+    t.string   "confirmation_token"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_confirmation_requests", ["provider", "uid"], name: "index_user_confirmation_requests_on_provider_and_uid", unique: true, using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'users/confirmation'
+
   devise_for :users, controllers: { omniauth_callbacks: 'omniauth_callbacks', registrations: 'registrations' }
   root 'questions#index'
 
@@ -10,6 +12,10 @@ Rails.application.routes.draw do
     resources :answers, only: [:new, :show, :create, :update, :destroy], concerns: :remarkable, shallow: true do
       patch :set_as_best, on: :member
     end
+  end
+
+  resources :user_confirmation_requests, only: [:new, :edit, :create, :update] do
+    get :confirm, on: :member
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

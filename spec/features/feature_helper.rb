@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'capybara/email/rspec'
 # require 'capybara/poltergeist'
 
 RSpec.configure do |config|

@@ -1,0 +1,14 @@
+doctype html
+html
+  head
+    meta content='text/html; charset=UTF-8' http-equiv='Content-Type'
+  body
+    h1 Hello = @user_confirmation_request.username
+    p You or somebody else have registered QuAnswers account to this email address via your @user_confirmation_request.provider account. If it was you, please, confirm that you are the owner of this email address by following the link
+    = link_to 'Confirm the email address', confirm_user_confirmation_request_url(@user_confirmation_request.id, confirmation_token: @user_confirmation_request.confirmation_token)
+    p If it was not you probably somebody has got access to your @user_confirmation_request.provider account.
+    br
+    p
+      | Best wishes,
+      br
+      | QuAnswers team!

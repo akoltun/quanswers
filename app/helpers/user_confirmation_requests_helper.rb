@@ -1,0 +1,2 @@
+module UserConfirmationRequestsHelper
+end

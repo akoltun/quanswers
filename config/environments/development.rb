@@ -15,6 +15,10 @@ Rails.application.configure do
 
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
+  # config.action_mailer.smtp_settings[:address] = Rails.application.secrets.mailer_smtp_address
+  # config.action_mailer.smtp_settings[:port] = Rails.application.secrets.mailer_smtp_port
+  # config.action_mailer.smtp_settings[:user_name] = Rails.application.secrets.mailer_smtp_user_name
+  # config.action_mailer.smtp_settings[:password] = Rails.application.secrets.mailer_smtp_user_password
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

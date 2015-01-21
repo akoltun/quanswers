@@ -22,50 +22,82 @@ RSpec.describe User, :type => :model do
     end
 
     context "user does not have identity" do
-      context "user already exists" do
-        it "does not create a new user" do
-          expect { find_for_oauth }.not_to change(User, :count)
+      context "provider provides email (e.g. facebook)" do
+        context "user already exists" do
+          it "does not create a new user" do
+            expect { find_for_oauth }.not_to change(User, :count)
+          end
+
+          it "creates user's identity" do
+            expect { find_for_oauth }.to change(user.identities, :count).by(1)
+          end
+
+          it "creates user's identity with correct data" do
+            identity = find_for_oauth.identities.first
+
+            expect(identity.provider).to eq auth.provider
+            expect(identity.uid).to eq auth.uid
+          end
+
+          it "returns user" do
+            expect(find_for_oauth).to eq user
+          end
         end
 
-        it "creates user's identity" do
-          expect { find_for_oauth }.to change(user.identities, :count).by(1)
-        end
+        context "new user" do
+          let(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456', info: { email: 'new@user.com', name: "New User" }) }
+          it "creates user" do
+            expect { find_for_oauth }.to change(User, :count).by(1)
+          end
 
-        it "creates user's identity with correct data" do
-          identity = find_for_oauth.identities.first
+          it "returns created user" do
+            expect(find_for_oauth).to be_a User
+          end
 
-          expect(identity.provider).to eq auth.provider
-          expect(identity.uid).to eq auth.uid
-        end
+          it "creates user with correct email" do
+            expect(find_for_oauth.email).to eq auth.info[:email]
+          end
 
-        it "returns user" do
-          expect(find_for_oauth).to eq user
+          it "creates user's identity" do
+            expect(find_for_oauth.identities).not_to be_empty
+          end
+
+          it "creates user's identity with correct data" do
+            identity = find_for_oauth.identities.first
+
+            expect(identity.provider).to eq auth.provider
+            expect(identity.uid).to eq auth.uid
+          end
         end
       end
 
-      context "new user" do
-        let(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456', info: { email: 'new@user.com', name: "New User" }) }
-        it "creates user" do
-          expect { find_for_oauth }.to change(User, :count).by(1)
+      context "provider does not provide email (e.g. twitter)" do
+        let(:auth) { OmniAuth::AuthHash.new(provider: 'twitter', uid: '123456', info: { name: user.username }) }
+
+        it "does not create a new user confirmation request" do
+          expect { find_for_oauth }.not_to change(UserConfirmationRequest, :count)
         end
 
-        it "returns created user" do
-          expect(find_for_oauth).to be_a User
+        context "user is requested for confirmation for the first time" do
+          it "returns not saved user confirmation request" do
+            expect(find_for_oauth).to be_a UserConfirmationRequest
+          end
+
+          it "builds user confirmation request with correct data" do
+            confirmation_request = find_for_oauth
+
+            expect(confirmation_request.provider).to eq auth.provider
+            expect(confirmation_request.uid).to eq auth.uid
+            expect(confirmation_request.username).to eq auth.name
+          end
         end
 
-        it "creates user with correct email" do
-          expect(find_for_oauth.email).to eq auth.info[:email]
-        end
+        context "user is requested for confirmation not for the first time" do
+          let!(:confirmation) { create(:user_confirmation_request, provider: auth.provider, uid: auth.uid, username: user.username) }
 
-        it "creates user's identity" do
-          expect(find_for_oauth.identities).not_to be_empty
-        end
-
-        it "creates user's identity with correct data" do
-          identity = find_for_oauth.identities.first
-
-          expect(identity.provider).to eq auth.provider
-          expect(identity.uid).to eq auth.uid
+          it "returns user confirmation request" do
+            expect(find_for_oauth).to eq confirmation
+          end
         end
       end
     end
