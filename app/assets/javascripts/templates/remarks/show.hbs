@@ -6,10 +6,16 @@
        data-error="remarkDeleteError"
        data-method="DELETE"
        data-remote="true"
+       data-type="json"
        data-success="remarkDeleteSuccess"
        href="/remarks/{{remark.id}}">Delete</a>
     <br>
     <br>
+  {{/if}}
+  {{#if remark.author}}
+    <div class="author">
+      <p>Author:&nbsp;<strong>{{remark.author}}</strong></p>
+    </div>
   {{/if}}
   <div class="remark-content">{{{remark.remark}}}</div>
 </div>

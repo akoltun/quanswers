@@ -4,11 +4,12 @@ nav.navbar.navbar-inverse
   .collapse.navbar-collapse
     ul.nav.navbar-nav
       li = link_to "Questions list", questions_path
-    - if user_signed_in?
-      = form_tag(destroy_user_session_path, method: "DELETE", class: "navbar-form navbar-right" )
-        = submit_tag "Sign out", class: "btn btn-default"
-    - else
-      ul.nav.navbar-nav.navbar-right
+    ul.nav.navbar-nav.navbar-right
+      - if user_signed_in?
+        li
+          p.navbar-text Hello, #{current_user.username}
+        li = link_to "Sign out", destroy_user_session_path, method: "DELETE"
+      - else
         - unless current_page?(new_user_session_path)
           li = link_to "Sign in", new_user_session_path
         - unless current_page?(new_user_registration_path)

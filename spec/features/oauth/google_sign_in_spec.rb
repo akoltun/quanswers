@@ -15,7 +15,8 @@ feature 'User sign in via Google', %q{
     click_on 'Sign in with Google Oauth2'
 
     expect(page).to have_content('Successfully authenticated from Google account')
-    expect(page).to have_button('Sign out')
+    expect(page).to have_content("Hello, Test")
+    expect(page).to have_link('Sign out')
     expect(page).not_to have_link('Sign in')
   end
 

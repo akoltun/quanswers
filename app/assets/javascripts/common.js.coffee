@@ -14,18 +14,24 @@ this.initWidgets = () ->
 $ ->
   initWidgets()
   $(document).on 'confirm', confirmEvent
-  setQuestionsPub() if $('#questions').length
+  setQuestionsPubs() if $('#questions').length
   questionId = $('#question').data('question-id')
-  setQuestionPub(questionId) if questionId
+  setQuestionPubs(questionId) if questionId
 
-setQuestionPub = (questionId) ->
-  PrivatePub.subscribe "/questions/#{questionId}", (data, channel) ->
-    answerPublished(data.action, data.answer) if data.answer
-    remarkPublished(data.action, data.remark) if data.remark
+setQuestionPubs = (questionId) ->
+  PrivatePub.subscribe "/questions/#{questionId}", questionPubSubscription
+  PrivatePub.subscribe "/signed_in/questions/#{questionId}", questionPubSubscription
 
-setQuestionsPub = () ->
-  PrivatePub.subscribe "/questions", (data, channel) ->
-    questionPublished(data.action, data.question) if data.question
+setQuestionsPubs = () ->
+  PrivatePub.subscribe "/questions", questionsPubSubscription
+  PrivatePub.subscribe "/signed_in/questions", questionsPubSubscription
+
+questionsPubSubscription = (data, channel)->
+  questionPublished(data.action, data.question) if data.question
+
+questionPubSubscription = (data, channel)->
+  answerPublished(data.action, data.answer) if data.answer
+  remarkPublished(data.action, data.remark) if data.remark
 
 confirmEvent = (e) ->
   elem = $(e.target)

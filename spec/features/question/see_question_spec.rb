@@ -19,20 +19,33 @@ feature 'User sees question page', %q{
     visit question_path questions[1]
 
     within('#question') do
+      expect(page).not_to have_content "Author"
+      expect(page).not_to have_content questions[1].user.username
       expect(page).to have_content questions[1].title
       expect(page).to have_content questions[1].question
       expect(page).not_to have_selector 'textarea'
     end
   end
+end
 
-  scenario "User sees all answers" do
-    visit question_path questions[1]
+feature 'User sees question author', %q{
+  In order to be able to personalize question
+  As an authenticated user
+  I want to be able to see question author name
+} do
+  given(:user) { create(:user) }
+  given!(:question) { create(:question) }
 
-    within('#answers') do
-      questions[1].answers.each do |answer|
-        expect(page).to have_content answer.answer
-        expect(page).not_to have_selector 'textarea'
-      end
+  scenario "User sees question" do
+    sign_in user
+    visit question_path question
+
+    within('#question') do
+      expect(page).to have_content "Author"
+      expect(page).to have_content question.user.username
+      expect(page).to have_content question.title
+      expect(page).to have_content question.question
+      expect(page).not_to have_selector 'textarea'
     end
   end
 end

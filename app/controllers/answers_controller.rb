@@ -10,13 +10,15 @@ class AnswersController < ApplicationController
   respond_to :json
 
   def create
-    respond_with(@answer = @question.answers.create(answer_params.merge(user: current_user)))
+    respond_with(@answer = @question.answers.create(answer_params.merge(user: current_user))) do |format|
+      format.json { render json: answer_as_json(true) } if @answer.errors.empty?
+    end
   end
 
   def update
     @answer.update(answer_params)
     respond_with @answer do |format|
-      format.json { render json: @answer, include: :attachments } if @answer.errors.empty?
+      format.json { render json: answer_as_json(true) } if @answer.errors.empty?
     end
   end
 
@@ -56,7 +58,7 @@ class AnswersController < ApplicationController
   end
 
   def load_answer
-    @answer = Answer.find(params[:id])
+    @answer = Answer.includes(:attachments).find(params[:id])
   end
 
   def assign_question
@@ -67,11 +69,23 @@ class AnswersController < ApplicationController
     render json: { errors: source.errors.full_messages }, status: :unprocessable_entity
   end
 
+  def answer_as_json(singed_in)
+    hash = @answer.as_json(include: :attachments)
+    if singed_in
+      hash[:author] = @answer.user.username
+    else
+      hash.except!(:user_id)
+    end
+    hash
+  end
+
   def publish
-    PrivatePub.publish_to "/questions/#{@question.id}", action: action_name, answer: @answer.as_json(include: :attachments)
+    PrivatePub.publish_to "/questions/#{@question.id}", action: action_name, answer: answer_as_json(false)
+    PrivatePub.publish_to "/signed_in/questions/#{@question.id}", action: action_name, answer: answer_as_json(true)
   end
 
   def publish_best_answer
     PrivatePub.publish_to "/questions", action: 'has_best_answer', question: { id: @answer.question.id, no_best_answer: !@answer.question.best_answer }
+    PrivatePub.publish_to "/signed_in/questions", action: 'has_best_answer', question: { id: @answer.question.id, no_best_answer: !@answer.question.best_answer }
   end
 end

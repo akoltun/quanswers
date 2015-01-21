@@ -75,12 +75,12 @@ class QuestionsController < ApplicationController
   end
 
   def publish
-    question_hash = {
-        id: @question.id,
-        title: @question.title,
-        question: truncate_html(@question.question),
-        no_best_answer: @question.best_answer.nil?
-    }
+    question_hash = @question.as_json(only: [:id, :title])
+    question_hash[:question] = truncate_html(@question.question)
+    questions_path[:no_best_answer] = @question.best_answer.nil?
     PrivatePub.publish_to "/questions", action: action_name, question: question_hash
+
+    question_hash[:author] = @question.user.username
+    PrivatePub.publish_to "/signed_in/questions", action: action_name, question: question_hash
   end
 end

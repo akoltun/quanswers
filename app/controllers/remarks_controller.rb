@@ -60,6 +60,11 @@ class RemarksController < ApplicationController
   end
 
   def publish
-    PrivatePub.publish_to "/questions/#{@question.id}", action: action_name, remark: @remark
+    remark = @remark.as_json(except: :user_id)
+    PrivatePub.publish_to "/questions/#{@question.id}", action: action_name, remark: remark
+
+    remark[:user_id] = @remark.user.id
+    remark[:author] = @remark.user.username
+    PrivatePub.publish_to "/signed_in/questions/#{@question.id}", action: action_name, remark: remark
   end
 end

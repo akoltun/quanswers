@@ -5,6 +5,11 @@
       = link_to "Delete", remark, data: { type: :json, method: "DELETE", remote: true, success: 'remarkDeleteSuccess', error: 'remarkDeleteError', confirm: true}, class: "btn btn-default delete-remark"
       br
       br
+    - if user_signed_in?
+      .author
+        p
+          | Author:&nbsp;
+          strong = remark.user.username
     .remark-content
       = raw remark.remark
 = link_to "Add Remark", '', data: { action: add_action }, class: "btn add-remark" if user_signed_in?

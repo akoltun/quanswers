@@ -15,7 +15,8 @@ feature 'User sign out', %q{
 
     expect(page).to have_content('Signed out successfully')
     expect(current_path).to eq root_path
-    expect(page).not_to have_content('Sign out')
+    expect(page).not_to have_content("Hello, #{user.username}")
+    expect(page).not_to have_link('Sign out')
     expect(page).to have_link('Sign in')
   end
 end

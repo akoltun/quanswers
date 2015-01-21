@@ -24,7 +24,8 @@ feature 'User sign up', %q{
     click_on 'Sign up'
 
     expect(page).to have_content('Welcome! You have signed up successfully.')
-    expect(page).to have_button('Sign out')
+    expect(page).to have_content("Hello, #{user[:username]}")
+    expect(page).to have_link('Sign out')
   end
 
 end

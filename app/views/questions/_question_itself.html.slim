@@ -5,6 +5,11 @@
   = link_to "Back to Questions List", questions_path, class: "btn btn-info"
 
 h3 =@question.title
+- if user_signed_in?
+  .author
+    p
+      | Author:&nbsp;
+      strong = @question.user.username
 p =raw @question.question
 = render partial: 'attachments/attachments', object: @question.attachments
 

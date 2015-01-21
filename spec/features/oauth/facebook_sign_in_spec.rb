@@ -15,7 +15,8 @@ feature 'User sign in via Facebook', %q{
     click_on 'Sign in with Facebook'
 
     expect(page).to have_content('Successfully authenticated from Facebook')
-    expect(page).to have_button('Sign out')
+    expect(page).to have_content("Hello, Test")
+    expect(page).to have_link('Sign out')
     expect(page).not_to have_link('Sign in')
   end
 

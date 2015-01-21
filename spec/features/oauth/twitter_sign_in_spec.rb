@@ -20,7 +20,8 @@ feature 'User sign in via Twitter', %q{
       click_on 'Sign in with Twitter'
 
       expect(page).to have_content('Successfully authenticated from Twitter')
-      expect(page).to have_button('Sign out')
+      expect(page).to have_content("Hello, #{user.username}")
+      expect(page).to have_link('Sign out')
       expect(page).not_to have_link('Sign in')
     end
   end
@@ -30,7 +31,8 @@ feature 'User sign in via Twitter', %q{
     click_on 'Sign in with Twitter'
 
     expect(page).not_to have_content('Successfully authenticated from Twitter')
-    expect(page).not_to have_button('Sign out')
+    expect(page).not_to have_content("Hello,")
+    expect(page).not_to have_link('Sign out')
     expect(page).to have_link('Sign in')
 
     fill_in 'Username', with: 'Test2'
@@ -38,7 +40,8 @@ feature 'User sign in via Twitter', %q{
     click_on 'Confirm'
 
     expect(page).not_to have_content('Successfully authenticated from Twitter')
-    expect(page).not_to have_button('Sign out')
+    expect(page).not_to have_content("Hello, Test2")
+    expect(page).not_to have_link('Sign out')
     expect(page).to have_link('Sign in')
     expect(page).to have_content('The message with further instructions has been sent to your email')
     expect(current_path).to eq questions_path
@@ -49,7 +52,8 @@ feature 'User sign in via Twitter', %q{
 
     expect(current_path).to eq root_path
     expect(page).to have_content('Successfully authenticated from Twitter')
-    expect(page).to have_button('Sign out')
+    expect(page).to have_content("Hello, Test2")
+    expect(page).to have_link('Sign out')
     expect(page).not_to have_link('Sign in')
   end
 
@@ -66,7 +70,8 @@ feature 'User sign in via Twitter', %q{
     click_on 'Confirm'
 
     expect(page).not_to have_content('Successfully authenticated from Twitter')
-    expect(page).not_to have_button('Sign out')
+    expect(page).not_to have_content("Hello, Test2")
+    expect(page).not_to have_link('Sign out')
     expect(page).to have_link('Sign in')
     expect(page).to have_content('The message with further instructions has been sent to your email')
     expect(current_path).to eq questions_path
@@ -75,7 +80,8 @@ feature 'User sign in via Twitter', %q{
     click_on 'Sign in with Twitter'
 
     expect(page).not_to have_content('Successfully authenticated from Twitter')
-    expect(page).not_to have_button('Sign out')
+    expect(page).not_to have_content("Hello, Test2")
+    expect(page).not_to have_link('Sign out')
     expect(page).to have_link('Sign in')
 
     fill_in 'Username', with: 'Test3'
@@ -88,7 +94,8 @@ feature 'User sign in via Twitter', %q{
 
     expect(current_path).to eq root_path
     expect(page).to have_content('Successfully authenticated from Twitter')
-    expect(page).to have_button('Sign out')
+    expect(page).to have_content("Hello, Test3")
+    expect(page).to have_link('Sign out')
     expect(page).not_to have_link('Sign in')
   end
 

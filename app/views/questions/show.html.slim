@@ -12,7 +12,10 @@
       = render partial: 'answers/answer_form'
 
 - unless Rails.env.test?
-  = subscribe_to "/questions/#{@question.id}"
+  - if user_signed_in?
+    = subscribe_to "/signed_in/questions/#{@question.id}"
+  - else
+    = subscribe_to "/questions/#{@question.id}"
 
 javascript:
   function getUserId() {
