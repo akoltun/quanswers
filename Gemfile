@@ -43,6 +43,7 @@ gem 'handlebars_assets'
 gem 'responders'
 gem 'omniauth'
 gem 'omniauth-facebook'
+gem "omniauth-google-oauth2"
 
 group :test, :development do
   gem 'rspec-rails'

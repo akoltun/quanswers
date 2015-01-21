@@ -16,10 +16,8 @@ def make_questions(user, count)
   count.times do |n|
     question = Question.create!(user: user, title: Faker::Lorem.sentence, question: Faker::Lorem.paragraph(10))
 
-    make_answers(question, 6)
     make_answers(question, 6, user)
 
-    make_remarks(question, 3)
     make_remarks(question, 3, user)
 
     set_best_answer(question)
@@ -30,7 +28,6 @@ def make_answers(question, count, user = nil)
   rand(count).times do |i|
     answer = question.answers.create!(answer: Faker::Lorem.paragraph(10), user: user || FactoryGirl.create(:user, email_base: "sample.com"))
 
-    make_remarks(answer, 3)
     make_remarks(answer, 3, user)
   end
 end
