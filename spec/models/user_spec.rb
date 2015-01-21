@@ -1,13 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe User, :type => :model do
+  it { is_expected.to have_db_index(:username).unique(true) }
+  it { is_expected.to validate_presence_of :username }
   it { is_expected.to validate_presence_of :email }
   it { is_expected.to validate_presence_of :password }
   it { is_expected.to have_many(:identities).dependent(:destroy) }
+  it { is_expected.to have_many(:questions).dependent(:restrict_with_error) }
+  it { is_expected.to have_many(:answers).dependent(:restrict_with_error) }
 
   describe ".find_for_oauth" do
     let!(:user) { create(:user) }
-    let(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456', info: { email: user.email }) }
+    let(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456', info: { email: user.email, name: user.username }) }
     let(:find_for_oauth) { User.find_for_oauth(auth) }
 
     context "user already has identity" do
@@ -40,7 +44,7 @@ RSpec.describe User, :type => :model do
       end
 
       context "new user" do
-        let(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456', info: { email: 'new@user.com' }) }
+        let(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456', info: { email: 'new@user.com', name: "New User" }) }
         it "creates user" do
           expect { find_for_oauth }.to change(User, :count).by(1)
         end

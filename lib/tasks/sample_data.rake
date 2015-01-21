@@ -1,15 +1,15 @@
 namespace :db do
   desc "Fill database with sample data"
   task populate: :environment do
-    make_user('test3@test.com')
-    make_questions make_user('test2@test.com'), 20
-    make_questions make_user('test1@test.com'), 30
-    make_questions make_user('test@test.com'), 50
+    make_user('test3', 'test3@test.com')
+    make_questions make_user('test2', 'test2@test.com'), 20
+    make_questions make_user('test1', 'test1@test.com'), 30
+    make_questions make_user('test', 'test@test.com'), 50
   end
 end
 
-def make_user(email)
-  User.create!(email: email, password: '12345678')
+def make_user(user_name, email)
+  User.create!(username: user_name, email: email, password: '12345678')
 end
 
 def make_questions(user, count)
@@ -17,7 +17,6 @@ def make_questions(user, count)
     question = Question.create!(user: user, title: Faker::Lorem.sentence, question: Faker::Lorem.paragraph(10))
 
     make_answers(question, 6, user)
-
     make_remarks(question, 3, user)
 
     set_best_answer(question)
