@@ -75,7 +75,12 @@ class QuestionsController < ApplicationController
   end
 
   def publish
-    @question.question = truncate_html(@question.question) unless @question.frozen?
-    PrivatePub.publish_to "/questions", action: action_name, question: @question
+    question_hash = {
+        id: @question.id,
+        title: @question.title,
+        question: truncate_html(@question.question),
+        no_best_answer: @question.best_answer.nil?
+    }
+    PrivatePub.publish_to "/questions", action: action_name, question: question_hash
   end
 end

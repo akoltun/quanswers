@@ -33,4 +33,25 @@ RSpec.describe Answer, :type => :model do
       expect(answer.question.best_answer).to eq answer
     end
   end
+
+  context "when destroy best answer" do
+    before do
+      answer.best!
+      answer.destroy!
+    end
+    it "nils question #best_answer" do
+      expect(answer.question.best_answer).to be_nil
+    end
+  end
+
+  context "when destroy not best answer" do
+    before do
+      create(:unique_answer, question: answer.question).best!
+      answer.question.save!
+      answer.destroy!
+    end
+    it "nils question #best_answer" do
+      expect(answer.question.best_answer).not_to be_nil
+    end
+  end
 end

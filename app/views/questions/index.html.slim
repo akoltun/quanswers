@@ -7,13 +7,12 @@
         div id="question-#{question.id}"
           hr
             .title
-              h4 =link_to question.title, question
+              h4
+                =link_to question.title, question
+                span class="label label-success has-best-answer#{question.best_answer.nil? ? ' hide' : ''}" Has Best Answer
             .content
               = truncate_html(question.question)
 
 hr
 - unless Rails.env.test?
   = subscribe_to "/questions"
-  /= subscribe_to "/questions/new"
-  /= subscribe_to "/questions/edited"
-  /= subscribe_to "/questions/deleted"

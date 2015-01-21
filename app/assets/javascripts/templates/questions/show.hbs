@@ -1,7 +1,10 @@
 <div id="question-{{question.id}}">
   <div class="title">
     <hr>
-    <h4><a href="/questions/{{question.id}}">{{question.title}}</a></h4>
+    <h4>
+      <a href="/questions/{{question.id}}">{{question.title}}</a>
+      <span class="label label-success has-best-answer{{#if question.no_best_answer}} hide{{/if}}">Has Best Answer</span>
+    </h4>
   </div>
   <div class="content">{{{question.question}}}</div>
 </div>

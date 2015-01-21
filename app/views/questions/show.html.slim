@@ -13,9 +13,6 @@
 
 - unless Rails.env.test?
   = subscribe_to "/questions/#{@question.id}"
-  /= subscribe_to "/questions/#{@question.id}/new"
-  /= subscribe_to "/questions/#{@question.id}/edited"
-  /= subscribe_to "/questions/#{@question.id}/deleted"
 
 javascript:
   function getUserId() {

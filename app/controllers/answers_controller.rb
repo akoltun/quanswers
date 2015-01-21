@@ -5,6 +5,7 @@ class AnswersController < ApplicationController
   before_action :assign_question, except: :create
   before_action :authorize_user, except: [:create, :set_as_best]
   after_action :publish, if: "@answer.errors.empty?", unless: "Rails.env.test?"
+  after_action :publish_best_answer, only: [:set_as_best, :destroy], if: "@answer.errors.empty?", unless: "Rails.env.test?"
 
   respond_to :json
 
@@ -68,5 +69,9 @@ class AnswersController < ApplicationController
 
   def publish
     PrivatePub.publish_to "/questions/#{@question.id}", action: action_name, answer: @answer.as_json(include: :attachments)
+  end
+
+  def publish_best_answer
+    PrivatePub.publish_to "/questions", action: 'has_best_answer', question: { id: @answer.question.id, no_best_answer: !@answer.question.best_answer }
   end
 end
