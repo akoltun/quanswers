@@ -2,9 +2,10 @@ namespace :db do
   desc "Fill database with sample data"
   task populate: :environment do
     make_user('test3', 'test3@test.com')
-    make_questions make_user('test2', 'test2@test.com'), 20
-    make_questions make_user('test1', 'test1@test.com'), 30
-    make_questions make_user('test', 'test@test.com'), 50
+    make_questions(user2 = make_user('test2', 'test2@test.com'), 20)
+    make_questions(user1 = make_user('test1', 'test1@test.com'), 30)
+    make_questions(user0 = make_user('test', 'test@test.com'), 50)
+    make_ratings_for [user0, user1, user2]
   end
 end
 
@@ -39,4 +40,21 @@ end
 
 def set_best_answer(question)
   question.update!(best_answer: question.answers[rand(question.answers.size)])
+end
+
+def make_ratings_for(users)
+  Question.all.each do |question|
+    users.each do |user|
+      if question.user != user
+        question.ratings.create!(user: user, rating: rand(50)/10.0)
+      end
+    end
+  end
+  Answer.all.each do |answer|
+    users.each do |user|
+      if answer.user != user
+        answer.ratings.create!(user: user, rating: rand(50)/10.0)
+      end
+    end
+  end
 end

@@ -49,6 +49,10 @@ gem 'capybara-email'
 gem "letter_opener", :group => :development
 gem "cancancan"
 
+source 'https://rails-assets.org' do
+  gem 'rails-assets-bootstrap-star-rating'
+end
+
 group :test, :development do
   gem 'rspec-rails'
   gem 'factory_girl_rails'

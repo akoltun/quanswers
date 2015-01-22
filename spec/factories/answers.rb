@@ -14,6 +14,12 @@ FactoryGirl.define do
 
     factory :unique_answer do
       sequence(:answer) { |n| "My #{n} Answer" }
+
+      factory :unique_answer_with_rating do
+        after(:create) do |answer|
+          create(:rating, ratingable: answer)
+        end
+      end
     end
   end
 

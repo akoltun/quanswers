@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
   has_many :identities, dependent: :destroy
   has_many :questions, dependent: :restrict_with_error
   has_many :answers, dependent: :restrict_with_error
+  has_many :ratings, dependent: :restrict_with_error
 
   validates :username, presence: true
 

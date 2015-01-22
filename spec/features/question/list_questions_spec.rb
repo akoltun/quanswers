@@ -5,7 +5,7 @@ feature 'User lists questions', %q{
   As an user
   I want to be able to list all questions
 } do
-  given!(:questions) { create_list(:unique_question, 2) }
+  given!(:questions) { create_list(:unique_question_with_rating, 2) }
 
   scenario 'User lists all questions' do
     visit questions_path
@@ -16,6 +16,7 @@ feature 'User lists questions', %q{
           expect(page).to have_content "Created: #{question.created_at.to_s(:long)}"
           expect(page).to have_content "Last update: #{question.updated_at.to_s(:long)}"
         end
+        expect(page).to have_selector('input.rating[value="3.0"][readonly]')
         expect(page).not_to have_content "Author"
         expect(page).not_to have_content question.user.username
         expect(page).to have_link question.title
@@ -31,7 +32,7 @@ feature 'Authenticated user sees questions authors', %q{
   I want to be able to see question author name
 } do
   given(:user) { create(:user) }
-  given!(:questions) { create_list(:unique_question, 2) }
+  given!(:questions) { create_list(:unique_question_with_rating, 2) }
 
   scenario 'User lists all questions' do
     sign_in user
@@ -45,6 +46,7 @@ feature 'Authenticated user sees questions authors', %q{
           expect(page).to have_content "Author:"
           expect(page).to have_content question.user.username
         end
+        expect(page).to have_selector('input.rating[value="3.0"][readonly]')
         expect(page).to have_link question.title
         expect(page).to have_content question.question
       end

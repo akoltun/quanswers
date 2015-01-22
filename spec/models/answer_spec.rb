@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'models/ratingable'
 
 RSpec.describe Answer, :type => :model do
 
@@ -11,6 +11,7 @@ RSpec.describe Answer, :type => :model do
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:question) }
   it { is_expected.to have_many(:remarks) }
+  it { is_expected.to have_many(:ratings).dependent(:destroy) }
   it { is_expected.to have_many(:attachments).dependent(:destroy) }
   it { is_expected.to accept_nested_attributes_for :attachments }
 
@@ -54,4 +55,7 @@ RSpec.describe Answer, :type => :model do
       expect(answer.question.best_answer).not_to be_nil
     end
   end
+
+  subject { create(:answer) }
+  it_behaves_like "a ratingable"
 end

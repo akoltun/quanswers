@@ -16,6 +16,12 @@ FactoryGirl.define do
     factory :unique_question do
       sequence(:title)    { |n| "My Question #{n} Title" }
       sequence(:question) { |n| "My Question #{n} Body" }
+
+      factory :unique_question_with_rating do
+        after(:create) do |question|
+          create(:rating, ratingable: question)
+        end
+      end
     end
 
     factory :question_with_answers do

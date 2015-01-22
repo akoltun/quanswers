@@ -20,6 +20,7 @@
 //= require bootstrap-sprockets
 //= require bootstrap-wysihtml5
 //= require bootstrap-wysihtml5/locales
+//= require bootstrap-star-rating
 // require turbolinks
 //= require_tree .
 

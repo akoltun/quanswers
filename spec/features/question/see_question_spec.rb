@@ -5,15 +5,15 @@ feature 'User sees question page', %q{
   As an user
   I want to be able to open question page
 } do
-  given(:questions) { create_list(:unique_question, 2) }
+  given(:questions) { create_list(:unique_question_with_rating, 2) }
   given(:question) { questions.first }
-  background { create_list(:unique_answer, 2, question: question) }
+  background { create_list(:unique_answer_with_rating, 2, question: question) }
 
   scenario 'User opens question page' do
     visit questions_path
-    click_on questions[1].title
+    click_on question.title
 
-    expect(current_path).to eq question_path questions[1].id
+    expect(current_path).to eq question_path question.id
   end
 
   scenario "User sees question" do
@@ -24,6 +24,7 @@ feature 'User sees question page', %q{
         expect(page).to have_content "Created: #{question.created_at.to_s(:long)}"
         expect(page).to have_content "Last update: #{question.updated_at.to_s(:long)}"
       end
+      expect(page).to have_selector('input.rating[value="3.0"]')
       expect(page).not_to have_content "Author"
       expect(page).not_to have_content question.user.username
       expect(page).to have_content question.title

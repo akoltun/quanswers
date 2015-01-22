@@ -1,8 +1,11 @@
 class Answer < ActiveRecord::Base
+  include Ratingable
+
   belongs_to :question
   belongs_to :user
   has_many :remarks, as: :remarkable, dependent: :destroy
   has_many :attachments, as: :attachmentable, dependent: :destroy
+  has_many :ratings, as: :ratingable, dependent: :destroy
 
   validates :question, :user, presence: true
   validates :answer, presence: true, length: { maximum: 2000 }
@@ -19,6 +22,17 @@ class Answer < ActiveRecord::Base
 
   def best?
     question.best_answer == self
+  end
+
+  def set_rating(rating_value)
+    return false if current_user = user
+
+    current_rating = ratings.where(user: current_user).first
+    if current_rating
+      current_rating.update(rating: rating_value)
+    else
+      ratings.create(user: current_user, rating: rating_value)
+    end
   end
 
   private
