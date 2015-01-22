@@ -7,11 +7,10 @@
         = link_to "Delete", remark, data: { type: :json, method: "DELETE", remote: true, success: 'remarkDeleteSuccess', error: 'remarkDeleteError', confirm: true}, class: "btn btn-default delete-remark"
       br
       br
-    - if can? :see, :author
-      .author
-        p
-          | Author:&nbsp;
-          strong = remark.user.username
+    p.meta-info
+      - if can? :see, :author
+        | Author:&nbsp;
+        strong = remark.user.username
     .remark-content
       = raw remark.remark
 - if can? :create, Remark

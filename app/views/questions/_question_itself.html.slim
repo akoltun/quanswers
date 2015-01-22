@@ -6,11 +6,10 @@
   = link_to "Back to Questions List", questions_path, class: "btn btn-info"
 
 h3 =@question.title
-- if can? :see, :author
-  .author
-    p
-      | Author:&nbsp;
-      strong = @question.user.username
+p.meta-info
+  - if can? :see, :author
+    | Author:&nbsp;
+    strong = @question.user.username
 p =raw @question.question
 = render partial: 'attachments/attachments', object: @question.attachments
 

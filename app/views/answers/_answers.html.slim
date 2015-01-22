@@ -12,11 +12,10 @@
             = link_to "Delete Answer", answer, data: { type: :json, method: "DELETE", confirm: true, remote: true, success: 'answerDeleteSuccess', error: 'answerDeleteError' }, class: "btn btn-danger delete-answer-button"
         br
 
-      - if can? :see, :author
-        .author
-          p
-            | Author:&nbsp;
-            strong = answer.user.username
+      p.meta-info
+        - if can? :see, :author
+          | Author:&nbsp;
+          strong = answer.user.username
       p
         span.label.label-success.best-answer style="#{answer.best? ? '' : 'display: none;'}" Best
         - if can? :set_as_best, answer

@@ -6,11 +6,16 @@
       - @questions.each do |question|
         div id="question-#{question.id}"
           hr
-            - if can? :see, :author
-              .author
-                p
-                  | Author:&nbsp;
-                  strong = question.user.username
+            p.meta-info
+              - if can? :see, :author
+                | Author:&nbsp;
+                strong = question.user.username
+                br
+              | Created:&nbsp;
+              = question.created_at
+              br
+              | Last update:&nbsp;
+              = question.updated_at
             .title
               h4
                 =link_to question.title, question

@@ -6,11 +6,11 @@
     </div>
     <br>
   {{/if}}
+  <p class="meta-info">
   {{#if answer.author}}
-    <div class="author">
-      <p>Author:&nbsp;<strong>{{answer.author}}</strong></p>
-    </div>
+    Author:&nbsp;<strong>{{answer.author}}</strong>
   {{/if}}
+  </p>
   <p>
     <span class="label label-success best-answer" style="display: none;">Best</span>
     {{#if thisUserQuestion}}

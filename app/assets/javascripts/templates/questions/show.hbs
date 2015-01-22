@@ -1,11 +1,11 @@
 <div id="question-{{question.id}}">
   <div class="title">
     <hr>
+    <p class="meta-info">
     {{#if question.author}}
-      <div class="author">
-        <p>Author:&nbsp;<strong>{{question.author}}</strong></p>
-      </div>
+      Author:&nbsp;<strong>{{question.author}}</strong>
     {{/if}}
+    </p>
     <h4>
       <a href="/questions/{{question.id}}">{{question.title}}</a>
       <span class="label label-success has-best-answer{{#if question.no_best_answer}} hide{{/if}}">Has Best Answer</span>
