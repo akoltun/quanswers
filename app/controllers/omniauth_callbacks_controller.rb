@@ -1,4 +1,6 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  skip_authorization_check
+
   def facebook
     sign_in_via "Facebook"
   end
@@ -23,6 +25,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       end
 
     else # @user.is_a? UserConfirmationRequest
+      session[:in_confirmation_by] = @user.provider
       if @user.persisted?
         redirect_to edit_user_confirmation_request_path(@user)
       else

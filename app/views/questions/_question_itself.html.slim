@@ -1,11 +1,12 @@
 - unless @answer.id
-  - if @author_signed_in && @question.editable?
+  - if can? :edit, @question
     = link_to "Edit Question", '', class: "btn btn-primary", id: 'edit-question-button'
+  - if can? :destroy, @question
     = link_to "Delete Question", @question, data: { method: "DELETE", confirm: true  }, class: "btn btn-danger"
   = link_to "Back to Questions List", questions_path, class: "btn btn-info"
 
 h3 =@question.title
-- if user_signed_in?
+- if can? :see, :author
   .author
     p
       | Author:&nbsp;

@@ -1,6 +1,6 @@
 #question-itself style="#{@question.errors.present? ? 'display: none;' : ''}"
   = render 'questions/question_itself'
 
-- if @author_signed_in && @question.editable?
+- if can? :edit, @question
   #question-form style="#{@question.errors.present? ? '' : 'display: none;'}"
     = render partial: 'questions/question_form', locals: { title: "Edit Question" }

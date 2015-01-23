@@ -16,20 +16,4 @@ RSpec.describe Question, "model", :type => :model do
   it { is_expected.to accept_nested_attributes_for :attachments }
 
   it { is_expected.to have_db_index(:user_id) }
-
-  let(:question) { create(:question) }
-
-  context "when has no answers its #editable?" do
-    it { expect(question.editable?).to be_truthy }
-  end
-
-  context "when has answers its #editable?" do
-    before { create(:answer, question: question) }
-    it { expect(question.editable?).to be_falsey }
-  end
-
-  context "when has not saved answers it is still #editable?" do
-    before { question.answers.build }
-    it { expect(question.editable?).to be_truthy }
-  end
 end

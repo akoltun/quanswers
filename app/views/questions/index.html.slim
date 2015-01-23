@@ -6,7 +6,7 @@
       - @questions.each do |question|
         div id="question-#{question.id}"
           hr
-            - if user_signed_in?
+            - if can? :see, :author
               .author
                 p
                   | Author:&nbsp;

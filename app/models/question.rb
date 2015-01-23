@@ -12,8 +12,4 @@ class Question < ActiveRecord::Base
   scope :ordered_by_creation_date, -> { order(created_at: :desc) }
 
   accepts_nested_attributes_for :attachments, allow_destroy: true, reject_if: proc { |attr| attr['file'].nil? }
-
-  def editable?
-    answers.count == 0
-  end
 end

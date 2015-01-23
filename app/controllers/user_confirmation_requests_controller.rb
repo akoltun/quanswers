@@ -1,4 +1,5 @@
 class UserConfirmationRequestsController < ApplicationController
+  skip_authorization_check
   before_action :load_user_confirmation_request, only: [:edit, :update, :confirm]
 
   respond_to :html

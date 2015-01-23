@@ -3,10 +3,10 @@ en:
     actions:
       create:
         notice: 'You have created a new %{resource_name}'
-        # alert: '%{resource_name} could not be created.'
+        alert: '%{resource_name} could not be created.'
       update:
-        notice: '%{resource_name} was successfully updated.'
-        # alert: '%{resource_name} could not be updated.'
+        notice: 'You have updated the %{resource_name}'
+        alert: '%{resource_name} could not be updated.'
       destroy:
         notice: 'You have deleted the %{resource_name}'
         alert: '%{resource_name} could not be destroyed.'

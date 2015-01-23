@@ -3,7 +3,7 @@ class AnswersController < ApplicationController
   before_action :load_question, only: :create
   before_action :load_answer, except: :create
   before_action :assign_question, except: :create
-  before_action :authorize_user, except: [:create, :set_as_best]
+  authorize_resource
   after_action :publish, if: "@answer.errors.empty?", unless: "Rails.env.test?"
   after_action :publish_best_answer, only: [:set_as_best, :destroy], if: "@answer.errors.empty?", unless: "Rails.env.test?"
 
@@ -29,25 +29,15 @@ class AnswersController < ApplicationController
   end
 
   def set_as_best
-    if @question.user == current_user
-      @answer.best!
-      if @question.save
-        render json: { id: @answer.id }
-      else
-        render_errors @question
-      end
+    @answer.best!
+    if @question.save
+      render json: { id: @answer.id }
     else
-      head :forbidden
+      render_errors @question
     end
   end
 
   private
-
-  def authorize_user
-    unless @answer.user == current_user
-      head :forbidden
-    end
-  end
 
   def answer_params
     params.require(:answer).permit(:answer, attachments_attributes: [:id, :file, :file_cache, :_destroy])
@@ -69,9 +59,9 @@ class AnswersController < ApplicationController
     render json: { errors: source.errors.full_messages }, status: :unprocessable_entity
   end
 
-  def answer_as_json(singed_in)
+  def answer_as_json(show_author)
     hash = @answer.as_json(include: :attachments)
-    if singed_in
+    if show_author
       hash[:author] = @answer.user.username
     else
       hash.except!(:user_id)

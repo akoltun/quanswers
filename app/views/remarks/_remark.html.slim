@@ -1,15 +1,18 @@
 - remarks.ordered_by_creation_date.each do |remark|
   .well.well-sm id="remark-#{remark.id}"
-    - if remark.user == current_user
-      = link_to "Edit", '', data: { action: "#{remark_path(remark)}" }, class: "btn btn-default edit-remark"
-      = link_to "Delete", remark, data: { type: :json, method: "DELETE", remote: true, success: 'remarkDeleteSuccess', error: 'remarkDeleteError', confirm: true}, class: "btn btn-default delete-remark"
+    - if can?(:edit, remark) || can?(:destroy, remark)
+      - if can? :edit, remark
+        = link_to "Edit", '', data: { action: "#{remark_path(remark)}" }, class: "btn btn-default edit-remark"
+      - if can? :destroy, remark
+        = link_to "Delete", remark, data: { type: :json, method: "DELETE", remote: true, success: 'remarkDeleteSuccess', error: 'remarkDeleteError', confirm: true}, class: "btn btn-default delete-remark"
       br
       br
-    - if user_signed_in?
+    - if can? :see, :author
       .author
         p
           | Author:&nbsp;
           strong = remark.user.username
     .remark-content
       = raw remark.remark
-= link_to "Add Remark", '', data: { action: add_action }, class: "btn add-remark" if user_signed_in?
+- if can? :create, Remark
+  = link_to "Add Remark", '', data: { action: add_action }, class: "btn add-remark"

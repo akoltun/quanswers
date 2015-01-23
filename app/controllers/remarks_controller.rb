@@ -1,9 +1,7 @@
 class RemarksController < ApplicationController
   before_action :authenticate_user!
-  before_action :load_remark, except: :create
-  before_action :authorize_user, except: :create
+  load_and_authorize_resource
   before_action :load_remarkable, only: :create
-  before_action :load_question, only: [:create, :update, :destroy]
   after_action :publish, if: "@remark.errors.empty?", unless: "Rails.env.test?"
 
   respond_to :json
@@ -28,13 +26,7 @@ class RemarksController < ApplicationController
   private
 
   def remark_params
-    logger.debug params.inspect
     params.require(:remark).permit(:remark)
-  end
-
-  def load_remark
-    @remark = Remark.find(params[:id])
-    @remarkable = @remark.remarkable
   end
 
   def load_remarkable
@@ -45,26 +37,13 @@ class RemarksController < ApplicationController
     end
   end
 
-  def load_question
-    if @remarkable.is_a? Answer
-      @question = @remarkable.question
-    else
-      @question = @remarkable
-    end
-  end
-
-  def authorize_user
-    unless @remark.user == current_user
-      head :forbidden
-    end
-  end
-
   def publish
     remark = @remark.as_json(except: :user_id)
-    PrivatePub.publish_to "/questions/#{@question.id}", action: action_name, remark: remark
+    question = @remark.remarkable.is_a?(Answer) ? @remark.remarkable.question : @remark.remarkable
+    PrivatePub.publish_to "/questions/#{question.id}", action: action_name, remark: remark
 
     remark[:user_id] = @remark.user.id
     remark[:author] = @remark.user.username
-    PrivatePub.publish_to "/signed_in/questions/#{@question.id}", action: action_name, remark: remark
+    PrivatePub.publish_to "/signed_in/questions/#{question.id}", action: action_name, remark: remark
   end
 end

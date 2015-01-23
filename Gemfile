@@ -47,6 +47,7 @@ gem "omniauth-google-oauth2"
 gem 'omniauth-twitter'
 gem 'capybara-email'
 gem "letter_opener", :group => :development
+gem "cancancan"
 
 group :test, :development do
   gem 'rspec-rails'

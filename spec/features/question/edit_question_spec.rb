@@ -50,7 +50,7 @@ feature 'User edits question', %q{
         click_on 'Save Question'
 
         expect(current_path).to eq question_path(current_user_question)
-        expect(page).to have_content 'You have updated the question'
+        expect(page).to have_content 'You have updated the Question'
         expect(page).to have_content new_question[:title]
         expect(page).to have_content new_question[:question]
       end

@@ -6,7 +6,7 @@
   .col-xs-12
     = render 'answers/answers'
 
-- if user_signed_in?
+- if can? :create, Answer
   .row
     .col-xs-12#new-answer
       = render partial: 'answers/answer_form'
