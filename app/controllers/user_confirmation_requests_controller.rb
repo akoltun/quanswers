@@ -1,6 +1,9 @@
 class UserConfirmationRequestsController < ApplicationController
   skip_authorization_check
   before_action :load_user_confirmation_request, only: [:edit, :update, :confirm]
+  before_action :authorize_create, only: [:new, :create]
+  before_action :authorize_update, only: [:edit, :update]
+  after_action :clear_session, only: [:create, :update]
 
   respond_to :html
 
@@ -46,5 +49,23 @@ class UserConfirmationRequestsController < ApplicationController
     respond_with(@user_confirmation_request) do |format|
       format.html { redirect_to questions_path, notice: 'The message with further instructions has been sent to your email' }
     end
+  end
+
+  def authorize_create
+    unless session[:user_confirmation_provider] == 'twitter'
+      head :not_found
+    end
+  end
+
+  def authorize_update
+    unless session[:user_confirmation_provider] == @user_confirmation_request.provider
+      head :not_found
+    end
+  end
+
+  def clear_session
+    session[:user_confirmation_provider] = nil
+    session[:user_confirmation_uid] = nil
+    session[:user_confirmation_name] = nil
   end
 end

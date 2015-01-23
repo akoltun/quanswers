@@ -25,11 +25,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       end
 
     else # @user.is_a? UserConfirmationRequest
-      session[:in_confirmation_by] = @user.provider
+      session[:user_confirmation_provider] = @user.provider
       if @user.persisted?
         redirect_to edit_user_confirmation_request_path(@user)
       else
-        session[:user_confirmation_provider] = @user.provider
         session[:user_confirmation_uid] = @user.uid
         session[:user_confirmation_name] = @user.username
         redirect_to new_user_confirmation_request_path
