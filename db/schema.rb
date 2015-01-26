@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150121131227) do
+ActiveRecord::Schema.define(version: 20150125174206) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 20150121131227) do
     t.string   "confirmation_token"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "request_session_created_at"
   end
 
   add_index "user_confirmation_requests", ["provider", "uid"], name: "index_user_confirmation_requests_on_provider_and_uid", unique: true, using: :btree

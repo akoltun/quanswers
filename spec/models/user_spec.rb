@@ -78,27 +78,31 @@ RSpec.describe User, :type => :model do
           expect { find_for_oauth }.not_to change(UserConfirmationRequest, :count)
         end
 
-        context "user is requested for confirmation for the first time" do
-          it "returns not saved user confirmation request" do
-            expect(find_for_oauth).to be_a UserConfirmationRequest
-          end
-
-          it "builds user confirmation request with correct data" do
-            confirmation_request = find_for_oauth
-
-            expect(confirmation_request.provider).to eq auth.provider
-            expect(confirmation_request.uid).to eq auth.uid
-            expect(confirmation_request.username).to eq auth.name
-          end
+        it "returns nil" do
+          expect(find_for_oauth).to be_nil
         end
 
-        context "user is requested for confirmation not for the first time" do
-          let!(:confirmation) { create(:user_confirmation_request, provider: auth.provider, uid: auth.uid, username: user.username) }
-
-          it "returns user confirmation request" do
-            expect(find_for_oauth).to eq confirmation
-          end
-        end
+        # context "user is requested for confirmation for the first time" do
+        #   it "returns not saved user confirmation request" do
+        #     expect(find_for_oauth).to be_a UserConfirmationRequest
+        #   end
+        #
+        #   it "builds user confirmation request with correct data" do
+        #     confirmation_request = find_for_oauth
+        #
+        #     expect(confirmation_request.provider).to eq auth.provider
+        #     expect(confirmation_request.uid).to eq auth.uid
+        #     expect(confirmation_request.username).to eq auth.name
+        #   end
+        # end
+        #
+        # context "user is requested for confirmation not for the first time" do
+        #   let!(:confirmation) { create(:user_confirmation_request, provider: auth.provider, uid: auth.uid, username: user.username) }
+        #
+        #   it "returns user confirmation request" do
+        #     expect(find_for_oauth).to eq confirmation
+        #   end
+        # end
       end
     end
   end

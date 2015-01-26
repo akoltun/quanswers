@@ -16,23 +16,19 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   private
 
   def sign_in_via provider_name
-    @user = User.find_for_oauth(request.env['omniauth.auth'])
+    auth = request.env['omniauth.auth']
 
-    if @user.is_a? User
-      if @user.persisted?
-        sign_in_and_redirect @user, event: :authentication
+    user = User.find_for_oauth(auth)
+
+    if user
+      if user.persisted?
+        sign_in_and_redirect user, event: :authentication
         set_flash_message(:notice, :success, kind: provider_name) if is_navigational_format?
       end
-
-    else # @user.is_a? UserConfirmationRequest
-      session[:user_confirmation_provider] = @user.provider
-      if @user.persisted?
-        redirect_to edit_user_confirmation_request_path(@user)
-      else
-        session[:user_confirmation_uid] = @user.uid
-        session[:user_confirmation_name] = @user.username
-        redirect_to new_user_confirmation_request_path
-      end
+      return
     end
+
+    redirect_to edit_user_confirmation_request_path(UserConfirmationRequest.find_for_oauth(auth))
+    session[:request_user_confirmation] = true
   end
 end

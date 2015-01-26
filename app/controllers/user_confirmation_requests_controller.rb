@@ -1,29 +1,22 @@
 class UserConfirmationRequestsController < ApplicationController
   skip_authorization_check
-  before_action :load_user_confirmation_request, only: [:edit, :update, :confirm]
-  before_action :authorize_create, only: [:new, :create]
-  before_action :authorize_update, only: [:edit, :update]
-  after_action :clear_session, only: [:create, :update]
+  before_action :load_user_confirmation_request
+  before_action :authorize, except: :confirm
 
   respond_to :html
-
-  def new
-    @user_confirmation_request = UserConfirmationRequest.new(username: session[:user_confirmation_name])
-    respond_with(@user_confirmation_request)
-  end
 
   def edit
     respond_with(@user_confirmation_request)
   end
 
-  def create
-    @user_confirmation_request = UserConfirmationRequest.create(user_confirmation_request_params.merge({ provider: session[:user_confirmation_provider], uid: session[:user_confirmation_uid] }))
-    respond_with_user_confirmation_request
-  end
-
   def update
-    @user_confirmation_request.update(user_confirmation_request_params)
-    respond_with_user_confirmation_request
+    @user_confirmation_request.update_and_send_request(user_confirmation_request_params)
+    respond_with(@user_confirmation_request) do |format|
+      format.html do
+        redirect_to questions_path, notice: 'The message with further instructions has been sent to your email'
+        session[:request_user_confirmation] = nil
+      end
+    end
   end
 
   def confirm
@@ -45,27 +38,9 @@ class UserConfirmationRequestsController < ApplicationController
     @user_confirmation_request = UserConfirmationRequest.find(params[:id])
   end
 
-  def respond_with_user_confirmation_request
-    respond_with(@user_confirmation_request) do |format|
-      format.html { redirect_to questions_path, notice: 'The message with further instructions has been sent to your email' }
-    end
-  end
-
-  def authorize_create
-    unless session[:user_confirmation_provider] == 'twitter'
+  def authorize
+    unless session[:request_user_confirmation] && @user_confirmation_request.session_alive?
       head :not_found
     end
-  end
-
-  def authorize_update
-    unless session[:user_confirmation_provider] == @user_confirmation_request.provider
-      head :not_found
-    end
-  end
-
-  def clear_session
-    session[:user_confirmation_provider] = nil
-    session[:user_confirmation_uid] = nil
-    session[:user_confirmation_name] = nil
   end
 end

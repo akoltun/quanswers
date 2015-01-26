@@ -16,20 +16,15 @@ class User < ActiveRecord::Base
     return identity.user if identity
 
     email = auth.info[:email]
+    return nil unless email
 
-    if email
-      user = User.where(email: email).first
-      unless user
-        password = Devise.friendly_token[0, 20]
-        user = User.create!(username: auth.info[:nickname] || auth.info[:name] || email, email: email, password: password, password_confirmation: password)
-      end
-      user.identities.create(provider: auth.provider, uid: auth.uid)
-
-      user
-
-    else
-      UserConfirmationRequest.where(provider: auth.provider, uid: auth.uid).first ||
-          UserConfirmationRequest.new(provider: auth.provider, uid: auth.uid)
+    user = User.where(email: email).first
+    unless user
+      password = Devise.friendly_token[0, 20]
+      user = User.create!(username: auth.info[:nickname] || auth.info[:name] || email, email: email, password: password, password_confirmation: password)
     end
+    user.identities.create(provider: auth.provider, uid: auth.uid)
+
+    user
   end
 end

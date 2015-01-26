@@ -1,4 +1,9 @@
 .row
   .col-xs-12
     h1 Confirm User Name and Email
-    = render 'user_confirmation_requests/user_confirmation_form'
+    = bootstrap_form_for @user_confirmation_request, label_errors: true do |f|
+      = f.alert_message "There " + "is".pluralize(@user_confirmation_request.errors.count) + " " + @user_confirmation_request.errors.count.humanize + " " + "error".pluralize(@user_confirmation_request.errors.count), error_summary: true
+
+      = f.text_field :username
+      = f.email_field :email
+      = f.submit "Confirm", class: "btn btn-success"

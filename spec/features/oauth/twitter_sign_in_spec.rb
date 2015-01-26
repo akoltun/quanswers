@@ -57,7 +57,7 @@ feature 'User sign in via Twitter', %q{
     expect(page).not_to have_link('Sign in')
   end
 
-  scenario 'Twitter user signs in for the first time (changing email before confirmation' do
+  scenario 'Twitter user signs in for the first time (changing email before confirmation)' do
     visit new_user_session_path
     click_on 'Sign in with Twitter'
 

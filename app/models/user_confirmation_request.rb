@@ -1,9 +1,6 @@
 class UserConfirmationRequest < ActiveRecord::Base
   validates :provider, :uid, :email, :username, presence: true
 
-  before_save :generate_confirmation_token
-  after_save :send_email
-
   def create_or_attach_user
     user = User.where(email: email).first
     if user
@@ -17,13 +14,26 @@ class UserConfirmationRequest < ActiveRecord::Base
     user
   end
 
-  private
-
-  def generate_confirmation_token
-    self.confirmation_token = Devise.friendly_token
+  def update_and_send_request(update_hash)
+    update(update_hash.merge(confirmation_token: Devise.friendly_token))
+    UserConfirmationRequestMailer.send_confirmation_email(self).deliver
   end
 
-  def send_email
-    UserConfirmationRequestMailer.send_confirmation_email(self).deliver
+  def session_alive?
+    request_session_created_at + 60*60 > Time.current
+  end
+
+  def self.find_for_oauth(auth)
+    user_confirmation_request = UserConfirmationRequest.where(provider: auth.provider, uid: auth.uid).first
+
+    if user_confirmation_request
+      user_confirmation_request.request_session_created_at = Time.current
+      user_confirmation_request.save!(validate: false)
+    else
+      user_confirmation_request = UserConfirmationRequest.new(provider: auth.provider, uid: auth.uid, request_session_created_at: Time.current)
+      user_confirmation_request.save!(validate: false)
+    end
+
+    user_confirmation_request
   end
 end
