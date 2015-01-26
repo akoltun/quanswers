@@ -30,8 +30,12 @@ feature 'User answers question', %q{
       expect(current_path).to eq question_path(question)
       expect(page).to have_content 'You have created a new answer'
       expect(question.answers.count).to eq 1
-      within("#answers #answer-#{question.answers[0].id}") do
+      within("#answers #answer-#{question.answers.first.id}") do
         expect(page).to have_content new_answer[:answer]
+        within(".meta-info") do
+          expect(page).to have_content "Created: #{question.answers.first.created_at.to_s(:long)}"
+          expect(page).to have_content "Last update: #{question.answers.first.updated_at.to_s(:long)}"
+        end
       end
       within('#new-answer') do
         expect(page).not_to have_content new_answer[:answer]

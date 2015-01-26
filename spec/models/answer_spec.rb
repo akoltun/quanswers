@@ -27,7 +27,7 @@ RSpec.describe Answer, :type => :model do
     it { expect(answer.best?).to be_truthy }
   end
 
-  context "#best! method" do
+  describe "#best! method" do
     before { answer.best! }
     it "should set it as the best answer" do
       expect(answer.question.best_answer).to eq answer

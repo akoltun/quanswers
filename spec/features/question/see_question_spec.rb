@@ -6,7 +6,8 @@ feature 'User sees question page', %q{
   I want to be able to open question page
 } do
   given(:questions) { create_list(:unique_question, 2) }
-  background { create_list(:unique_answer, 2, question: questions[1]) }
+  given(:question) { questions.first }
+  background { create_list(:unique_answer, 2, question: question) }
 
   scenario 'User opens question page' do
     visit questions_path
@@ -16,13 +17,17 @@ feature 'User sees question page', %q{
   end
 
   scenario "User sees question" do
-    visit question_path questions[1]
+    visit question_path question
 
     within('#question') do
+      within('.meta-info') do
+        expect(page).to have_content "Created: #{question.created_at.to_s(:long)}"
+        expect(page).to have_content "Last update: #{question.updated_at.to_s(:long)}"
+      end
       expect(page).not_to have_content "Author"
-      expect(page).not_to have_content questions[1].user.username
-      expect(page).to have_content questions[1].title
-      expect(page).to have_content questions[1].question
+      expect(page).not_to have_content question.user.username
+      expect(page).to have_content question.title
+      expect(page).to have_content question.question
       expect(page).not_to have_selector 'textarea'
     end
   end
@@ -41,8 +46,12 @@ feature 'User sees question author', %q{
     visit question_path question
 
     within('#question') do
-      expect(page).to have_content "Author"
-      expect(page).to have_content question.user.username
+      within('.meta-info') do
+        expect(page).to have_content "Created: #{question.created_at.to_s(:long)}"
+        expect(page).to have_content "Last update: #{question.updated_at.to_s(:long)}"
+        expect(page).to have_content "Author:"
+        expect(page).to have_content question.user.username
+      end
       expect(page).to have_content question.title
       expect(page).to have_content question.question
       expect(page).not_to have_selector 'textarea'

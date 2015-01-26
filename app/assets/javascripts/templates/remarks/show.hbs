@@ -13,9 +13,11 @@
     <br>
   {{/if}}
   <p class="meta-info">
-  {{#if remark.author}}
-    Author:&nbsp;<strong>{{remark.author}}</strong>
-  {{/if}}
+    {{#if remark.author}}
+      Author:&nbsp;<strong>{{remark.author}}</strong><br />
+    {{/if}}
+    Created:&nbsp;{{remark.created_at}}<br/>
+    Last update:&nbsp;<span class=".updated_at">{{remark.updated_at}}</span
   </p>
   <div class="remark-content">{{{remark.remark}}}</div>
 </div>

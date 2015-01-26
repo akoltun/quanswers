@@ -2,12 +2,16 @@
   <div class="title">
     <hr>
     <p class="meta-info">
-    {{#if question.author}}
-      Author:&nbsp;<strong>{{question.author}}</strong>
-    {{/if}}
+      {{#if question.author}}
+        Author:&nbsp;<strong>{{question.author}}</strong><br />
+      {{/if}}
+      Created:&nbsp;{{question.created_at}}<br/>
+      Last update:&nbsp;<span class=".updated_at">{{question.updated_at}}</span><br/>
+      Answers count:&nbsp;<span class="answer_count">{{question.answer_count}}</span>
     </p>
     <h4>
       <a href="/questions/{{question.id}}">{{question.title}}</a>
+      <span class="badge answers-count">{{question.answers_count}}</span>
       <span class="label label-success has-best-answer{{#if question.no_best_answer}} hide{{/if}}">Has Best Answer</span>
     </h4>
   </div>

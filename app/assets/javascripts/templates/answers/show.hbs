@@ -7,9 +7,11 @@
     <br>
   {{/if}}
   <p class="meta-info">
-  {{#if answer.author}}
-    Author:&nbsp;<strong>{{answer.author}}</strong>
-  {{/if}}
+    {{#if answer.author}}
+      Author:&nbsp;<strong>{{answer.author}}</strong><br />
+    {{/if}}
+    Created:&nbsp;{{answer.created_at}}<br/>
+    Last update:&nbsp;<span class=".updated_at">{{answer.updated_at}}</span>
   </p>
   <p>
     <span class="label label-success best-answer" style="display: none;">Best</span>

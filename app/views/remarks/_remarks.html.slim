@@ -11,6 +11,12 @@
       - if can? :see, :author
         | Author:&nbsp;
         strong = remark.user.username
+        br
+      | Created:&nbsp;
+      = remark.created_at.to_s(:long)
+      br
+      | Last update:&nbsp;
+      span.updated_at = remark.updated_at.to_s(:long)
     .remark-content
       = raw remark.remark
 - if can? :create, Remark

@@ -12,6 +12,10 @@ feature 'User lists questions', %q{
 
     questions.each do |question|
       within("#question-#{question.id}") do
+        within('.meta-info') do
+          expect(page).to have_content "Created: #{question.created_at.to_s(:long)}"
+          expect(page).to have_content "Last update: #{question.updated_at.to_s(:long)}"
+        end
         expect(page).not_to have_content "Author"
         expect(page).not_to have_content question.user.username
         expect(page).to have_link question.title
@@ -21,7 +25,7 @@ feature 'User lists questions', %q{
   end
 end
 
-feature 'User sees questions authors', %q{
+feature 'Authenticated user sees questions authors', %q{
   In order to be able to personalize question
   As an authenticated user
   I want to be able to see question author name
@@ -35,8 +39,12 @@ feature 'User sees questions authors', %q{
 
     questions.each do |question|
       within("#question-#{question.id}") do
-        expect(page).to have_content "Author:"
-        expect(page).to have_content question.user.username
+        within('.meta-info') do
+          expect(page).to have_content "Created: #{question.created_at.to_s(:long)}"
+          expect(page).to have_content "Last update: #{question.updated_at.to_s(:long)}"
+          expect(page).to have_content "Author:"
+          expect(page).to have_content question.user.username
+        end
         expect(page).to have_link question.title
         expect(page).to have_content question.question
       end

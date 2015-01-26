@@ -19,8 +19,10 @@ this.cancelRemark = (event) ->
 this.remarkPublished = (action, remark) ->
   switch action
     when 'create' then renderRemark(remark)
-    when 'update' then $("#remark-#{remark.id}").show().find(".remark-content").html(remark.remark)
     when 'destroy' then $("#remark-#{remark.id}").remove()
+    when 'update'
+      $("#remark-#{remark.id}").show().find(".remark-content").html(remark.remark)
+      $("#remark-#{remark.id} .meta-info .updated_at").html(remark.updated_at)
 
 this.remarkSaved = (event, data, status, xhr) ->
   if 201 == xhr.status

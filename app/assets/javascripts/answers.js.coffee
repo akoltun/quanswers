@@ -114,6 +114,7 @@ renderNewAnswer = (answer) ->
 
 renderExistingAnswer = (answer) ->
   $("#answer-#{answer.id} .answer-content").html(answer.answer)
+  $("#answer-#{answer.id} .meta-info .updated_at").html(answer.updated_at)
   addAttachmentsNames(answer.attachments ||= [])
   $("#answer-#{answer.id} .attachments").html HandlebarsTemplates['attachments/index']
     attachments: answer.attachments

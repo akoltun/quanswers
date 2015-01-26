@@ -10,9 +10,16 @@ p.meta-info
   - if can? :see, :author
     | Author:&nbsp;
     strong = @question.user.username
+    br
+  | Created:&nbsp;
+  = @question.created_at.to_s(:long)
+  br
+  | Last update:&nbsp;
+  span.updated_at = @question.updated_at.to_s(:long)
+
 p =raw @question.question
 = render partial: 'attachments/attachments', object: @question.attachments
 
 .row
   #question-remarks.col-xs-offset-1.col-xs-10.remarks
-    = render partial: 'remarks/remark', locals: { remarks: @question.remarks, add_action: question_remarks_path(@question) }
+    = render partial: 'remarks/remarks', locals: { remarks: @question.remarks, add_action: question_remarks_path(@question) }

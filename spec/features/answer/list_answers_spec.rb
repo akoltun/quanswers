@@ -15,6 +15,10 @@ feature 'User lists answers', %q{
     within('#answers') do
       answers.each do |answer|
         within("#answer-#{answer.id}") do
+          within('.meta-info') do
+            expect(page).to have_content "Created: #{answer.created_at.to_s(:long)}"
+            expect(page).to have_content "Last update: #{answer.updated_at.to_s(:long)}"
+          end
           expect(page).not_to have_content "Author:"
           expect(page).not_to have_content answer.user.username
           expect(page).to have_content answer.answer
@@ -25,7 +29,7 @@ feature 'User lists answers', %q{
   end
 end
 
-feature 'User sees answers authors', %q{
+feature 'Authenticated User sees answers authors', %q{
   In order to be able to personalize answer
   As an authenticated user
   I want to be able to see answer author name
@@ -34,15 +38,19 @@ feature 'User sees answers authors', %q{
   given(:question) { create(:question) }
   given!(:answers) { create_list(:unique_answer, 2, user: user, question: question) }
 
-  scenario 'User lists all questions' do
+  scenario 'User lists all answers on the question page' do
     sign_in user
     visit question_path(question)
 
     within('#answers') do
       answers.each do |answer|
         within("#answer-#{answer.id}") do
-          expect(page).to have_content "Author:"
-          expect(page).to have_content answer.user.username
+          within('.meta-info') do
+            expect(page).to have_content "Created: #{answer.created_at.to_s(:long)}"
+            expect(page).to have_content "Last update: #{answer.updated_at.to_s(:long)}"
+            expect(page).to have_content "Author:"
+            expect(page).to have_content answer.user.username
+          end
           expect(page).to have_content answer.answer
           expect(page).not_to have_selector 'textarea'
         end

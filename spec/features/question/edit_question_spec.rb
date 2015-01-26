@@ -53,6 +53,11 @@ feature 'User edits question', %q{
         expect(page).to have_content 'You have updated the Question'
         expect(page).to have_content new_question[:title]
         expect(page).to have_content new_question[:question]
+
+        within("#question .meta-info") do
+          current_user_question.reload
+          expect(page).to have_content "Last update: #{current_user_question.updated_at.to_s(:long)}"
+        end
       end
 
       scenario 'with invalid attributes', js: true do

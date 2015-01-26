@@ -12,13 +12,14 @@
                 strong = question.user.username
                 br
               | Created:&nbsp;
-              = question.created_at
+              = question.created_at.to_s(:long)
               br
               | Last update:&nbsp;
-              = question.updated_at
+              span.updated_at = question.updated_at.to_s(:long)
             .title
               h4
                 =link_to question.title, question
+                span.badge.answers-count = question.answers.count > 0 ? question.answers.count : nil
                 span class="label label-success has-best-answer#{question.best_answer.nil? ? ' hide' : ''}" Has Best Answer
             .content
               = truncate_html(question.question)

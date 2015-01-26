@@ -53,6 +53,10 @@ feature 'User edits answer', %q{
           expect(page).not_to have_selector 'iframe'
           expect(page).to have_content "Edit Answer"
           expect(page).not_to have_selector 'input[value="Save Answer"]'
+          within(".meta-info") do
+            answer.reload
+            expect(page).to have_content "Last update: #{answer.updated_at.to_s(:long)}"
+          end
         end
         expect(page).to have_content 'You have updated the answer'
       end

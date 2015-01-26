@@ -7,7 +7,9 @@ class RemarksController < ApplicationController
   respond_to :json
 
   def create
-    respond_with(@remark = @remarkable.remarks.create(remark_params.merge(user: current_user)))
+    respond_with(@remark = @remarkable.remarks.create(remark_params.merge(user: current_user))) do |format|
+      format.json { render :show, status: :created } if @remark.errors.empty?
+    end
   end
 
   def update
@@ -39,11 +41,15 @@ class RemarksController < ApplicationController
 
   def publish
     remark = @remark.as_json(except: :user_id)
+    remark[:created_at] = @remark.created_at.to_s(:long)
+    remark[:updated_at] = @remark.updated_at.to_s(:long)
     question = @remark.remarkable.is_a?(Answer) ? @remark.remarkable.question : @remark.remarkable
     PrivatePub.publish_to "/questions/#{question.id}", action: action_name, remark: remark
 
     remark[:user_id] = @remark.user.id
     remark[:author] = @remark.user.username
     PrivatePub.publish_to "/signed_in/questions/#{question.id}", action: action_name, remark: remark
+  rescue
+    return
   end
 end

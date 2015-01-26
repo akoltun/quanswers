@@ -14,7 +14,9 @@ this.questionPublished = (action, question) ->
     when 'create' then renderNewQuestion question
     when 'update' then renderExistingQuestion question
     when 'destroy' then $("#question-#{question.id}").remove()
-    when 'has_best_answer' then $("#question-#{question.id} .has-best-answer").toggleClass('hide', question.no_best_answer)
+    when 'answers_info'
+      $("#question-#{question.id} .has-best-answer").toggleClass('hide', question.no_best_answer)
+      $("#question-#{question.id} .answers-count").html(question.answers_count)
 
 renderNewQuestion = (question) ->
   unless $("#question-#{question.id}").length
@@ -24,3 +26,4 @@ renderNewQuestion = (question) ->
 renderExistingQuestion = (question) ->
   $("#question-#{question.id} .title a").html(question.title)
   $("#question-#{question.id} div.content").html(question.question)
+  $("#question-#{question.id} .meta-info .updated_at").html(question.updated_at)

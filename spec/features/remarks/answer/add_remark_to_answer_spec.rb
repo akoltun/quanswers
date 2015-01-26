@@ -39,6 +39,10 @@ feature 'User adds remark to answer', %q{
         expect(page).to have_content 'You have added a new remark'
         expect(answer.remarks.count).to eq 1
         within("#answer-#{answer.id} .answer-remarks") do
+          within(".meta-info") do
+            expect(page).to have_content "Created: #{answer.remarks.first.created_at.to_s(:long)}"
+            expect(page).to have_content "Last update: #{answer.remarks.first.updated_at.to_s(:long)}"
+          end
           expect(page).to have_content new_remark[:remark]
           expect(page).not_to have_selector "iframe"
         end

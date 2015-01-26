@@ -5,7 +5,7 @@ class AnswersController < ApplicationController
   before_action :assign_question, except: :create
   authorize_resource
   after_action :publish, if: "@answer.errors.empty?", unless: "Rails.env.test?"
-  after_action :publish_best_answer, only: [:set_as_best, :destroy], if: "@answer.errors.empty?", unless: "Rails.env.test?"
+  after_action :publish_answers_info, only: [:set_as_best, :create, :destroy], if: "@answer.errors.empty?", unless: "Rails.env.test?"
 
   respond_to :json
 
@@ -66,16 +66,23 @@ class AnswersController < ApplicationController
     else
       hash.except!(:user_id)
     end
+    hash[:created_at] = @answer.created_at.to_s(:long)
+    hash[:updated_at] = @answer.updated_at.to_s(:long)
     hash
   end
 
   def publish
     PrivatePub.publish_to "/questions/#{@question.id}", action: action_name, answer: answer_as_json(false)
     PrivatePub.publish_to "/signed_in/questions/#{@question.id}", action: action_name, answer: answer_as_json(true)
+  rescue
+    return
   end
 
-  def publish_best_answer
-    PrivatePub.publish_to "/questions", action: 'has_best_answer', question: { id: @answer.question.id, no_best_answer: !@answer.question.best_answer }
-    PrivatePub.publish_to "/signed_in/questions", action: 'has_best_answer', question: { id: @answer.question.id, no_best_answer: !@answer.question.best_answer }
+  def publish_answers_info
+    answers_count = @answer.question.answers.count > 0 ? @answer.question.answers.count : nil
+    PrivatePub.publish_to "/questions", action: 'answers_info', question: { id: @answer.question.id, no_best_answer: !@answer.question.best_answer, answers_count: answers_count }
+    PrivatePub.publish_to "/signed_in/questions", action: 'answers_info', question: { id: @answer.question.id, no_best_answer: !@answer.question.best_answer, answers_count: answers_count }
+  rescue
+    return
   end
 end
