@@ -7,7 +7,7 @@ feature 'User lists answers', %q{
 } do
   given(:user) { create(:user) }
   given(:question) { create(:question) }
-  given!(:answers) { create_list(:unique_answer_with_rating, 2, user: user, question: question) }
+  given!(:answers) { create_list(:unique_answer_with_rating, 2, question: question) }
 
   scenario 'User lists all answers on the question page' do
     visit question_path(question)
@@ -19,7 +19,7 @@ feature 'User lists answers', %q{
             expect(page).to have_content "Created: #{answer.created_at.to_s(:long)}"
             expect(page).to have_content "Last update: #{answer.updated_at.to_s(:long)}"
           end
-          expect(page).to have_selector('input.rating[value="3.0"]')
+          expect(page).to have_selector('input.rating[value="3.0"][readonly]')
           expect(page).not_to have_content "Author:"
           expect(page).not_to have_content answer.user.username
           expect(page).to have_content answer.answer
@@ -37,7 +37,8 @@ feature 'Authenticated User sees answers authors', %q{
 } do
   given(:user) { create(:user) }
   given(:question) { create(:question) }
-  given!(:answers) { create_list(:unique_answer_with_rating, 2, user: user, question: question) }
+  given!(:answers) { create_list(:unique_answer_with_rating, 2, question: question) }
+  before { answers << create(:unique_answer_with_rating, user: user, question: question ) }
 
   scenario 'User lists all answers on the question page' do
     sign_in user
@@ -52,7 +53,11 @@ feature 'Authenticated User sees answers authors', %q{
             expect(page).to have_content "Author:"
             expect(page).to have_content answer.user.username
           end
-          expect(page).to have_selector('input.rating[value="3.0"]')
+          if answer.user == user
+            expect(page).to have_selector('input.rating[value="3.0"][readonly]')
+          else
+            expect(page).to have_selector('input.rating[value="3.0"]:not([readonly])')
+          end
           expect(page).to have_content answer.answer
           expect(page).not_to have_selector 'textarea'
         end

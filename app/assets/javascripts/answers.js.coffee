@@ -17,6 +17,7 @@ this.answerPublished = (action, answer) ->
     when 'create' then renderNewAnswer answer
     when 'update' then renderExistingAnswer answer
     when 'destroy' then $("#answer-#{answer.id}").remove()
+    when 'rating' then $("#answer-#{answer.id} input.rating").rating('update', answer.rating)
     when 'set_as_best' then setBestAnswer answer.id
 
 this.answerAdded = (answer) ->
@@ -59,7 +60,6 @@ this.answerSaveError = (event, xhr, status, error) ->
     "<strong>Alert!&nbsp;</strong>#{error}"
   else
     errorsList(xhr.responseJSON.errors)
-#    "<ul><li>#{xhr.responseJSON.errors.join('</li><li>')}</li></ul>"
 
 this.answerDeleteSuccess = (event, data, status, xhr) ->
   $("#answer-#{xhr.responseJSON.id}").remove()

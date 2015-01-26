@@ -6,7 +6,7 @@
   = link_to "Back to Questions List", questions_path, class: "btn btn-info"
 
 h3 =@question.title
-input.rating type="number" min=0 max=5 step=0.1 data-size="xs" value=@question.rating readonly=true
+= render partial: 'ratings/rating_form', locals: { ratingable: @question, rating_path: rating_question_path }
 p.meta-info
   - if can? :see, :author
     | Author:&nbsp;

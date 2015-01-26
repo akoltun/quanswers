@@ -5,7 +5,7 @@ class QuestionsController < ApplicationController
   load_and_authorize_resource
   before_action :load_answers, only: [:show, :update]
   before_action :create_answer, only: [:show, :update]
-  after_action :publish, only: [:create, :update, :destroy], if: "@question.errors.empty?", unless: "Rails.env.test?"
+  after_action :publish, only: [:create, :update, :destroy, :rating], if: "@question.errors.empty?", unless: "Rails.env.test?"
 
   respond_to :html, except: :update
   respond_to :js, only: [:show, :update]
@@ -37,6 +37,11 @@ class QuestionsController < ApplicationController
     respond_with(@question.destroy)
   end
 
+  def rating
+    @question.rating!(current_user, params[:question][:rating])
+    render json: { rating: @question.rating }
+  end
+
   private
 
   def question_params
@@ -57,6 +62,7 @@ class QuestionsController < ApplicationController
     question_hash[:no_best_answer] = @question.best_answer.nil?
     question_hash[:created_at] = @question.created_at.to_s(:long)
     question_hash[:updated_at] = @question.updated_at.to_s(:long)
+    question_hash[:rating] = @question.rating
     PrivatePub.publish_to "/questions", action: action_name, question: question_hash
 
     question_hash[:author] = @question.user.username

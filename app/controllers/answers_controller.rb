@@ -37,6 +37,11 @@ class AnswersController < ApplicationController
     end
   end
 
+  def rating
+    @answer.rating!(current_user, params[:answer][:rating])
+    render json: { rating: @answer.rating }
+  end
+
   private
 
   def answer_params
@@ -68,6 +73,7 @@ class AnswersController < ApplicationController
     end
     hash[:created_at] = @answer.created_at.to_s(:long)
     hash[:updated_at] = @answer.updated_at.to_s(:long)
+    hash[:rating] = @answer.rating
     hash
   end
 

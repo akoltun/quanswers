@@ -9,8 +9,10 @@ Rails.application.routes.draw do
   end
 
   resources :questions, except: [:edit], concerns: :remarkable do
-    resources :answers, only: [:new, :show, :create, :update, :destroy], concerns: :remarkable, shallow: true do
+    patch :rating, on: :member
+    resources :answers, only: [:create, :update, :destroy], concerns: :remarkable, shallow: true do
       patch :set_as_best, on: :member
+      patch :rating, on: :member
     end
   end
 

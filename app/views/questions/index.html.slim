@@ -16,7 +16,7 @@
               br
               | Last update:&nbsp;
               span.updated_at = question.updated_at.to_s(:long)
-            input.rating type="number" min=0 max=5 step=0.1 data-size="xs" value=question.rating readonly=true
+            = render partial: 'ratings/rating_form', locals: {ratingable: question, rating_path: rating_question_path(question)}
             .title
               h4
                 =link_to question.title, question

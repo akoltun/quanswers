@@ -14,6 +14,7 @@ this.questionPublished = (action, question) ->
     when 'create' then renderNewQuestion question
     when 'update' then renderExistingQuestion question
     when 'destroy' then $("#question-#{question.id}").remove()
+    when 'rating' then $("#question-#{question.id} input.rating").rating('update', question.rating)
     when 'answers_info'
       $("#question-#{question.id} .has-best-answer").toggleClass('hide', question.no_best_answer)
       $("#question-#{question.id} .answers-count").html(question.answers_count)

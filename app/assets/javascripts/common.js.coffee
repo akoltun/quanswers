@@ -12,6 +12,10 @@ this.initWidgets = () ->
 
 
 $ ->
+  $('.rating-form').on('ajax:success', ratingSaved).on('ajax:error', ratingSaveError)
+  $('.rating').on('rating.change', ratingChanged)
+  console.log('vvv')
+
   initWidgets()
   $(document).on 'confirm', confirmEvent
   setQuestionsPubs() if $('#questions').length

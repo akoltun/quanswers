@@ -24,17 +24,6 @@ class Answer < ActiveRecord::Base
     question.best_answer == self
   end
 
-  def set_rating(rating_value)
-    return false if current_user = user
-
-    current_rating = ratings.where(user: current_user).first
-    if current_rating
-      current_rating.update(rating: rating_value)
-    else
-      ratings.create(user: current_user, rating: rating_value)
-    end
-  end
-
   private
 
   def no_more_best!

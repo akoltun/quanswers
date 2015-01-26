@@ -21,6 +21,11 @@ RSpec.describe Ability, :type => :model do
     it { is_expected.not_to be_able_to :destroy, Question }
     it { is_expected.not_to be_able_to :destroy, Answer }
     it { is_expected.not_to be_able_to :destroy, Remark }
+
+    it { is_expected.not_to be_able_to :set_as_best, Answer }
+
+    it { is_expected.not_to be_able_to :rating, Question }
+    it { is_expected.not_to be_able_to :rating, Answer }
   end
 
   describe "authenticated user" do
@@ -59,5 +64,11 @@ RSpec.describe Ability, :type => :model do
 
     it { is_expected.to be_able_to :set_as_best, create(:answer, question: create(:question, user: user)) }
     it { is_expected.not_to be_able_to :set_as_best, create(:answer) }
+
+    it { is_expected.to be_able_to :rating, Question }
+    it { is_expected.not_to be_able_to :rating, create(:question, user: user) }
+
+    it { is_expected.to be_able_to :rating, Answer }
+    it { is_expected.not_to be_able_to :rating, create(:answer, user: user) }
   end
 end

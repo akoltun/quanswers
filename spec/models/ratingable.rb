@@ -18,4 +18,30 @@ RSpec.shared_examples "a ratingable" do
       end
     end
   end
+
+  describe "#rating!" do
+    let(:user) { create(:user) }
+    context "when there was rating already" do
+      let!(:rating) { create(:rating, ratingable: subject, user: user, rating: 2) }
+
+      it "does not create new rating in database" do
+        expect { subject.rating!(user, 3) }.not_to change(Rating, :count)
+      end
+
+      it "updates rating in database" do
+        subject.rating!(user, 3)
+        rating.reload
+        expect(rating.rating).to eq 3
+      end
+    end
+    context "when there was not rating yet" do
+      it "creates new rating in database" do
+        expect { subject.rating!(user, 3) }.to change(subject.ratings, :count).by(1)
+      end
+      it "creates rating with correct value" do
+        subject.rating!(user, 3)
+        expect(subject.ratings.first.rating).to eq 3
+      end
+    end
+  end
 end

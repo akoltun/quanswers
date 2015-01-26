@@ -46,7 +46,7 @@ feature 'Authenticated user sees questions authors', %q{
           expect(page).to have_content "Author:"
           expect(page).to have_content question.user.username
         end
-        expect(page).to have_selector('input.rating[value="3.0"][readonly]')
+        expect(page).to have_selector('input.rating[value="3.0"]')
         expect(page).to have_link question.title
         expect(page).to have_content question.question
       end

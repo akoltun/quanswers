@@ -6,8 +6,7 @@ feature 'User sees question page', %q{
   I want to be able to open question page
 } do
   given(:questions) { create_list(:unique_question_with_rating, 2) }
-  given(:question) { questions.first }
-  background { create_list(:unique_answer_with_rating, 2, question: question) }
+  given!(:question) { questions.first }
 
   scenario 'User opens question page' do
     visit questions_path
@@ -40,7 +39,7 @@ feature 'User sees question author', %q{
   I want to be able to see question author name
 } do
   given(:user) { create(:user) }
-  given!(:question) { create(:question) }
+  given!(:question) { create(:unique_question_with_rating, user: user) }
 
   scenario "User sees question" do
     sign_in user
@@ -53,6 +52,7 @@ feature 'User sees question author', %q{
         expect(page).to have_content "Author:"
         expect(page).to have_content question.user.username
       end
+      expect(page).to have_selector('input.rating[value="3.0"][readonly]')
       expect(page).to have_content question.title
       expect(page).to have_content question.question
       expect(page).not_to have_selector 'textarea'

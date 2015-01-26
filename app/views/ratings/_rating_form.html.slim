@@ -1,0 +1,2 @@
+= form_for(ratingable, url: rating_path, remote: true, html: { class: 'rating-form' }) do |f|
+  = f.number_field :rating, in: 0.0..5.0, step: 1, readonly: !can?(:rating, ratingable), class: 'rating', data: { initial_value: ratingable.rating, show_clear: false, size: "xs" }
