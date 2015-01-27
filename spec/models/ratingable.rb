@@ -2,16 +2,6 @@ require 'rails_helper'
 
 RSpec.shared_examples "a ratingable" do
   describe "#rating" do
-    context "when there are ratings" do
-      before do
-        create(:rating, ratingable: subject, rating: 2)
-        create(:rating, ratingable: subject, rating: 3)
-      end
-      it "returns average rating" do
-        expect(subject.rating).to eq 2.5
-      end
-    end
-
     context "when there are no ratings" do
       it "returns nil" do
         expect(subject.rating).to be_nil
@@ -21,6 +11,21 @@ RSpec.shared_examples "a ratingable" do
 
   describe "#rating!" do
     let(:user) { create(:user) }
+    context "when there was rating created by another user" do
+      let!(:rating) { create(:rating, ratingable: subject, rating: 2) }
+
+      it "creates new rating in database" do
+        expect { subject.rating!(user, 3) }.to change(subject.ratings, :count).by(1)
+      end
+      it "creates rating with correct value" do
+        subject.rating!(user, 3)
+        expect(subject.ratings.last.rating).to eq 3
+      end
+      it "subject.rating returns average rating" do
+        subject.rating!(user, 3)
+        expect(subject.rating).to eq 2.5
+      end
+    end
     context "when there was rating already" do
       let!(:rating) { create(:rating, ratingable: subject, user: user, rating: 2) }
 
@@ -33,6 +38,10 @@ RSpec.shared_examples "a ratingable" do
         rating.reload
         expect(rating.rating).to eq 3
       end
+      it "subject.rating returns average rating" do
+        subject.rating!(user, 3)
+        expect(subject.rating).to eq 3
+      end
     end
     context "when there was not rating yet" do
       it "creates new rating in database" do
@@ -41,6 +50,10 @@ RSpec.shared_examples "a ratingable" do
       it "creates rating with correct value" do
         subject.rating!(user, 3)
         expect(subject.ratings.first.rating).to eq 3
+      end
+      it "subject.rating returns average rating" do
+        subject.rating!(user, 3)
+        expect(subject.rating).to eq 3
       end
     end
   end

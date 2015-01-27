@@ -46,14 +46,14 @@ def make_ratings_for(users)
   Question.all.each do |question|
     users.each do |user|
       if question.user != user
-        question.ratings.create!(user: user, rating: rand(50)/10.0)
+        question.rating!(user, rand(50)/10.0)
       end
     end
   end
   Answer.all.each do |answer|
     users.each do |user|
       if answer.user != user
-        answer.ratings.create!(user: user, rating: rand(50)/10.0)
+        answer.rating!(user, rand(50)/10.0)
       end
     end
   end

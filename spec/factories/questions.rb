@@ -19,7 +19,7 @@ FactoryGirl.define do
 
       factory :unique_question_with_rating do
         after(:create) do |question|
-          create(:rating, ratingable: question)
+          question.rating!(create(:user), 3)
         end
       end
     end
