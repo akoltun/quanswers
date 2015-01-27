@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
-  get 'users/confirmation'
-
+  use_doorkeeper
   devise_for :users, controllers: { omniauth_callbacks: 'omniauth_callbacks', registrations: 'registrations' }
   root 'questions#index'
 
@@ -18,6 +17,15 @@ Rails.application.routes.draw do
 
   resources :user_confirmation_requests, only: [:new, :edit, :create, :update] do
     get :confirm, on: :member
+  end
+
+  namespace :api do
+    namespace :v1 do
+      resource :profiles do
+        get :me, on: :collection
+      end
+      resources :questions
+    end
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

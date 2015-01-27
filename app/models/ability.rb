@@ -16,6 +16,10 @@ class Ability
       cannot :rating, Question, user: user
       can :rating, Answer
       cannot :rating, Answer, user: user
+
+      if user.admin
+        can :manage, :oauth_application
+      end
     end
   end
 end

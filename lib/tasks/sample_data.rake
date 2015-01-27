@@ -1,6 +1,7 @@
 namespace :db do
   desc "Fill database with sample data"
   task populate: :environment do
+    make_user('admin', 'admin@test.com', true)
     make_user('test3', 'test3@test.com')
     make_questions(user2 = make_user('test2', 'test2@test.com'), 20)
     make_questions(user1 = make_user('test1', 'test1@test.com'), 30)
@@ -9,8 +10,8 @@ namespace :db do
   end
 end
 
-def make_user(user_name, email)
-  User.create!(username: user_name, email: email, password: '12345678')
+def make_user(user_name, email, admin = false)
+  User.create!(username: user_name, email: email, password: '12345678', admin: admin)
 end
 
 def make_questions(user, count)
