@@ -82,7 +82,8 @@ RSpec.describe QuestionsController, :type => :controller do
   end
 
   describe "POST #create" do
-    let(:post_request) { post :create, question: attributes_for(:question) }
+    let(:new_question) { attributes_for(:question) }
+    let(:post_request) { post :create, question: new_question }
 
     context "(authenticated user)" do
       sign_in_user
@@ -90,6 +91,18 @@ RSpec.describe QuestionsController, :type => :controller do
       context "with valid attributes" do
         it "creates new question in db" do
           expect { post_request }.to change(Question, :count).by(1)
+        end
+
+        it "publishes question" do
+          expect(PrivatePub).to receive(:publish_to).with("/questions", { action: 'create', question: hash_including("title" => new_question[:title], "question" => new_question[:question], "no_best_answer" => true) })
+          expect(PrivatePub).to receive(:publish_to).with("/signed_in/questions", { action: 'create', question: hash_including("title" => new_question[:title], "question" => new_question[:question], "no_best_answer" => true) })
+          post_request
+        end
+
+        it "publishes question without author for unauthenticated users" do
+          expect(PrivatePub).to receive(:publish_to).with("/questions", { action: 'create', question: hash_excluding("author" => @user.username) })
+          expect(PrivatePub).to receive(:publish_to).with("/signed_in/questions", { action: 'create', question: hash_including("author" => @user.username) })
+          post_request
         end
       end
 
@@ -125,39 +138,56 @@ RSpec.describe QuestionsController, :type => :controller do
 
     context "(authenticated user)" do
       sign_in_user
-      before { patch_request }
 
       context "this user's question without answers with valid attributes" do
         let(:question) { create(:question, user: @user) }
 
         it "renders show view" do
+          patch_request
           expect(response).to render_template :show
         end
 
         it "updates question in db" do
+          patch_request
           question.reload
           expect(question.title).to eq update_hash[:title]
           expect(question.question).to eq update_hash[:question]
         end
 
         it "assigns requested question to @question" do
+          patch_request
           expect(assigns(:question)).to eq question
         end
 
         it "assigns an array of all answers for this question" do
+          patch_request
           expect(assigns(:answers)).to match_array(question.answers)
         end
 
         it "assigns a new answer to @answer" do
+          patch_request
           expect(assigns(:answer)).to be_a_new(Answer)
         end
 
-        it { is_expected.to set_the_flash[:notice].to("You have updated the Question").now }
+        it "publishes question" do
+          expect(PrivatePub).to receive(:publish_to).with("/questions", { action: 'update', question: hash_including("title" => update_hash[:title], "question" => update_hash[:question], "no_best_answer" => true) })
+          expect(PrivatePub).to receive(:publish_to).with("/signed_in/questions", { action: 'update', question: hash_including("title" => update_hash[:title], "question" => update_hash[:question], "no_best_answer" => true) })
+          patch_request
+        end
+
+        it "publishes question without author for unauthenticated users" do
+          expect(PrivatePub).to receive(:publish_to).with("/questions", { action: 'update', question: hash_excluding("author" => @user.username) })
+          expect(PrivatePub).to receive(:publish_to).with("/signed_in/questions", { action: 'update', question: hash_including("author" => @user.username) })
+          patch_request
+        end
+
+        it { patch_request; is_expected.to set_the_flash[:notice].to("You have updated the Question").now }
       end
 
       context "this user's question without answers with invalid attributes" do
         let(:question) { create(:question, user: @user) }
         let(:update_hash) { attributes_for(:invalid_question) }
+        before { patch_request }
 
         it "renders show view" do
           expect(response).to render_template :show
@@ -176,6 +206,7 @@ RSpec.describe QuestionsController, :type => :controller do
 
       context "question with answers" do
         let(:question) { create(:question_with_answers, user: @user) }
+        before { patch_request }
 
         it { is_expected.to respond_with 403 }
 
@@ -187,6 +218,8 @@ RSpec.describe QuestionsController, :type => :controller do
       end
 
       context "another user's question" do
+        before { patch_request }
+
         it { is_expected.to respond_with 403 }
 
         it "does not change question in db" do
@@ -221,6 +254,18 @@ RSpec.describe QuestionsController, :type => :controller do
 
         it "deletes question" do
           expect { delete_request }.to change(Question, :count).by(-1)
+        end
+
+        it "publishes question" do
+          expect(PrivatePub).to receive(:publish_to).with("/questions", { action: 'destroy', question: hash_including("id" => question.id) })
+          expect(PrivatePub).to receive(:publish_to).with("/signed_in/questions", { action: 'destroy', question: hash_including("id" => question.id) })
+          delete_request
+        end
+
+        it "publishes question without author for unauthenticated users" do
+          expect(PrivatePub).to receive(:publish_to).with("/questions", { action: 'destroy', question: hash_excluding("author" => @user.username) })
+          expect(PrivatePub).to receive(:publish_to).with("/signed_in/questions", hash_including(action: 'destroy'))
+          delete_request
         end
       end
 

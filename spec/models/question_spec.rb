@@ -1,4 +1,4 @@
-require 'models/ratingable'
+require 'rails_helper'
 
 RSpec.describe Question, "model", :type => :model do
   it { is_expected.to validate_presence_of(:user)}

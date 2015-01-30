@@ -2,16 +2,9 @@ require 'rails_helper'
 
 RSpec.describe "Profile API" do
   describe 'GET /me'do
-    context 'unauthorized' do
-      it "when there is no access token returns 401 status" do
-        get '/api/v1/profiles/me', format: :json
-        expect(response.status).to eq 401
-      end
-
-      it "when access token is invalid returns 401 status" do
-        get '/api/v1/profiles/me', format: :json, access_token: '123'
-        expect(response.status).to eq 401
-      end
+    it_behaves_like "api authorizable"
+    def do_request(options = {})
+      get '/api/v1/profiles/me', { format: :json }.merge(options)
     end
 
     context 'authorized' do
@@ -19,9 +12,7 @@ RSpec.describe "Profile API" do
       let(:access_token) { create(:access_token, resource_owner_id: user.id).token }
       before { get '/api/v1/profiles/me', format: :json, access_token: access_token }
 
-      it "returns 200 status" do
-        expect(response).to be_success
-      end
+      it_behaves_like "a success request"
 
       [:id, :email, :username, :created_at, :updated_at].each do |attr|
         it "contains #{attr}" do
@@ -38,16 +29,9 @@ RSpec.describe "Profile API" do
   end
 
   describe 'GET /index'do
-    context 'unauthorized' do
-      it "when there is no access token returns 401 status" do
-        get '/api/v1/profiles', format: :json
-        expect(response.status).to eq 401
-      end
-
-      it "when access token is invalid returns 401 status" do
-        get '/api/v1/profiles', format: :json, access_token: '123'
-        expect(response.status).to eq 401
-      end
+    it_behaves_like "api authorizable"
+    def do_request(options = {})
+      get '/api/v1/profiles', { format: :json }.merge(options)
     end
 
     context 'authorized' do
@@ -56,9 +40,7 @@ RSpec.describe "Profile API" do
       let(:access_token) { create(:access_token, resource_owner_id: users.last.id).token }
       before { get '/api/v1/profiles', format: :json, access_token: access_token }
 
-      it "returns 200 status" do
-        expect(response).to be_success
-      end
+      it_behaves_like "a success request"
 
       it "return list of users without current" do
         expect(response.body).to have_json_size(2).at_path('profiles')

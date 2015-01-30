@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 RSpec.shared_examples "a ratingable" do
   describe "#rating" do
     context "when there are no ratings" do

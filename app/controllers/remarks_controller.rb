@@ -2,7 +2,7 @@ class RemarksController < ApplicationController
   before_action :authenticate_user!
   load_and_authorize_resource
   before_action :load_remarkable, only: :create
-  after_action :publish, if: "@remark.errors.empty?", unless: "Rails.env.test?"
+  after_action :publish, if: "@remark.errors.empty?" #, unless: "Rails.env.test?"
 
   respond_to :json
 
@@ -41,13 +41,13 @@ class RemarksController < ApplicationController
 
   def publish
     remark = @remark.as_json(except: :user_id)
-    remark[:created_at] = @remark.created_at.to_s(:long)
-    remark[:updated_at] = @remark.updated_at.to_s(:long)
+    remark["created_at"] = @remark.created_at.to_s(:long)
+    remark["updated_at"] = @remark.updated_at.to_s(:long)
     question = @remark.remarkable.is_a?(Answer) ? @remark.remarkable.question : @remark.remarkable
     PrivatePub.publish_to "/questions/#{question.id}", action: action_name, remark: remark
 
-    remark[:user_id] = @remark.user.id
-    remark[:author] = @remark.user.username
+    remark["user_id"] = @remark.user.id
+    remark["author"] = @remark.user.username
     PrivatePub.publish_to "/signed_in/questions/#{question.id}", action: action_name, remark: remark
   rescue
     return

@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 RSpec.shared_examples "an attachmentable" do |attachmentable|
   context 'attachments' do
     it "included in #{attachmentable} object" do

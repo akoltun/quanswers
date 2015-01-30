@@ -4,8 +4,8 @@ class AnswersController < ApplicationController
   before_action :load_answer, except: :create
   before_action :assign_question, except: :create
   authorize_resource
-  after_action :publish, if: "@answer.errors.empty?", unless: "Rails.env.test?"
-  after_action :publish_answers_info, only: [:set_as_best, :create, :destroy], if: "@answer.errors.empty?", unless: "Rails.env.test?"
+  after_action :publish, except: :set_as_best, if: "@answer.errors.empty?"
+  after_action :publish_answers_info, only: [:set_as_best, :create, :destroy], if: "@answer.errors.empty?"
 
   respond_to :json
 
@@ -67,13 +67,13 @@ class AnswersController < ApplicationController
   def answer_as_json(show_author)
     hash = @answer.as_json(include: :attachments)
     if show_author
-      hash[:author] = @answer.user.username
+      hash["author"] = @answer.user.username
     else
-      hash.except!(:user_id)
+      hash.except!("user_id")
     end
-    hash[:created_at] = @answer.created_at.to_s(:long)
-    hash[:updated_at] = @answer.updated_at.to_s(:long)
-    hash[:rating] = @answer.rating
+    hash["created_at"] = @answer.created_at.to_s(:long)
+    hash["updated_at"] = @answer.updated_at.to_s(:long)
+    hash["rating"] = @answer.rating
     hash
   end
 

@@ -1,5 +1,3 @@
-require 'rails_helper'
-
 RSpec.shared_examples "a remarkable" do |remarkable|
   context 'remarks' do
     it "included in #{remarkable} object" do
