@@ -58,4 +58,11 @@ RSpec.describe Answer, :type => :model do
 
   subject { create(:answer) }
   it_behaves_like "a ratingable"
+
+  context "when created" do
+    it "sends a message to question author" do
+      expect(AnswerCreatedMailer).to receive(:send_notification).and_call_original
+      create(:answer)
+    end
+  end
 end

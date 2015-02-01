@@ -27,9 +27,15 @@ RSpec.configure do |config|
   end
 
   config.after(:each) do
+    Timecop.return
     DatabaseCleaner.clean
     # if Rails.env.test?
     #   FileUtils.rm_rf(Dir["#{Rails.root}/spec/support/uploads"])
     # end
   end
 end
+
+# Capybara.configure do |config|
+#   config.app_host   = 'http://localhost'
+#   config.server_port = 3000
+# end

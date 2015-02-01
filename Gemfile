@@ -45,13 +45,15 @@ gem 'omniauth'
 gem 'omniauth-facebook'
 gem "omniauth-google-oauth2"
 gem 'omniauth-twitter'
-gem 'capybara-email'
 gem "letter_opener", :group => :development
 gem "cancancan"
 gem "doorkeeper"
 gem "active_model_serializers"
 gem 'oj'
 gem 'oj_mimic_json'
+gem 'sidekiq'
+gem 'sinatra', '>= 1.3.0', require: nil
+gem 'sidetiq'
 
 source 'https://rails-assets.org' do
   gem 'rails-assets-bootstrap-star-rating'
@@ -72,6 +74,8 @@ end
 group :test do
   gem 'shoulda-matchers', require: false
   gem 'json_spec'
+  gem 'timecop'
+  gem 'capybara-email'
 end
 
 # Use ActiveModel has_secure_password

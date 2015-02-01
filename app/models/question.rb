@@ -13,6 +13,7 @@ class Question < ActiveRecord::Base
   validates :question, length: { maximum: 2000 }
 
   scope :ordered_by_creation_date, -> { order(created_at: :desc) }
+  scope :last_day, -> { where(created_at: Date.yesterday...Date.today) }
 
   accepts_nested_attributes_for :attachments, allow_destroy: true, reject_if: proc { |attr| attr['file'].nil? }
 end

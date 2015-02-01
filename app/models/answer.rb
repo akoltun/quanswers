@@ -11,6 +11,7 @@ class Answer < ActiveRecord::Base
   validates :answer, presence: true, length: { maximum: 2000 }
 
   after_destroy :no_more_best!
+  after_create :send_notification_email
 
   scope :ordered_by_creation_date, -> { order(created_at: :desc) }
 
@@ -31,5 +32,9 @@ class Answer < ActiveRecord::Base
       question.best_answer = nil
       question.save
     end
+  end
+
+  def send_notification_email
+    AnswerCreatedMailer.delay.send_notification(id)
   end
 end

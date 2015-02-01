@@ -20,4 +20,40 @@ RSpec.describe Question, "model", :type => :model do
 
   subject { create(:question) }
   it_behaves_like "a ratingable"
+
+  describe "last_day scope" do
+    let(:old_question) { create(:question) }
+    let(:good_question_1) { create(:question) }
+    let(:good_question_2) { create(:question) }
+    let(:good_questions) { [good_question_1, good_question_2] }
+    let(:new_question) { create(:question) }
+
+    before do
+      Timecop.freeze Time.new(2015, 1, 1, 23, 59, 59, 0)
+      old_question
+
+      Timecop.freeze Time.new(2015, 1, 2,  0,  0,  0, 0)
+      good_question_1
+
+      Timecop.freeze Time.new(2015, 1, 2, 23, 59, 59, 0)
+      good_question_2
+
+      Timecop.freeze Time.new(2015, 1, 3,  0,  0,  0, 0)
+      new_question
+
+      Timecop.travel Time.new(2015, 1, 3, 10,  0,  0, 0)
+    end
+
+    it "returns yesterday questions" do
+      expect(Question.last_day).to include *good_questions
+    end
+
+    it "doesn't return questions older then yesterday" do
+      expect(Question.last_day).not_to include old_question
+    end
+
+    it "doesn't return questions newer then yesterday" do
+      expect(Question.last_day).not_to include new_question
+    end
+  end
 end

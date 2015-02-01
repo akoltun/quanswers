@@ -1,0 +1,14 @@
+doctype html
+html
+  head
+    meta content='text/html; charset=UTF-8' http-equiv='Content-Type'
+  body
+    h1 Hello, #{@user.username}!
+    p There is a list of interesting question asked yesterday, #{Date.yesterday.to_s(:long)}:
+    - @questions.each do |question|
+      h3 = link_to question.title, question_url(question)
+      p =question.question
+    p
+      | Best wishes,
+      br
+      | QuAnswers team!

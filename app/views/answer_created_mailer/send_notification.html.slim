@@ -1,0 +1,12 @@
+doctype html
+html
+  head
+    meta content='text/html; charset=UTF-8' http-equiv='Content-Type'
+  body
+    h1 Hello, #{@answer.question.user.username}!
+    p The answer for your question has been received right now from #{@answer.user.username}:
+    p =@answer.answer
+    p
+      | Best wishes,
+      br
+      | QuAnswers team!
