@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150202142442) do
+ActiveRecord::Schema.define(version: 20150202182501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -103,6 +103,14 @@ ActiveRecord::Schema.define(version: 20150202142442) do
   add_index "questions", ["created_at"], name: "index_questions_on_created_at", using: :btree
   add_index "questions", ["user_id"], name: "index_questions_on_user_id", using: :btree
 
+  create_table "questions_tags", force: true do |t|
+    t.integer "question_id"
+    t.integer "tag_id"
+  end
+
+  add_index "questions_tags", ["question_id", "tag_id"], name: "index_questions_tags_on_question_id_and_tag_id", unique: true, using: :btree
+  add_index "questions_tags", ["tag_id"], name: "index_questions_tags_on_tag_id", using: :btree
+
   create_table "questions_users", force: true do |t|
     t.integer "question_id"
     t.integer "user_id"
@@ -134,6 +142,15 @@ ActiveRecord::Schema.define(version: 20150202142442) do
 
   add_index "remarks", ["remarkable_type", "remarkable_id"], name: "index_remarks_on_remarkable_type_and_remarkable_id", using: :btree
   add_index "remarks", ["user_id"], name: "index_remarks_on_user_id", using: :btree
+
+  create_table "tags", force: true do |t|
+    t.string   "name"
+    t.integer  "color_index"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
   create_table "user_confirmation_requests", force: true do |t|
     t.string   "provider"

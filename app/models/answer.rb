@@ -36,5 +36,8 @@ class Answer < ActiveRecord::Base
 
   def send_notification_email
     NewAnswerNotificationWorker.perform_async(id)
+  rescue
+    # Как лучше залоггировать ошибку?
+    return
   end
 end

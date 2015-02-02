@@ -8,7 +8,7 @@ feature 'User edits question', %q{
   background { Capybara.match = :first }
 
   given(:user) { create(:user) }
-  given(:current_user_question) { create(:question, user: user) }
+  given(:current_user_question) { create(:question, user: user, tags: create_list(:tag, 2)) }
   given(:another_user_question) { create(:question) }
   given(:question_with_answers) { create(:question_with_answers, user: user) }
 
@@ -47,6 +47,7 @@ feature 'User edits question', %q{
         fill_in 'Title', with: new_question[:title]
         # fill_in 'Question', with: new_question[:question]
         page.execute_script %Q{ $('#question_question').data("wysihtml5").editor.setValue('#{new_question[:question]}') }
+        fill_in 'Tags', with: "#{current_user_question.tags.first.name}, def, klmn"
         click_on 'Save Question'
 
         expect(current_path).to eq question_path(current_user_question)
@@ -57,6 +58,11 @@ feature 'User edits question', %q{
         within("#question .meta-info") do
           current_user_question.reload
           expect(page).to have_content "Last update: #{current_user_question.updated_at.to_s(:long)}"
+        end
+        within('#question .tags') do
+          expect(page).to have_content current_user_question.tags.first.name
+          expect(page).to have_content 'def'
+          expect(page).to have_content 'klmn'
         end
       end
 

@@ -1,27 +1,17 @@
 namespace :db do
   desc "Clear database"
   task clear: :environment do
-    clear_answers
-    clear_questions
-    clear_users
+    clear_klass Answer
+    clear_klass Question
+    clear_klass User
+    clear_klass Tag
+    clear_klass UserConfirmationRequest
   end
 end
 
-def clear_answers
-  Answer.all.each do |answer|
-    answer.destroy
-  end
-end
-
-def clear_questions
-  Question.all.each do |question|
-    question.destroy
-  end
-end
-
-def clear_users
-  User.all.each do |user|
-    user.destroy
+def clear_klass(klass)
+  klass.find_each do |item|
+    item.destroy
   end
 end
 

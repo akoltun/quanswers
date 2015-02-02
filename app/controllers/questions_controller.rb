@@ -55,7 +55,7 @@ class QuestionsController < ApplicationController
   private
 
   def question_params
-    params.require(:question).permit(:title, :question, attachments_attributes: [:id, :file, :file_cache, :_destroy])
+    params.require(:question).permit(:title, :tags_list, :question, attachments_attributes: [:id, :file, :file_cache, :_destroy])
   end
 
   def load_answers

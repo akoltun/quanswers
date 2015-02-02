@@ -8,6 +8,7 @@ RSpec.describe Question, "model", :type => :model do
   it { is_expected.to ensure_length_of(:title).is_at_most(250) }
   it { is_expected.to ensure_length_of(:question).is_at_most(2000) }
 
+  it { is_expected.to have_and_belong_to_many(:tags).autosave(true) }
   it { is_expected.to have_and_belong_to_many(:followers).class_name('User') }
   it { is_expected.to have_many(:ratings).dependent(:destroy) }
   it { is_expected.to have_many(:answers).dependent(:destroy) }
@@ -21,6 +22,7 @@ RSpec.describe Question, "model", :type => :model do
 
   subject { create(:question) }
   it_behaves_like "a ratingable"
+  it_behaves_like "a taggable"
 
   describe "last_day scope" do
     let(:old_question) { create(:question) }

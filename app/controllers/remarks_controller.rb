@@ -50,6 +50,7 @@ class RemarksController < ApplicationController
     remark["author"] = @remark.user.username
     PrivatePub.publish_to "/signed_in/questions/#{question.id}", action: action_name, remark: remark
   rescue
+    # Как лучше залоггировать ошибку?
     return
   end
 end

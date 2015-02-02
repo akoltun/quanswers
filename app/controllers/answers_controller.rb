@@ -89,6 +89,7 @@ class AnswersController < ApplicationController
     PrivatePub.publish_to "/questions", action: 'answers_info', question: { id: @answer.question.id, no_best_answer: !@answer.question.best_answer, answers_count: answers_count }
     PrivatePub.publish_to "/signed_in/questions", action: 'answers_info', question: { id: @answer.question.id, no_best_answer: !@answer.question.best_answer, answers_count: answers_count }
   rescue
+    # Как лучше залоггировать ошибку?
     return
   end
 end

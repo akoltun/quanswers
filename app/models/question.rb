@@ -1,5 +1,6 @@
 class Question < ActiveRecord::Base
   include Ratingable
+  include Taggable
 
   belongs_to :user
   has_many :answers, dependent: :destroy
@@ -8,6 +9,7 @@ class Question < ActiveRecord::Base
   has_many :attachments, as: :attachmentable, dependent: :destroy
   has_many :ratings, as: :ratingable, dependent: :destroy
   has_and_belongs_to_many :followers, class_name: 'User'
+  has_and_belongs_to_many :tags, autosave: true
 
   validates :user, :title, presence: true
   validates :title, length: { maximum: 250 }

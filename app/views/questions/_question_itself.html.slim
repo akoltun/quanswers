@@ -6,6 +6,7 @@
   = link_to "Back to Questions List", questions_path, class: "btn btn-info"
 
 h3 =@question.title
+= render partial: 'questions/tags', locals:  { question: @question }
 = render partial: 'ratings/rating_form', locals: { ratingable: @question, rating_path: rating_question_path }
 p.meta-info
   - if can? :see, :author

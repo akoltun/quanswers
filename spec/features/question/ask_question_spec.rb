@@ -41,11 +41,17 @@ feature 'User asks question', %q{
       scenario 'with valid attributes' do
         fill_in 'Title', with: new_question[:title]
         fill_in 'Question', with: new_question[:question]
+        fill_in 'Tags', with: 'abc, def, klmn'
         click_on 'Save Question'
 
         expect(page).to have_content 'You have created a new Question'
         expect(page).to have_content new_question[:title]
         expect(page).to have_content new_question[:question]
+        within('.tags') do
+          expect(page).to have_content 'abc'
+          expect(page).to have_content 'def'
+          expect(page).to have_content 'klmn'
+        end
       end
 
       scenario 'with invalid attributes' do

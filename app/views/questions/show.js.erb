@@ -1,8 +1,10 @@
-$('#question').html('<%= j render 'questions/question' %>');
-$('#answers').html('<%= j render 'answers/answers' %>');
-$('#flash').html('<%= j render 'layouts/flash' %>');
-initWidgets();
-<% unless @question.errors.present? %>
-    $('#answers').show();
+(function() {
+    $('#question').html('<%= j render 'questions/question' %>').find('.rating').rating();
+    var answers = $('#answers').html('<%= j render 'answers/answers' %>');
+    $('#flash').html('<%= j render 'layouts/flash' %>');
+    initWidgets();
+    <% unless @question.errors.present? %>
+    answers.show();
     $('#new-answer').show();
-<% end %>
+    <% end %>
+}).call(this);

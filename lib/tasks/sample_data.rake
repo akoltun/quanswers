@@ -7,6 +7,8 @@ namespace :db do
     make_questions(user1 = make_user('test1', 'test1@test.com'), 30)
     make_questions(user0 = make_user('test', 'test@test.com'), 50)
     make_ratings_for [user0, user1, user2]
+    make_tags 10
+    tag_questions 4
   end
 end
 
@@ -44,18 +46,32 @@ def set_best_answer(question)
 end
 
 def make_ratings_for(users)
-  Question.all.each do |question|
+  Question.find_each do |question|
     users.each do |user|
       if question.user != user
         question.rating!(user, rand(50)/10.0)
       end
     end
   end
-  Answer.all.each do |answer|
+  Answer.find_each do |answer|
     users.each do |user|
       if answer.user != user
         answer.rating!(user, rand(50)/10.0)
       end
+    end
+  end
+end
+
+def make_tags(count)
+  count.times { Tag.create!(name: Faker::Lorem.words(1 + rand(3)).join(' '), color_index: rand(6)) }
+end
+
+def tag_questions(count)
+  tags = Tag.all
+  Question.find_each do |question|
+    rand(count).times do
+      tag = tags[rand(tags.count)]
+      question.tags << tag unless question.tags.exists? tag
     end
   end
 end

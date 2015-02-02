@@ -16,6 +16,7 @@
               br
               | Last update:&nbsp;
               span.updated_at = question.updated_at.to_s(:long)
+            = render partial: 'questions/tags', locals: {question: question}
             = render partial: 'ratings/rating_form', locals: {ratingable: question, rating_path: rating_question_path(question)}
             .title
               h4

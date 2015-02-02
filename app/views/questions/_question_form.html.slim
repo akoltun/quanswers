@@ -6,6 +6,7 @@
 
   h1 = title
   = f.text_field :title, help: "If you have short question put it into Title"
+  = f.text_field :tags_list, label: "Tags", help: "Type tags separated by comma"
   = f.text_area :question, class: "wysihtml5", size: "100x15"
 
   = render partial: 'attachments/attachment_form', locals: { form: f, attachment_form_id: "attachment-form" }
