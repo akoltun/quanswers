@@ -3,8 +3,9 @@ html
   head
     meta content='text/html; charset=UTF-8' http-equiv='Content-Type'
   body
-    h1 Hello, #{@answer.question.user.username}!
-    p The answer for your question has been received right now from #{@answer.user.username}:
+    h1 Hello, #{@user.username}!
+    p There is new answer from #{@user.username} for the question:
+    =link_to @answer.question.title, question_url(@answer.question)
     p =@answer.answer
     p
       | Best wishes,

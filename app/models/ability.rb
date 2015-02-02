@@ -12,10 +12,12 @@ class Ability
       end
       can [:update, :destroy], [Answer, Remark], user: user
       can :set_as_best, Answer, question: { user: user }
-      can :rating, Question
-      cannot :rating, Question, user: user
-      can :rating, Answer
-      cannot :rating, Answer, user: user
+
+      can :rating, [Question, Answer]
+      cannot :rating, [Question, Answer], user: user
+
+      can [:follow, :unfollow], Question
+      cannot [:follow, :unfollow], Question, user: user
 
       if user.admin
         can :manage, :oauth_application

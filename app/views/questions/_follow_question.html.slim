@@ -1,0 +1,8 @@
+#answers-title
+  hr
+  h3
+    | Answers
+    - if can? :follow, @question
+      =link_to "Follow", follow_question_path(@question), data: {remote: true, method: "POST"}, class: "btn btn-default btn-lg follow-link #{@question.followed_by?(current_user) ? 'hide' : ''}", id: 'follow-question-link'
+    - if can? :unfollow, @question
+      =link_to "Unfollow", unfollow_question_path(@question), data: { remote: true, method: "DELETE"}, class: "btn btn-default btn-lg follow-link active #{@question.followed_by?(current_user) ? '' : 'hide'}", id: 'unfollow-question-link'

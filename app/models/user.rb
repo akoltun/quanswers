@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   has_many :questions, dependent: :restrict_with_error
   has_many :answers, dependent: :restrict_with_error
   has_many :ratings, dependent: :restrict_with_error
+  has_and_belongs_to_many :followed, class_name: 'Question'
 
   validates :username, presence: true
 

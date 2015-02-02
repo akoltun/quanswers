@@ -28,3 +28,16 @@ renderExistingQuestion = (question) ->
   $("#question-#{question.id} .title a").html(question.title)
   $("#question-#{question.id} div.content").html(question.question)
   $("#question-#{question.id} .meta-info .updated_at").html(question.updated_at)
+
+this.questionFollowingSuccess = (event, data, status, xhr) ->
+  $("#follow-question-link").toggleClass('hide', event.data)
+  $("#unfollow-question-link").toggleClass('hide', !event.data)
+
+this.questionUnfollowedSuccess = (event, data, status, xhr) ->
+  console.log data
+  $("#follow-question-link").removeClass('hide')
+  $("#unfollow-question-link").addClass('hide')
+
+this.questionFollowingError = (event, xhr, status, error) ->
+  $('#flash').html(flashMessage(error, 'error'))
+  console.log xhr

@@ -12,9 +12,10 @@ this.initWidgets = () ->
 
 
 $ ->
+  $('#follow-question-link').on('ajax:success', true, questionFollowingSuccess).on('ajax:error', questionFollowingError)
+  $('#unfollow-question-link').on('ajax:success', false, questionFollowingSuccess).on('ajax:error', questionFollowingError)
   $('.rating-form').on('ajax:success', ratingSaved).on('ajax:error', ratingSaveError)
   $('.rating').on('rating.change', ratingChanged)
-  console.log('vvv')
 
   initWidgets()
   $(document).on 'confirm', confirmEvent

@@ -28,6 +28,8 @@ RSpec.describe Ability, :type => :model do
     it { is_expected.not_to be_able_to :rating, Answer }
 
     it { is_expected.not_to be_able_to :manage, :oauth_application }
+    it { is_expected.not_to be_able_to :follow, Question }
+    it { is_expected.not_to be_able_to :unfollow, Question }
   end
 
   describe "authenticated user" do
@@ -74,6 +76,12 @@ RSpec.describe Ability, :type => :model do
     it { is_expected.not_to be_able_to :rating, create(:answer, user: user) }
 
     it { is_expected.not_to be_able_to :manage, :oauth_application }
+
+    it { is_expected.to be_able_to :follow, Question }
+    it { is_expected.not_to be_able_to :follow, create(:question, user: user) }
+
+    it { is_expected.to be_able_to :unfollow, Question }
+    it { is_expected.not_to be_able_to :unfollow, create(:question, user: user) }
 
     context "admin" do
       let(:user) { create(:user, admin: true) }

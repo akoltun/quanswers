@@ -35,6 +35,6 @@ class Answer < ActiveRecord::Base
   end
 
   def send_notification_email
-    AnswerCreatedMailer.delay.send_notification(id)
+    NewAnswerNotificationWorker.perform_async(id)
   end
 end

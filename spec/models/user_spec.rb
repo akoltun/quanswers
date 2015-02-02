@@ -9,6 +9,7 @@ RSpec.describe User, :type => :model do
   it { is_expected.to have_many(:questions).dependent(:restrict_with_error) }
   it { is_expected.to have_many(:answers).dependent(:restrict_with_error) }
   it { is_expected.to have_many(:ratings).dependent(:restrict_with_error) }
+  it { is_expected.to have_and_belong_to_many(:followed).class_name('Question') }
 
   describe ".find_for_oauth" do
     let!(:user) { create(:user) }

@@ -42,6 +42,16 @@ class QuestionsController < ApplicationController
     render json: { rating: @question.rating }
   end
 
+  def follow
+    @question.follow_by(current_user)
+    head :created
+  end
+
+  def unfollow
+    @question.unfollow_by(current_user)
+    head :ok
+  end
+
   private
 
   def question_params

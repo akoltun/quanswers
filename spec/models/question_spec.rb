@@ -8,6 +8,7 @@ RSpec.describe Question, "model", :type => :model do
   it { is_expected.to ensure_length_of(:title).is_at_most(250) }
   it { is_expected.to ensure_length_of(:question).is_at_most(2000) }
 
+  it { is_expected.to have_and_belong_to_many(:followers).class_name('User') }
   it { is_expected.to have_many(:ratings).dependent(:destroy) }
   it { is_expected.to have_many(:answers).dependent(:destroy) }
   it { is_expected.to belong_to(:best_answer).class_name('Answer') }
@@ -54,6 +55,15 @@ RSpec.describe Question, "model", :type => :model do
 
     it "doesn't return questions newer then yesterday" do
       expect(Question.last_day).not_to include new_question
+    end
+  end
+
+  context "question author automatically follows the question" do
+    let!(:question) { create(:question) }
+
+    it "added question author to question followers" do
+      question.reload
+      expect(question.followers).to include question.user
     end
   end
 end

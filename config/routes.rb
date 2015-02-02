@@ -15,6 +15,8 @@ Rails.application.routes.draw do
 
   resources :questions, except: [:edit], concerns: :remarkable do
     patch :rating, on: :member
+    post :follow, on: :member
+    delete :unfollow, on: :member
     resources :answers, only: [:create, :update, :destroy], concerns: :remarkable, shallow: true do
       patch :set_as_best, on: :member
       patch :rating, on: :member
