@@ -5,7 +5,7 @@ feature 'User receives daily digest email', %q{
   As an user
   I want to be able to receive daily digest email
 } do
-  given(:user) { create(:user) }
+  given!(:user) { create(:user) }
   given(:old_questions) { create_list(:unique_question, 2) }
   given(:new_questions) { create_list(:unique_question, 2) }
   background do
@@ -19,7 +19,7 @@ feature 'User receives daily digest email', %q{
   end
 
   context "Sidekiq sends email to user" do
-    background { DailyDigestMailer.digest(user.id).deliver  }
+    background { DailyDigestWorker.new.perform }
 
     scenario "User see all yesterday questions" do
       open_email(user.email)
@@ -27,7 +27,7 @@ feature 'User receives daily digest email', %q{
       expect(current_email).to have_content user.username
 
       new_questions.each do |question|
-        expect(current_email).to have_link question.title, href: question_url(question) # "/question/#{question.id}")
+        expect(current_email).to have_link question.title #, href: question_url(question)
         expect(current_email).to have_content question.question
       end
 
@@ -36,7 +36,7 @@ feature 'User receives daily digest email', %q{
         expect(current_email).not_to have_content question.question
       end
 
-      # current_email.save_and_open
+      current_email.save_and_open
     end
   end
 end

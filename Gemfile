@@ -69,13 +69,13 @@ group :test, :development do
   # gem 'poltergeist'
   gem 'selenium-webdriver'
   gem 'database_cleaner'
+  gem 'capybara-email'
 end
 
 group :test do
   gem 'shoulda-matchers', require: false
   gem 'json_spec'
   gem 'timecop'
-  gem 'capybara-email'
 end
 
 # Use ActiveModel has_secure_password

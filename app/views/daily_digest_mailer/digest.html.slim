@@ -5,9 +5,8 @@ html
   body
     h1 Hello, #{@user.username}!
     p There is a list of interesting question asked yesterday, #{Date.yesterday.to_s(:long)}:
-    - @questions.each do |question|
-      h3 = link_to question.title, question_url(question)
-      p =question.question
+    .questions
+      == @template
     p
       | Best wishes,
       br
