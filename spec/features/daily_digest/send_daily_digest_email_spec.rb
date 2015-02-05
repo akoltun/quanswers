@@ -36,7 +36,7 @@ feature 'User receives daily digest email', %q{
         expect(current_email).not_to have_content question.question
       end
 
-      current_email.save_and_open
+      # current_email.save_and_open
     end
   end
 end

@@ -45,7 +45,7 @@ feature 'User answers question', %q{
 
       expect(current_email).to have_content new_answer[:answer]
 
-      current_email.save_and_open
+      # current_email.save_and_open
     end
 
     scenario 'gives answer with invalid attributes', js: true do

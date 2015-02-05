@@ -1,9 +1,12 @@
 nav.navbar.navbar-inverse
   .navbar-header
-    a.navbar-brand href="#" QuAnswers
+    = link_to "QuAnswers", root_path, class: "navbar-brand"
+    /a.navbar-brand href="#" QuAnswers
   .collapse.navbar-collapse
     ul.nav.navbar-nav
       li = link_to "Questions list", questions_path
+      li = link_to "Ask", new_question_path
+      li = link_to "Search", search_path
     ul.nav.navbar-nav.navbar-right
       - if user_signed_in?
         li

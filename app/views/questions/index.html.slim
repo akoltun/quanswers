@@ -1,6 +1,7 @@
 .row
   .col-xs-12
     = link_to "Ask New Question", new_question_path, class: "btn btn-primary"
+    = link_to "Search", search_path, class: "btn btn-info"
     h1 Questions
     #questions
       - @questions.each do |question|

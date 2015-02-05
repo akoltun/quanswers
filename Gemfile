@@ -46,6 +46,7 @@ gem 'omniauth-facebook'
 gem "omniauth-google-oauth2"
 gem 'omniauth-twitter'
 gem "letter_opener", :group => :development
+gem 'meta_request', :group => :development
 gem "cancancan"
 gem "doorkeeper"
 gem "active_model_serializers"
@@ -55,6 +56,9 @@ gem 'sidekiq'
 gem 'sinatra', '>= 1.3.0', require: nil
 gem 'sidetiq'
 gem "strip_attributes"
+gem 'mysql2'
+gem 'thinking-sphinx'
+gem 'will_paginate-bootstrap'
 
 source 'https://rails-assets.org' do
   gem 'rails-assets-bootstrap-star-rating'

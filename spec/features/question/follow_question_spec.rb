@@ -1,5 +1,6 @@
 require 'features/feature_helper'
 
+
 feature 'User follows question', %q{
   In order to be informed about new answers on interesting question
   As authenticated user
@@ -47,7 +48,7 @@ feature 'User follows question', %q{
       expect(current_email).to have_content user.username
       expect(current_email).to have_link another_user_question.title #, href: question_url(another_user_question)
       expect(current_email).to have_content answer.answer
-      current_email.save_and_open
+      # current_email.save_and_open
 
       click_on 'Unfollow'
       expect(current_path).to eq question_path(another_user_question)

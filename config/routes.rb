@@ -23,6 +23,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'search' => 'search#index', as: :search
+
   resources :user_confirmation_requests, only: [:new, :edit, :create, :update] do
     get :confirm, on: :member
   end

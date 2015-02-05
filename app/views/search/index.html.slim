@@ -1,0 +1,39 @@
+.row
+  .col-xs-12
+    = bootstrap_form_tag url: "/search", method: 'get', layout: :horizontal, label_col: "col-sm-1", control_col: "col-sm-11", html: { id: "searching-form" } do |f|
+      = f.text_field :search, value: @search
+      = f.form_group :in, label: { text: "in:" } do
+        = f.check_box :question, checked: params["question"] == "1", inline: true do
+          | questions
+        = f.check_box :answer, checked: params["answer"] == "1", inline: true do
+          | answers
+        = f.check_box :remark, checked: params["remark"] == "1", inline: true do
+          | remarks
+
+      = f.form_group do
+        = f.submit "Search", class: "btn btn-success"
+    hr
+      - if @search
+        - if !@found.empty?
+          = will_paginate @found, renderer: BootstrapPagination::Rails
+          br
+          - @found.each do |item|
+            - if item.is_a? Question
+              .question
+                strong Question:&nbsp;
+                =link_to item.title, item
+            - if item.is_a? Answer
+              .answer
+                strong Answer:&nbsp;
+                =link_to item.answer, item.question
+            - if item.is_a? Remark
+              .remark
+                strong Remark:&nbsp;
+                =link_to item.remark, item.remarkable.is_a?(Question) ? item.remarkable : item.remarkable.question
+            - unless item == @found.last
+              hr
+          br
+          = will_paginate @found, renderer: BootstrapPagination::Rails
+        - else
+          p Found nothing!
+        hr
