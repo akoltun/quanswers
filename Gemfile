@@ -25,9 +25,6 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
-# Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-gem 'spring',        group: :development
-gem "spring-commands-rspec", group: :development
 
 gem "slim-rails"
 gem 'bootstrap-wysihtml5-rails'
@@ -45,8 +42,6 @@ gem 'omniauth'
 gem 'omniauth-facebook'
 gem "omniauth-google-oauth2"
 gem 'omniauth-twitter'
-gem "letter_opener", :group => :development
-gem 'meta_request', :group => :development
 gem "cancancan"
 gem "doorkeeper"
 gem "active_model_serializers"
@@ -62,6 +57,19 @@ gem 'will_paginate-bootstrap'
 
 source 'https://rails-assets.org' do
   gem 'rails-assets-bootstrap-star-rating'
+end
+
+group :development do
+# Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'spring'
+  gem "spring-commands-rspec"
+  gem "letter_opener"
+  gem 'meta_request'
+  gem 'capistrano', require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano-rails', require: false
+  gem 'capistrano-rvm', require: false
+  gem 'capistrano-passenger', require: false
 end
 
 group :test, :development do
