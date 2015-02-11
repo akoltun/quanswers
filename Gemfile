@@ -13,8 +13,7 @@ gem 'autoprefixer-rails'
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.0.0'
-# See https://github.com/sstephenson/execjs#readme for more supported runtimes
-# gem 'therubyracer',  platforms: :ruby
+
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -54,17 +53,22 @@ gem "strip_attributes"
 gem 'mysql2'
 gem 'thinking-sphinx'
 gem 'will_paginate-bootstrap'
+gem 'dotenv'
+gem 'dotenv-deployment', require: 'dotenv/deployment'
+# See https://github.com/sstephenson/execjs#readme for more supported runtimes
+gem 'therubyracer' #,  platforms: :ruby
 
 source 'https://rails-assets.org' do
   gem 'rails-assets-bootstrap-star-rating'
 end
 
 group :development do
-# Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem "spring-commands-rspec"
   gem "letter_opener"
   gem 'meta_request'
+  # Use Capistrano for deployment
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', require: false
@@ -96,9 +100,6 @@ end
 
 # Use unicorn as the app server
 # gem 'unicorn'
-
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
