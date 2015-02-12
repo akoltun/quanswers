@@ -58,6 +58,8 @@ gem 'dotenv'
 gem 'dotenv-deployment', require: 'dotenv/deployment'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'therubyracer' #,  platforms: :ruby
+gem 'faker' # To fill production DB with demo data
+
 
 source 'https://rails-assets.org' do
   gem 'rails-assets-bootstrap-star-rating'
@@ -82,7 +84,6 @@ end
 group :test, :development do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
-  gem 'faker'
   gem 'capybara'
   gem 'launchy'
   # gem 'capybara-webkit'
