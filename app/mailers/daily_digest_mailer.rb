@@ -1,5 +1,5 @@
 class DailyDigestMailer < ActionMailer::Base
-  default from: "from@example.com"
+  default from: "admin@178.62.244.173"
 
   def digest(user_id)
     @user = User.find(user_id)

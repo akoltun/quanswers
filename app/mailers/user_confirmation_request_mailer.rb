@@ -1,5 +1,5 @@
 class UserConfirmationRequestMailer < ActionMailer::Base
-  default from: "from@example.com"
+  default from: "admin@178.62.244.173"
 
   def send_confirmation_email(user_confirmation_request)
     @user_confirmation_request = user_confirmation_request

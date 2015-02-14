@@ -1,5 +1,5 @@
 class AnswerCreatedMailer < ActionMailer::Base
-  default from: "from@example.com"
+  default from: "admin@178.62.244.173"
 
   def send_notification(answer_id, user_id)
     @answer = Answer.find(answer_id)
