@@ -40,6 +40,7 @@ http {
         listen       80;
         server_name  192.168.1.100;
         root /home/sasha/quanswers/current/public;
+        client_max_body_size 20M;
         passenger_enabled on;
 
         location ^~ /assets/ {

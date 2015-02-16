@@ -48,6 +48,7 @@ http {
         ssl_certificate /opt/nginx/ssl/nginx.crt;
         ssl_certificate_key /opt/nginx/ssl/nginx.key;
         root         /home/sasha/quanswers/current/public; 
+        client_max_body_size 20M;
         passenger_enabled on;
 
         location ^~ /assets/ {
