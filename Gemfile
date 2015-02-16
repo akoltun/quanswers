@@ -59,6 +59,8 @@ gem 'dotenv-deployment', require: 'dotenv/deployment'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'therubyracer' #,  platforms: :ruby
 gem 'faker' # To fill production DB with demo data
+gem 'unicorn'
+
 
 
 source 'https://rails-assets.org' do
@@ -72,13 +74,14 @@ group :development do
   gem "letter_opener"
   gem 'meta_request'
   # Use Capistrano for deployment
+  # to show all capistrano tasks 'cap -T'
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', require: false
   gem 'capistrano-rvm', require: false
   # gem 'capistrano-passenger', require: false
   gem 'capistrano-sidekiq', require: false
-
+  gem 'capistrano3-unicorn', require: false
 end
 
 group :test, :development do
