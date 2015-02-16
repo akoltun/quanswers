@@ -1,4 +1,6 @@
 test:
   mysql41: 9307
+staging:
+  mysql41: 9307
 production:
   mysql41: 9307

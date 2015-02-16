@@ -1,0 +1,5 @@
+---
+port: 9292
+environment: staging
+rackup: private_pub.ru
+daemonize: true

@@ -1,0 +1,4 @@
+staging:
+  server: "http://192.168.1.100:9292/faye"
+  secret_token: "secret"
+  signature_expiration: 3600 # one hour

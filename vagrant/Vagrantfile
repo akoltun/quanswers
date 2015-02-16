@@ -1,0 +1,155 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://atlas.hashicorp.com/search.
+  config.vm.box = "parallels/ubuntu-14.04"   
+  # config.vm.box = "puphpet/ubuntu1404-x64"
+
+  # Disable automatic box update checking. If you disable this, then
+  # boxes will only be checked for updates when the user runs
+  # `vagrant box outdated`. This is not recommended.
+  # config.vm.box_check_update = false
+
+  config.vm.hostname = 'vagrant'
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing "localhost:8080" will access port 80 on the guest machine.
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  # config.vm.network "private_network", ip: "192.168.33.10"
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  config.vm.network "public_network", ip: "192.168.1.100"
+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  # config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+  # config.vm.provider "virtualbox" do |vb|
+  #   # Display the VirtualBox GUI when booting the machine
+  #   vb.gui = true
+  #
+  #   # Customize the amount of memory on the VM:
+  #   vb.memory = "1024"
+  # end
+  #
+  # View the documentation for the provider you are using for more
+  # information on available options.
+  config.vm.provider "parallels" do |v|
+    v.name = "QuAnswers Staging Deploy"
+    v.memory = 1024
+    v.cpus = 1
+  end
+
+  # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
+  # such as FTP and Heroku are also available. See the documentation at
+  # https://docs.vagrantup.com/v2/push/atlas.html for more information.
+  # config.push.define "atlas" do |push|
+  #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
+  # end
+
+  # Enable provisioning with a shell script. Additional provisioners such as
+  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
+  # documentation for more information about their specific syntax and use.
+
+  # create user
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo adduser --disabled-password --gecos "" sasha
+    sudo gpasswd -a sasha sudo
+    sudo mkdir /home/sasha/.ssh
+    sudo chown sasha:sasha /home/sasha/.ssh
+    sudo chmod 700 /home/sasha/.ssh
+  SHELL
+
+  # provide access through ssh key
+  config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/id_rsa.pub"
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo mv /home/vagrant/.ssh/id_rsa.pub /home/sasha/.ssh/authorized_keys
+    sudo chown sasha:sasha /home/sasha/.ssh/authorized_keys
+    sudo chmod 600 /home/sasha/.ssh/authorized_keys
+  SHELL
+
+  # install soft
+  config.vm.provision "file", source: "bootstrap.sh", destination: "bootstrap.sh"
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo mv /home/vagrant/bootstrap.sh /home/sasha/bootstrap.sh
+    sudo chown sasha:sasha /home/sasha/bootstrap.sh
+    sudo su sasha /home/sasha/bootstrap.sh
+  SHELL
+
+  # copy nginx config
+  config.vm.provision "file", source: "bootstrap/opt/nginx/conf/nginx.conf.http", destination: "nginx.conf"
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo mv /home/vagrant/nginx.conf /opt/nginx/conf/nginx.conf
+    sudo chown root:root /opt/nginx/conf/nginx.conf
+    sudo chmod 644 /opt/nginx/conf/nginx.conf
+  SHELL
+
+  # copy nginx start script
+  config.vm.provision "file", source: "bootstrap/etc/init.d/nginx", destination: "nginx"
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo mv /home/vagrant/nginx /etc/init.d/nginx
+    sudo chown root:root /etc/init.d/nginx
+    sudo chmod +x /etc/init.d/nginx
+  SHELL
+
+  # copy exim config
+  config.vm.provision "file", source: "bootstrap/etc/exim4/update-exim4.conf.conf", destination: "update-exim4.conf.conf"
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo mv /home/vagrant/update-exim4.conf.conf /etc/exim4/update-exim4.conf.conf
+    sudo chown root:root /etc/exim4/update-exim4.conf.conf
+    sudo chmod 644 /etc/exim4/update-exim4.conf.conf
+    sudo echo "vagrant" > /etc/mailname
+    sudo chmod 644 /etc/mailname
+    sudo update-exim4.conf
+  SHELL
+
+  # copy web app config
+  config.vm.provision "file", source: "bootstrap/home/sasha/quanswers/shared/dot.env", destination: "dot.env"
+  config.vm.provision "file", source: "bootstrap/home/sasha/quanswers/shared/config/database.yml", destination: "config/database.yml"
+  config.vm.provision "file", source: "bootstrap/home/sasha/quanswers/shared/config/private_pub.yml", destination: "config/private_pub.yml"
+  config.vm.provision "file", source: "bootstrap/home/sasha/quanswers/shared/config/private_pub_thin.yml", destination: "config/private_pub_thin.yml"
+  config.vm.provision "file", source: "bootstrap/home/sasha/quanswers/shared/config/secrets.yml", destination: "config/secrets.yml"
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo mv /home/vagrant/dot.env /home/sasha/quanswers/shared/.env
+    sudo mv /home/vagrant/config/* /home/sasha/quanswers/shared/config/
+    sudo chown sasha:sasha /home/sasha/quanswers/shared/.env
+    sudo chmod 640 /home/sasha/quanswers/shared/.env
+    sudo chown sasha:sasha /home/sasha/quanswers/shared/config/*
+    sudo chmod 640 /home/sasha/quanswers/shared/config/*
+  SHELL
+
+
+  # Start server
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo /etc/init.d/nginx start
+    sudo service redis-server restart
+    sudo rm /home/sasha/bootstrap.sh
+  SHELL
+
+end
