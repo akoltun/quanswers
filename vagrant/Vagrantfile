@@ -145,6 +145,16 @@ Vagrant.configure(2) do |config|
     sudo chmod 640 /home/sasha/quanswers/shared/config/*
   SHELL
 
+  # copy backup config
+  # to see crontab use 'crontab -l'
+  config.vm.provision "file", source: "bootstrap/home/sasha/Backup/models/quanswers_backup.rb", destination: "quanswers_backup.rb"
+  config.vm.provision "file", source: "bootstrap/home/sasha/Backup/config/schedule.rb", destination: "schedule.rb"
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo mv /home/vagrant/schedule.rb /home/sasha/Backup/config/schedule.rb
+    sudo chown sasha:sasha /home/sasha/Backup/config/schedule.rb
+    su - sasha -c 'cd /home/sasha/Backup && whenever --update-crontab' 
+  SHELL
+
   # copy monit config
   # to see monit status go to http://192.168.1.100:2812/
   config.vm.provision "file", source: "bootstrap/etc/monit/conf.d/monit", destination: "monit/monit"
@@ -156,10 +166,10 @@ Vagrant.configure(2) do |config|
   config.vm.provision "file", source: "bootstrap/etc/monit/conf.d/thin.monit", destination: "monit/thin.monit"
   config.vm.provision "file", source: "bootstrap/etc/monit/conf.d/unicorn.monit", destination: "monit/unicorn.monit"
   config.vm.provision "shell", inline: <<-SHELL
-    sudo mv /home/vagrant/monit/* etc/monit/conf.d/
+    sudo mv /home/vagrant/monit/* /etc/monit/conf.d/
     sudo rm -rf /home/vagrant/monit
-    sudo chown root:root etc/monit/conf.d/*
-    sudo chmod 644 etc/monit/conf.d/*
+    sudo chown root:root /etc/monit/conf.d/*
+    sudo chmod 644 /etc/monit/conf.d/*
     sudo service monit restart
   SHELL
 
@@ -167,11 +177,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     sudo /etc/init.d/nginx start
     sudo service postgresql start
-    sudo /etc/init.d/redis-server start
-    sudo su - sasha -c 'cd /home/sasha/quanswers/current && /home/sasha/.rvm/bin/rvm default do bundle exec sidekiq --index 0 --pidfile /home/sasha/quanswers/shared/tmp/pids/sidekiq.pid --environment staging --logfile /home/sasha/quanswers/shared/log/sidekiq.log --daemon'
-    sudo su - sasha -c 'cd /home/sasha/quanswers/current && /home/sasha/.rvm/bin/rvm default do bundle exec rake RAILS_ENV=staging ts:start'
-    sudo su - sasha -c 'cd /home/sasha/quanswers/current && RAILS_ENV=staging /home/sasha/.rvm/bin/rvm default do bundle exec thin -C config/private_pub_thin.yml start'
-    sudo su - sasha -c 'cd /home/sasha/quanswers/current && ( RAILS_ENV=staging ~/.rvm/bin/rvm default do bundle exec unicorn -c /home/sasha/quanswers/current/config/unicorn/staging.rb -E deployment -D  )'
+    sudo /etc/init.d/redis-server restart
     sudo rm /home/sasha/bootstrap.sh
   SHELL
 

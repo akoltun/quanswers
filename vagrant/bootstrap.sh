@@ -49,10 +49,19 @@ sudo apt-get install exim4-daemon-light mailutils -y
 
 # install monit
 sudo apt-get install monit -y
+
+# install backup
+gem install backup
+backup generate:model -t quanswers_backup --databases='postgresql' --storages='local' --compressor='gzip'
+
+# install whenever
+gem install whenever
+
 # create place for config
 mkdir /home/sasha/quanswers
 mkdir /home/sasha/quanswers/shared
 mkdir /home/sasha/quanswers/shared/config
+mkdir /home/sasha/Backup/config
 
 # set default environment as staging
 printf "\nexport RAILS_ENV=staging" >> ~/.bash_profile
