@@ -11,6 +11,8 @@ role :db,  %w{sasha@192.168.1.100}
 set :rails_env, :staging
 set :stage, :staging
 
+set :branch, :staging
+
 # Extended Server Syntax
 # ======================
 # This can be used to drop a more detailed server definition into the
