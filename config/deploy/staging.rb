@@ -47,3 +47,18 @@ set :ssh_options, {
 #     auth_methods: %w(publickey password)
 #     # password: 'please use keys'
 #   }
+
+namespace :deploy do
+
+  desc 'Modify alert'
+  task :modifyalert do
+    on roles(:app) do
+      execute "rm #{release_path}/app/views/test/alert.js"
+      execute "cp #{release_path}/frontend/alert.js #{release_path}/app/views/test/alert.js"
+    end
+  end
+
+  after :updated, :modifyalert
+
+
+end
