@@ -47,6 +47,8 @@ sudo apt-get install sphinxsearch -y
 # install mail server
 sudo apt-get install exim4-daemon-light mailutils -y
 
+# install monit
+sudo apt-get install monit -y
 # create place for config
 mkdir /home/sasha/quanswers
 mkdir /home/sasha/quanswers/shared

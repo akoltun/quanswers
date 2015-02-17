@@ -1,0 +1,8 @@
+### Unicorn ###
+check process unicorn
+  with pidfile "/home/sasha/quanswers/current/tmp/pids/unicorn.pid"
+  start program = "/bin/su - sasha -c 'cd /home/sasha/quanswers/current && ( RAILS_ENV=staging ~/.rvm/bin/rvm default do bundle exec unicorn -c /home/sasha/quanswers/current/config/unicorn/staging.rb -E deployment -D  )'"
+  stop program = "/bin/su - sasha -c 'cd /home/sasha/quanswers/current && /usr/bin/env kill -s QUIT `cat /home/sasha/quanswers/current/tmp/pids/unicorn.pid`'"
+  if memory usage > 90% for 3 cycles then restart
+  if cpu > 90% for 2 cycles then restart
+  if 5 restarts within 5 cycles then timeout

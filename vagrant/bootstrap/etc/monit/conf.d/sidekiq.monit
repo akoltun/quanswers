@@ -1,0 +1,8 @@
+### Sidekiq ###
+check process sidekiq
+  with pidfile "/home/sasha/quanswers/shared/tmp/pids/sidekiq.pid"
+  start program = "/bin/su - sasha -c 'cd /home/sasha/quanswers/current && /home/sasha/.rvm/bin/rvm default do bundle exec sidekiq --index 0 --pidfile /home/sasha/quanswers/shared/tmp/pids/sidekiq.pid --environment production --logfile /home/sasha/quanswers/shared/log/sidekiq.log --daemon'"
+  stop program = "/bin/su - sasha -c 'cd /home/sasha/quanswers/current && /home/sasha/.rvm/bin/rvm default do bundle exec sidekiqctl stop /home/sasha/quanswers/shared/tmp/pids/sidekiq.pid 10'"
+  if cpu > 80% then restart
+  if memory usage > 80% for 2 cycles then restart
+  if 3 restarts within 3 cycles then timeout
