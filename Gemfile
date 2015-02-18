@@ -60,6 +60,7 @@ gem 'dotenv-deployment', require: 'dotenv/deployment'
 gem 'therubyracer' #,  platforms: :ruby
 gem 'faker' # To fill production DB with demo data
 gem 'unicorn'
+gem 'redis-rails'
 
 
 
