@@ -1,7 +1,7 @@
 class Answer < ActiveRecord::Base
   include Ratingable
 
-  belongs_to :question
+  belongs_to :question, touch: true
   belongs_to :user
   has_many :remarks, as: :remarkable, dependent: :destroy
   has_many :attachments, as: :attachmentable, dependent: :destroy

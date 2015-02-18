@@ -1,6 +1,6 @@
 class Remark < ActiveRecord::Base
   belongs_to :user
-  belongs_to :remarkable, polymorphic: true
+  belongs_to :remarkable, polymorphic: true, touch: true
 
   validates :user, :remarkable, :remark, presence:  true
   validates :remark, length: { maximum: 2000 }

@@ -1,3 +1,4 @@
 ul.attachments
   - attachments.each do |attachment|
-    li =link_to attachment.file.identifier, attachment.file.url, target: "_blank", data: { id: attachment.id }
+    - cache attachment do
+      li =link_to attachment.file.identifier, attachment.file.url, target: "_blank", data: { id: attachment.id }

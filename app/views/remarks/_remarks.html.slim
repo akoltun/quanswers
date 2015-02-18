@@ -7,17 +7,18 @@
         = link_to "Delete", remark, data: { type: :json, method: "DELETE", remote: true, success: 'remarkDeleteSuccess', error: 'remarkDeleteError', confirm: true}, class: "btn btn-default delete-remark"
       br
       br
-    p.meta-info
-      - if can? :see, :author
-        | Author:&nbsp;
-        strong = remark.user.username
+    - cache [can?(:see, :author), remark] do
+      p.meta-info
+        - if can? :see, :author
+          | Author:&nbsp;
+          strong = remark.user.username
+          br
+        | Created:&nbsp;
+        = remark.created_at.to_s(:long)
         br
-      | Created:&nbsp;
-      = remark.created_at.to_s(:long)
-      br
-      | Last update:&nbsp;
-      span.updated_at = remark.updated_at.to_s(:long)
-    .remark-content
-      = raw remark.remark
+        | Last update:&nbsp;
+        span.updated_at = remark.updated_at.to_s(:long)
+      .remark-content
+        = raw remark.remark
 - if can? :create, Remark
   = link_to "Add Remark", '', data: { action: add_action }, class: "btn add-remark"

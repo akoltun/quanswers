@@ -1,8 +1,9 @@
-#remark-well.well.well-sm.hide
-  = bootstrap_form_tag label_errors: true, remote: true, data: { type: 'json' }, html: { class: 'edit_remark', id: 'remark-form' } do |f|
-    #remark-error.alert.alert-danger.well-sm.hide
+- cache 'remark_form' do
+  #remark-well.well.well-sm.hide
+    = bootstrap_form_tag label_errors: true, remote: true, data: { type: 'json' }, html: { class: 'edit_remark', id: 'remark-form' } do |f|
+      #remark-error.alert.alert-danger.well-sm.hide
 
-    = f.text_area :remark, size: "100x15", hide_label: true, name: 'remark[remark]', id: 'remark-textarea'
+      = f.text_area :remark, size: "100x15", hide_label: true, name: 'remark[remark]', id: 'remark-textarea'
 
-    = f.submit "Save Remark", class: "btn btn-success", id: 'remark-submit'
-    = link_to "Cancel", '', data: { confirm: true, click: 'cancelRemark' }, class: "btn btn-danger", id: 'remark-cancel'
+      = f.submit "Save Remark", class: "btn btn-success", id: 'remark-submit'
+      = link_to "Cancel", '', data: { confirm: true, click: 'cancelRemark' }, class: "btn btn-danger", id: 'remark-cancel'

@@ -1,31 +1,32 @@
-.row
-  .col-xs-12
-    = link_to "Ask New Question", new_question_path, class: "btn btn-primary"
-    = link_to "Search", search_path, class: "btn btn-info"
-    h1 Questions
-    #questions
-      - @questions.each do |question|
-        div id="question-#{question.id}"
-          hr
-            p.meta-info
-              - if can? :see, :author
-                | Author:&nbsp;
-                strong = question.user.username
+- cache collection_cache_key_for :question, can?(:see, :author) do
+  .row
+    .col-xs-12
+      = link_to "Ask New Question", new_question_path, class: "btn btn-primary"
+      = link_to "Search", search_path, class: "btn btn-info"
+      h1 Questions
+      #questions
+        - @questions.each do |question|
+          div id="question-#{question.id}"
+            hr
+              p.meta-info
+                - if can? :see, :author
+                  | Author:&nbsp;
+                  strong = question.user.username
+                  br
+                | Created:&nbsp;
+                = question.created_at.to_s(:long)
                 br
-              | Created:&nbsp;
-              = question.created_at.to_s(:long)
-              br
-              | Last update:&nbsp;
-              span.updated_at = question.updated_at.to_s(:long)
-            = render partial: 'questions/tags', locals: {question: question}
-            = render partial: 'ratings/rating_form', locals: {ratingable: question, rating_path: rating_question_path(question)}
-            .title
-              h4
-                =link_to question.title, question
-                span.badge.answers-count = question.answers.count > 0 ? question.answers.count : nil
-                span class="label label-success has-best-answer#{question.best_answer.nil? ? ' hide' : ''}" Has Best Answer
-            .content
-              = truncate_html(question.question)
+                | Last update:&nbsp;
+                span.updated_at = question.updated_at.to_s(:long)
+              = render partial: 'questions/tags', locals: {question: question}
+              = render partial: 'ratings/rating_form', locals: {ratingable: question, rating_path: rating_question_path(question)}
+              .title
+                h4
+                  =link_to question.title, question
+                  span.badge.answers-count = question.answers.count > 0 ? question.answers.count : nil
+                  span class="label label-success has-best-answer#{question.best_answer.nil? ? ' hide' : ''}" Has Best Answer
+              .content
+                = truncate_html(question.question)
 
 hr
 - unless Rails.env.test?

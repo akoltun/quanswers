@@ -3,25 +3,27 @@
     = link_to "Edit Question", '', class: "btn btn-primary", id: 'edit-question-button'
   - if can? :destroy, @question
     = link_to "Delete Question", @question, data: { method: "DELETE", confirm: true  }, class: "btn btn-danger"
+- cache [can?(:see, :author), can?(:rating, @question), @question] do
   = link_to "Back to Questions List", questions_path, class: "btn btn-info"
 
-h3 =@question.title
-= render partial: 'questions/tags', locals:  { question: @question }
-= render partial: 'ratings/rating_form', locals: { ratingable: @question, rating_path: rating_question_path }
-p.meta-info
-  - if can? :see, :author
-    | Author:&nbsp;
-    strong = @question.user.username
+  h3 =@question.title
+  = render partial: 'questions/tags', locals:  { question: @question }
+  = render partial: 'ratings/rating_form', locals: { ratingable: @question, rating_path: rating_question_path }
+  p.meta-info
+    - if can? :see, :author
+      | Author:&nbsp;
+      strong = @question.user.username
+      br
+    | Created:&nbsp;
+    = @question.created_at.to_s(:long)
     br
-  | Created:&nbsp;
-  = @question.created_at.to_s(:long)
-  br
-  | Last update:&nbsp;
-  span.updated_at = @question.updated_at.to_s(:long)
+    | Last update:&nbsp;
+    span.updated_at = @question.updated_at.to_s(:long)
 
-p =raw @question.question
-= render partial: 'attachments/attachments', object: @question.attachments
 
-.row
-  #question-remarks.col-xs-offset-1.col-xs-10.remarks
-    = render partial: 'remarks/remarks', locals: { remarks: @question.remarks, add_action: question_remarks_path(@question) }
+  p =raw @question.question
+  = render partial: 'attachments/attachments', object: @question.attachments
+
+  .row
+    #question-remarks.col-xs-offset-1.col-xs-10.remarks
+      = render partial: 'remarks/remarks', locals: { remarks: @question.remarks, add_action: question_remarks_path(@question) }

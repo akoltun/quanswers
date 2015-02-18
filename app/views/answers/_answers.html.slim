@@ -9,27 +9,28 @@
             = link_to "Delete Answer", answer, data: { type: :json, method: "DELETE", confirm: true, remote: true, success: 'answerDeleteSuccess', error: 'answerDeleteError' }, class: "btn btn-danger delete-answer-button"
         br
 
-      p.meta-info
-        - if can? :see, :author
-          | Author:&nbsp;
-          strong = answer.user.username
+      - cache [can?(:see, :author), can?(:rating, answer), answer] do
+        p.meta-info
+          - if can? :see, :author
+            | Author:&nbsp;
+            strong = answer.user.username
+            br
+          | Created:&nbsp;
+          = answer.created_at.to_s(:long)
           br
-        | Created:&nbsp;
-        = answer.created_at.to_s(:long)
-        br
-        | Last update:&nbsp;
-        span.updated_at = answer.updated_at.to_s(:long)
-      = render partial: 'ratings/rating_form', locals: {ratingable: answer, rating_path: rating_answer_path(answer)}
-      p
-        span.label.label-success.best-answer style="#{answer.best? ? '' : 'display: none;'}" Best
-        - if can? :set_as_best, answer
-          = link_to "Best", set_as_best_answer_path(answer), data: {method: "PATCH", remote: true}, class: "btn btn-default best-answer-button", style: "#{answer.best? ? 'display: none;' : ''}"
-      p.answer-content
-        = raw answer.answer
-      = render partial: 'attachments/attachments', object: answer.attachments
+          | Last update:&nbsp;
+          span.updated_at = answer.updated_at.to_s(:long)
+        = render partial: 'ratings/rating_form', locals: {ratingable: answer, rating_path: rating_answer_path(answer)}
+        p
+          span.label.label-success.best-answer style="#{answer.best? ? '' : 'display: none;'}" Best
+          - if can? :set_as_best, answer
+            = link_to "Best", set_as_best_answer_path(answer), data: {method: "PATCH", remote: true}, class: "btn btn-default best-answer-button", style: "#{answer.best? ? 'display: none;' : ''}"
+        p.answer-content
+          = raw answer.answer
+        = render partial: 'attachments/attachments', object: answer.attachments
 
-      .row
-        .answer-remarks.col-xs-offset-1.col-xs-10.remarks
-          = render partial: 'remarks/remarks', locals: { remarks: answer.remarks, add_action: answer_remarks_path(answer) }
+        .row
+          .answer-remarks.col-xs-offset-1.col-xs-10.remarks
+            = render partial: 'remarks/remarks', locals: { remarks: answer.remarks, add_action: answer_remarks_path(answer) }
 
-      hr
+        hr

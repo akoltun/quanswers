@@ -15,5 +15,7 @@ module Taggable
     end
 
     names.each { |name| tags.build(name: name) }
+
+    # TODO: Make touch conditionally in order to change updated_at to invalidate question cache
   end
 end
